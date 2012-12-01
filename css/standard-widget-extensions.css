@@ -1,0 +1,11 @@
+#secondary .widget h3,
+#primary .widget-container h3,
+#secondary .widget-container h3 {
+  zoom: 1; /* for IE7 to display background-image */
+  padding-left: 20px;
+  margin-left: -20px;
+}
+
+#primary, #secondary {
+  overflow: visible;
+}
