@@ -1,10 +1,10 @@
 === Plugin Name ===
 Contributors: blogger323
 Donate link: http://en.hetarena.com/donate
-Tags: widget
+Tags: widget, sidebar
 Requires at least: 3.2
 Tested up to: 3.5
-Stable tag: 0.8
+Stable tag: 0.8.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -54,12 +54,19 @@ Please tell your audience to upgrade browser.
 == Screenshots ==
 
 1. Widgets in Twenty Twelve/Twenty Eleven with custom icon/Twenty Ten
+2. Settings
 
 == Changelog ==
+
+= 0.8.1 =
+* Applied to horizontal scrolling.
+* Added a screenshot of setting admin page.
 
 = 0.8 =
 * The first version introduced in wordpress.org repository.
 
 == Upgrade Notice ==
 
+= 0.8.1 =
+* Applied to horizontal scrolling.
 

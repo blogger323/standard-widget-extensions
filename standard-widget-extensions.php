@@ -9,7 +9,7 @@ Author URI: http://en.hetarena.com/
 License: GPLv2
   */
 
-define( 'HM_SWE_VERSION', '0.8' );
+define( 'HM_SWE_VERSION', '0.8.1' );
 
 
 class HM_SWE_Plugin_Loader {

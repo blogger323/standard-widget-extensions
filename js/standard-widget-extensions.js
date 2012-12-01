@@ -97,7 +97,7 @@
         else if (s >= - sidebartop && sidebartop <= 0) {
           jQuery(sidebarid).css("position", "fixed");
           jQuery(sidebarid).css("top", sidebartop);
-          jQuery(sidebarid).css("left", sidebaroffset.left);
+          jQuery(sidebarid).css("left", sidebaroffset.left - jQuery(window).scrollLeft());
           jQuery(sidebarid).css("width", sidebarwidth);
         }
         else {
