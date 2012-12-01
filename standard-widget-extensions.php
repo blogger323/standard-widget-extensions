@@ -3,13 +3,13 @@
 Plugin Name: Standard Widget Extensions
 Plugin URI: http://en.hetarena.com/standard-widget-extensions
 Description: A plugin to extend widget behavior.
-Version: 0.8
+Version: 0.8.2
 Author: Hirokazu Matsui
 Author URI: http://en.hetarena.com/
 License: GPLv2
   */
 
-define( 'HM_SWE_VERSION', '0.8.1' );
+define( 'HM_SWE_VERSION', '0.8.2' );
 
 
 class HM_SWE_Plugin_Loader {

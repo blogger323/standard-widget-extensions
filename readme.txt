@@ -4,7 +4,7 @@ Donate link: http://en.hetarena.com/donate
 Tags: widget, sidebar
 Requires at least: 3.2
 Tested up to: 3.5
-Stable tag: 0.8.1
+Stable tag: 0.8.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -58,7 +58,7 @@ Please tell your audience to upgrade browser.
 
 == Changelog ==
 
-= 0.8.1 =
+= 0.8.2 =
 * Applied to horizontal scrolling.
 * Added a screenshot of setting admin page.
 
@@ -67,6 +67,6 @@ Please tell your audience to upgrade browser.
 
 == Upgrade Notice ==
 
-= 0.8.1 =
+= 0.8.2 =
 * Applied to horizontal scrolling.
 
