@@ -1,11 +1,13 @@
-#secondary .widget h3,
-#primary .widget-container h3,
-#secondary .widget-container h3 {
+#secondary .widget h3,           /* Twenty Twelve, Twenty Eleven */
+#primary   .widget-container h3, /* Twenty Ten */
+#secondary .widget-container h3, /* Twenty Ten */
+#sidebar   .widget-container h3  /* Portfolio Press */
+{
   zoom: 1; /* for IE7 to display background-image */
   padding-left: 20px;
   margin-left: -20px;
 }
 
-#primary, #secondary {
+#primary, #secondary, #sidebar {
   overflow: visible;
 }

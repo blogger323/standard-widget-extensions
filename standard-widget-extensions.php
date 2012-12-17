@@ -3,13 +3,13 @@
 Plugin Name: Standard Widget Extensions
 Plugin URI: http://en.hetarena.com/standard-widget-extensions
 Description: A plugin to extend widget behavior.
-Version: 0.8.2
+Version: 0.8.3
 Author: Hirokazu Matsui
 Author URI: http://en.hetarena.com/
 License: GPLv2
   */
 
-define( 'HM_SWE_VERSION', '0.8.2' );
+define( 'HM_SWE_VERSION', '0.8.3' );
 
 
 class HM_SWE_Plugin_Loader {
@@ -59,8 +59,8 @@ class HM_SWE_Plugin_Loader {
 
   function admin_init() {
     add_settings_section( 'hm_swe_main', 'General', array( &$this, 'main_section_text'), 'hm_swe_option_page' );
-    add_settings_section( 'hm_swe_accordion_widget', 'Accordion Widgets', function() {}, 'hm_swe_option_page' );
-    add_settings_section( 'hm_swe_scroll_stop', 'Sticky Sidebar', function() {}, 'hm_swe_option_page' );
+    add_settings_section( 'hm_swe_accordion_widget', 'Accordion Widgets', array( &$this, 'empty_text' ), 'hm_swe_option_page' );
+    add_settings_section( 'hm_swe_scroll_stop', 'Sticky Sidebar', array( &$this, 'empty_text' ), 'hm_swe_option_page' );
 
     add_settings_field( 'hm_swe_content_id', 'ID of Your Main Column', 
       array( &$this, 'settings_field_maincol_id' ), 'hm_swe_option_page', 'hm_swe_main' );
@@ -86,6 +86,9 @@ class HM_SWE_Plugin_Loader {
   function main_section_text() {
     echo "<p>Use primary/secondary/widget for Twenty Twelve and Twenty Eleven.\n" .
          "Use container/primary/widget-container for Twenty Ten.</p>";
+  }
+
+  function empty_text() {
   }
 
   function get_hm_swe_option($key = NULL) {

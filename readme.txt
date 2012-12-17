@@ -4,7 +4,7 @@ Donate link: http://en.hetarena.com/donate
 Tags: widget, sidebar
 Requires at least: 3.2
 Tested up to: 3.5
-Stable tag: 0.8.2
+Stable tag: 0.8.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -58,6 +58,9 @@ Please tell your audience to upgrade browser.
 
 == Changelog ==
 
+= 0.8.3 =
+* remove anonymous function for PHP under 5.3. No Need to update for users who have PHP 5.3 or 5.4.
+
 = 0.8.2 =
 * Applied to horizontal scrolling.
 * Added a screenshot of setting admin page.
@@ -66,6 +69,9 @@ Please tell your audience to upgrade browser.
 * The first version introduced in wordpress.org repository.
 
 == Upgrade Notice ==
+
+= 0.8.3 =
+* remove anonymous function for PHP under 5.3.
 
 = 0.8.2 =
 * Applied to horizontal scrolling.
