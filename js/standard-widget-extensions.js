@@ -11,64 +11,75 @@
         cook = jQuery.cookie('hm_swe');
       }
 
-      jQuery(sidebarid + ' ' + widget + ' h3').hover(
-        function() {
-          jQuery(this).css("cursor", "pointer");
-        },
-        function() {
-          jQuery(this).css("cursor", "default");
-        }
-      );
-
-      jQuery(sidebarid + ' ' + widget).each(function() {
-        if (cook && cook[jQuery(this).attr('id')] == "t") {
-          jQuery(this).children('h3').next().show();
-          if (swe_params.heading_marker) {
-            jQuery(this).children('h3').css('background', swe_params.buttonminusurl + " no-repeat left center");
+      var i;
+      for (i = 0; i < swe_params.accordion_widget_areas.length; i++) {
+        var area = 
+          (swe_params.accordion_widget_areas[i] ? " #" + swe_params.accordion_widget_areas[i] : "");
+        jQuery(sidebarid + area + ' ' + widget + ' h3').hover(
+          function() {
+            jQuery(this).css("cursor", "pointer");
+          },
+          function() {
+            jQuery(this).css("cursor", "default");
           }
-        }
-        else {
-          jQuery(this).children('h3').next().hide();
-          if (swe_params.heading_marker) {
-            jQuery(this).children('h3').css('background', swe_params.buttonplusurl + " no-repeat left center");
-          }
-        }
-      });
+        );
 
-      jQuery(sidebarid + ' ' + widget + ' h3').click(function() {
-        var c = jQuery(this).next();
-        if (c) {
-          if (c.is(":hidden")) {
-            c.slideDown(set_widget_status);
+        jQuery(sidebarid + area + ' ' + widget).each(function() {
+          if (cook && cook[jQuery(this).attr('id')] == "t") {
+            jQuery(this).children('h3').next().show();
             if (swe_params.heading_marker) {
-              jQuery(this).css('background', swe_params.buttonminusurl + " no-repeat left center");
+              jQuery(this).children('h3').css('background', swe_params.buttonminusurl + " no-repeat left center");
             }
           }
           else {
-            c.slideUp(set_widget_status);
+            jQuery(this).children('h3').next().hide();
             if (swe_params.heading_marker) {
-              jQuery(this).css('background', swe_params.buttonplusurl + " no-repeat left center");
+              jQuery(this).children('h3').css('background', swe_params.buttonplusurl + " no-repeat left center");
             }
           }
-        }
-      });
+        });
+
+        jQuery(sidebarid + area + ' ' + widget + ' h3').click(function() {
+          var c = jQuery(this).next();
+          if (c) {
+            if (c.is(":hidden")) {
+              c.slideDown(set_widget_status);
+              if (swe_params.heading_marker) {
+                jQuery(this).css('background', swe_params.buttonminusurl + " no-repeat left center");
+              }
+            }
+            else {
+              c.slideUp(set_widget_status);
+              if (swe_params.heading_marker) {
+               jQuery(this).css('background', swe_params.buttonplusurl + " no-repeat left center");
+              }
+            }
+          }
+        });
+      } /* for */
 
       function set_widget_status() {
         if (typeof JSON !== "undefined") {
           var c2 = {};
-          jQuery(sidebarid + ' ' + widget + ' h3').each(function() {
-            if (jQuery(this).next().is(':visible')) {
-              c2[jQuery(this).parent().attr('id')] = "t";
-            }
-          });
-          jQuery.cookie('hm_swe', c2, { path: '/' });
+          var i;
+          for (i = 0; i < swe_params.accordion_widget_areas.length; i++) {
+            var area = 
+            (swe_params.accordion_widget_areas[i] ? " #" + swe_params.accordion_widget_areas[i] : "");
+
+            jQuery(sidebarid + area + ' ' + widget + ' h3').each(function() {
+              if (jQuery(this).next().is(':visible')) {
+                c2[jQuery(this).parent().attr('id')] = "t";
+              }
+            });
+            jQuery.cookie('hm_swe', c2, { path: '/' });
+          } /* for */
         }
         if (typeof resizefunc === 'function') {
           resizefunc(); /* because the height of the sidebar has changed. */
         }
       }
 
-    }
+    } /* if accordion_widget */
 
     if (swe_params.scroll_stop && jQuery(sidebarid) && jQuery(contentid)) {
       var h, ph, wh, sidebaroffset, sidebarwidth, sidebartop;
