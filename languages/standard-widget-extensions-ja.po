@@ -1,0 +1,159 @@
+# Copyright (C) 2013 Standard Widget Extensions
+# This file is distributed under the same license as the Standard Widget Extensions package.
+msgid ""
+msgstr ""
+"Project-Id-Version: Standard Widget Extensions 1.0\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/standard-widget-extensions\n"
+"POT-Creation-Date: 2013-03-17 05:12:45+00:00\n"
+"PO-Revision-Date: 2013-03-12 02:53+0900\n"
+"Last-Translator: Hirokazu Matsui <blogger323@gmail.com>\n"
+"Language-Team: Japanese\n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: standard-widget-extensions.php:195
+msgctxt "title"
+msgid "General"
+msgstr "一般"
+
+# accordion_widget
+#: standard-widget-extensions.php:197
+msgctxt "title"
+msgid "Accordion Widgets"
+msgstr ""
+
+#: standard-widget-extensions.php:199
+msgctxt "title"
+msgid "Sticky Sidebar"
+msgstr ""
+
+#: standard-widget-extensions.php:211
+msgid ""
+"<p>Use primary/secondary/widget for Twenty Twelve and Twenty Eleven.\n"
+"Use container/primary/widget-container for Twenty Ten.</p>"
+msgstr ""
+"Twenty Twelve と Twenty Eleven では最初の 3つのパラメータをそれぞれ primary/"
+"secondary/widget にしてください。Twenty Ten では container/primary/widget-"
+"container としてください。"
+
+#: standard-widget-extensions.php:264
+msgid "Plus button URL"
+msgstr "開ボタンの URL"
+
+#: standard-widget-extensions.php:267
+msgid "Minus buttom URL"
+msgstr "閉ボタンの URL"
+
+#: standard-widget-extensions.php:309
+msgid "The minimum width has to be a number."
+msgstr "幅の指定は数値で行ってください"
+
+#: standard-widget-extensions.php:318
+msgid "Wrong URL for the plus button"
+msgstr "開ボタンの URL が不正です"
+
+#: standard-widget-extensions.php:328
+msgid "Wrong URL for the minus button"
+msgstr "閉ボタンの URL が不正です"
+
+#: standard-widget-extensions.php:337
+msgid "Wrong main column ID"
+msgstr "メインカラムの ID が不正です"
+
+#: standard-widget-extensions.php:345
+msgid "Wrong sidebar ID"
+msgstr "サイドバーの ID が不正です"
+
+#: standard-widget-extensions.php:353
+msgid "Wrong widget class"
+msgstr "ウィジェットのクラス名が不正です"
+
+#: standard-widget-extensions.php:361
+msgid "Wrong widget areas"
+msgstr "ウィジェットエリアの ID が不正です"
+
+#. #-#-#-#-#  standard-widget-extensions.pot (Standard Widget Extensions 1.0)  #-#-#-#-#
+#. Plugin Name of the plugin/theme
+#: standard-widget-extensions.php:373 standard-widget-extensions.php:381
+msgid "Standard Widget Extensions"
+msgstr ""
+
+#: standard-widget-extensions.php:373
+msgid "Standard WE"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "http://en.hetarena.com/standard-widget-extensions"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid "A plugin to extend widget behavior."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Hirokazu Matsui (blogger323)"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "http://en.hetarena.com/"
+msgstr ""
+
+# maincol_id
+msgid "ID of Your Main Column"
+msgstr "メインカラムの ID"
+
+# sidebar_id
+msgid "ID of Your Sidebar"
+msgstr "サイドバーの ID"
+
+# widget_class
+msgid "Class of Widgets"
+msgstr "ウィジェットのクラス名"
+
+# accordion_widget
+msgid "Accordion Widgets"
+msgstr "Accordion Widgets 機能を有効にする"
+
+# accordion_widget_areas
+msgid "Widget area IDs in which AW is effective (optional)"
+msgstr "次の ID を持つウィジェットエリアのみで有効 (省略可)"
+
+# heading_marker
+msgid "Icon for Heading"
+msgstr "見出しのアイコン"
+
+# enable_css
+msgid "Include Default CSS"
+msgstr "デフォルト CSS を生成する"
+
+# scroll_stop
+msgid "Sticky Sidebar"
+msgstr "Sticky Sidebar 機能を有効にする"
+
+# disable_iflt
+msgid "Disable if the window width is less than"
+msgstr "次の幅以下で無効化"
+
+msgid "Enable"
+msgstr "有効"
+
+msgid "Disable"
+msgstr "無効"
+
+msgid "None"
+msgstr "無効"
+
+msgid "Default"
+msgstr "デフォルト"
+
+msgid "Custom"
+msgstr "カスタム"
+
+msgid "Yes (Recommended)"
+msgstr "有効 (推奨)"
+
+msgid "No"
+msgstr "無効"
