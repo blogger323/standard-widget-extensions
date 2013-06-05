@@ -1,147 +1,155 @@
+(function ($, window, document, undefined) {
 
-  jQuery(document).ready(function() {
-    var cook = null;
-    var contentid = "#" + swe_params.maincol_id;
-    var sidebarid = "#" + swe_params.sidebar_id;
-    var widget    = '.' + swe_params.widget_class;
+	$(document).ready(function () {
+		var cook = null;
+		var contentid = "#" + swe_params.maincol_id;
+		var sidebarid = "#" + swe_params.sidebar_id;
+		var widget = '.' + swe_params.widget_class;
+		var prevscrolltop = -1;
+		var fixedscrolltop = -1;
 
-    if (swe_params.accordion_widget) {
-      if (typeof JSON !== "undefined") {
-        jQuery.cookie.json = true;
-        cook = jQuery.cookie('hm_swe');
-      }
+		if (swe_params.accordion_widget) {
+			if (typeof JSON !== "undefined") {
+				$.cookie.json = true;
+				cook = $.cookie('hm_swe');
+			}
 
-      var i;
-      for (i = 0; i < swe_params.accordion_widget_areas.length; i++) {
-        var area = 
-          (swe_params.accordion_widget_areas[i] ? " #" + swe_params.accordion_widget_areas[i] : "");
-        jQuery(sidebarid + area + ' ' + widget + ' h3').hover(
-          function() {
-            jQuery(this).css("cursor", "pointer");
-          },
-          function() {
-            jQuery(this).css("cursor", "default");
-          }
-        );
+			var i;
+			for (i = 0; i < swe_params.accordion_widget_areas.length; i++) {
+				var area =
+						(swe_params.accordion_widget_areas[i] ? " #" + swe_params.accordion_widget_areas[i] : "");
+				$(sidebarid + area + ' ' + widget + ' h3').hover(
+						function () {
+							$(this).css("cursor", "pointer");
+						},
+						function () {
+							$(this).css("cursor", "default");
+						}
+				);
 
-        jQuery(sidebarid + area + ' ' + widget).each(function() {
-          if (cook && cook[jQuery(this).attr('id')] == "t") {
-            jQuery(this).children('h3').next().show();
-            if (swe_params.heading_marker) {
-              jQuery(this).children('h3').css('background', swe_params.buttonminusurl + " no-repeat left center");
-            }
-          }
-          else {
-            jQuery(this).children('h3').next().hide();
-            if (swe_params.heading_marker) {
-              jQuery(this).children('h3').css('background', swe_params.buttonplusurl + " no-repeat left center");
-            }
-          }
-        });
+				$(sidebarid + area + ' ' + widget).each(function () {
+					if (cook && cook[$(this).attr('id')] == "t") {
+						$(this).children('h3').next().show();
+						if (swe_params.heading_marker) {
+							$(this).children('h3').css('background', swe_params.buttonminusurl + " no-repeat left center");
+						}
+					}
+					else {
+						$(this).children('h3').next().hide();
+						if (swe_params.heading_marker) {
+							$(this).children('h3').css('background', swe_params.buttonplusurl + " no-repeat left center");
+						}
+					}
+				});
 
-        jQuery(sidebarid + area + ' ' + widget + ' h3').click(function() {
-          var c = jQuery(this).next();
-          if (c) {
-            if (c.is(":hidden")) {
-              c.slideDown(set_widget_status);
-              if (swe_params.heading_marker) {
-                jQuery(this).css('background', swe_params.buttonminusurl + " no-repeat left center");
-              }
-            }
-            else {
-              c.slideUp(set_widget_status);
-              if (swe_params.heading_marker) {
-               jQuery(this).css('background', swe_params.buttonplusurl + " no-repeat left center");
-              }
-            }
-          }
-        });
-      } /* for */
+				$(sidebarid + area + ' ' + widget + ' h3').click(function () {
+					var c = $(this).next();
+					if (c) {
+						if (c.is(":hidden")) {
+							c.slideDown(set_widget_status);
+							if (swe_params.heading_marker) {
+								$(this).css('background', swe_params.buttonminusurl + " no-repeat left center");
+							}
+						}
+						else {
+							c.slideUp(set_widget_status);
+							if (swe_params.heading_marker) {
+								$(this).css('background', swe_params.buttonplusurl + " no-repeat left center");
+							}
+						}
+					}
+				});
+			}
+			/* for */
 
-      function set_widget_status() {
-        if (typeof JSON !== "undefined") {
-          var c2 = {};
-          var i;
-          for (i = 0; i < swe_params.accordion_widget_areas.length; i++) {
-            var area = 
-            (swe_params.accordion_widget_areas[i] ? " #" + swe_params.accordion_widget_areas[i] : "");
+			function set_widget_status() {
+				if (typeof JSON !== "undefined") {
+					var c2 = {};
+					var i;
+					for (i = 0; i < swe_params.accordion_widget_areas.length; i++) {
+						var area =
+								(swe_params.accordion_widget_areas[i] ? " #" + swe_params.accordion_widget_areas[i] : "");
 
-            jQuery(sidebarid + area + ' ' + widget + ' h3').each(function() {
-              if (jQuery(this).next().is(':visible')) {
-                c2[jQuery(this).parent().attr('id')] = "t";
-              }
-            });
-            jQuery.cookie('hm_swe', c2, { path: '/' });
-          } /* for */
-        }
-        if (typeof resizefunc === 'function') {
-          resizefunc(); /* because the height of the sidebar has changed. */
-        }
-      }
+						$(sidebarid + area + ' ' + widget + ' h3').each(function () {
+							if ($(this).next().is(':visible')) {
+								c2[$(this).parent().attr('id')] = "t";
+							}
+						});
+						$.cookie('hm_swe', c2, { path: '/' });
+					}
+					/* for */
+				}
+				if (typeof resizefunc === 'function') {
+					resizefunc();
+					/* because the height of the sidebar has changed. */
+				}
+			}
 
-    } /* if accordion_widget */
+		}
+		/* if accordion_widget */
 
-    if (swe_params.scroll_stop && jQuery(sidebarid) && jQuery(contentid)) {
-      var h, ph, wh, sidebaroffset, sidebarwidth, sidebartop;
-      var sidebarmargintop    = parseInt(jQuery(sidebarid).css('margin-top'),  10);
-      var sidebarmarginbottom = parseInt(jQuery(sidebarid).css('margin-bottom'), 10);
+		if (swe_params.scroll_stop && $(sidebarid) && $(contentid)) {
+			var h, ph, wh, sidebaroffset, sidebarwidth, sidebartop;
+			var sidebarmargintop = parseInt($(sidebarid).css('margin-top'), 10);
+			var sidebarmarginbottom = parseInt($(sidebarid).css('margin-bottom'), 10);
 
-      function scrollfunc() {
-        if (sidebartop == 1) {
-          jQuery(sidebarid).css("position", "static");
-          return;
-        }
-        var s = jQuery(window).scrollTop() - sidebaroffset.top;
+			function scrollfunc() {
+				if (sidebartop === 1) {
+					$(sidebarid).css("position", "static");
+					return;
+				}
+				var curscrolltop = $(window).scrollTop();
+				var s = curscrolltop - sidebaroffset.top;
 
-        if (s - sidebarmargintop - sidebarmarginbottom >= ph - wh && sidebartop < 0) {
-          jQuery(sidebarid).css("position", "absolute");
-          jQuery(sidebarid).css("top", sidebaroffset.top + ph - h);
-          jQuery(sidebarid).css("left", sidebaroffset.left);
-          jQuery(sidebarid).css("width", sidebarwidth);
-        }
-        else if (sidebartop == 0 && s >= ph - h) {
-          jQuery(sidebarid).css("position", "absolute");
-          jQuery(sidebarid).css("top", sidebaroffset.top + ph - h);
-          jQuery(sidebarid).css("left", sidebaroffset.left);
-          jQuery(sidebarid).css("width", sidebarwidth);
-        }
-        else if (s >= - sidebartop && sidebartop <= 0) {
-          jQuery(sidebarid).css("position", "fixed");
-          jQuery(sidebarid).css("top", sidebartop);
-          jQuery(sidebarid).css("left", sidebaroffset.left - jQuery(window).scrollLeft());
-          jQuery(sidebarid).css("width", sidebarwidth);
-        }
-        else {
-          jQuery(sidebarid).css("position", "static");
-        }
-      }
+				if ((s - sidebarmargintop - sidebarmarginbottom >= ph - wh && sidebartop < 0) ||
+						(sidebartop === 0 && s >= ph - h)) { /* scroll again */
+					$(sidebarid).css("position", "absolute");
+					$(sidebarid).css("top", sidebaroffset.top + ph - h);
+					$(sidebarid).css("left", sidebaroffset.left);
+					$(sidebarid).css("width", sidebarwidth);
+				}
+				else if (s >= -sidebartop && sidebartop <= 0) {
+					$(sidebarid).css("position", "fixed");
+					$(sidebarid).css("top", sidebartop);
+					$(sidebarid).css("left", sidebaroffset.left - $(window).scrollLeft());
+					$(sidebarid).css("width", sidebarwidth);
+				}
+				else {
+					$(sidebarid).css("position", "static");
+				}
+				//$('#dbgtext').text(prevscrolltop);
+				prevscrolltop = curscrolltop;
+			}
 
-      function resizefunc() {
-        h  = jQuery(sidebarid).height();
-        ph = jQuery(contentid).height();
-        wh = jQuery(window).height()
+			function resizefunc() {
+				h = $(sidebarid).height();
+				ph = $(contentid).height();
+				wh = $(window).height();
+				prevscrolltop = -1;
+				fixedscrolltop = -1;
 
-        jQuery(sidebarid).css("position", "static");
-        sidebaroffset = jQuery(sidebarid).offset();
-        sidebaroffset.top -= sidebarmargintop;
-        sidebarwidth = jQuery(sidebarid).width();
-        // Use a fixed width because the parent will change.
+				$(sidebarid).css("position", "static");
+				sidebaroffset = $(sidebarid).offset();
+				sidebaroffset.top -= sidebarmargintop;
+				sidebarwidth = $(sidebarid).width();
+				// Use a fixed width because the parent will change.
 
-        sidebartop = wh - h  - sidebarmargintop - sidebarmarginbottom;
-        if (ph <= h || jQuery(window).width() < swe_params.disable_iflt) {
-        /* longer sidebar than the content || narrow window width */
-          sidebartop = 1; /* special value for no-scroll */
-        }
-        else if (sidebartop > 0) { /* shorter sidebar than the window */
-          sidebartop = 0;
-        }
-        scrollfunc(); 
-      }
+				sidebartop = wh - h - sidebarmargintop - sidebarmarginbottom;
+				if (ph <= h || $(window).width() < swe_params.disable_iflt) {
+					/* longer sidebar than the content || narrow window width */
+					sidebartop = 1;
+					/* special value for no-scroll */
+				}
+				else if (sidebartop > 0) { /* shorter sidebar than the window */
+					sidebartop = 0;
+				}
+				scrollfunc();
+			}
 
-      jQuery(window).scroll(scrollfunc);
-      jQuery(window).resize(resizefunc);
+			$(window).scroll(scrollfunc);
+			$(window).resize(resizefunc);
 
-      resizefunc();
-    }
-  }); // ready function
-
+			resizefunc();
+		}
+	}); // ready function
+})(jQuery, window, document);
