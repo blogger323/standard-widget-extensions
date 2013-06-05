@@ -6,7 +6,10 @@
 		var sidebarid = "#" + swe_params.sidebar_id;
 		var widget = '.' + swe_params.widget_class;
 		var prevscrolltop = -1;
-		var fixedscrolltop = -1;
+		var fixedsidebartop = -1;
+		var mode = 2;
+		var fixed = 0;
+		var direction = 0;
 
 		if (swe_params.accordion_widget) {
 			if (typeof JSON !== "undefined") {
@@ -102,22 +105,56 @@
 				var s = curscrolltop - sidebaroffset.top;
 
 				if ((s - sidebarmargintop - sidebarmarginbottom >= ph - wh && sidebartop < 0) ||
-						(sidebartop === 0 && s >= ph - h)) { /* scroll again */
+						(sidebartop === 0 && s >= ph - h)) { /* scroll again with footer */
 					$(sidebarid).css("position", "absolute");
 					$(sidebarid).css("top", sidebaroffset.top + ph - h);
 					$(sidebarid).css("left", sidebaroffset.left);
 					$(sidebarid).css("width", sidebarwidth);
+					fixedsidebartop = $(sidebarid).offset().top - sidebarmargintop * 2 - sidebarmarginbottom; // TODO: why?
+					fixed = 0;
 				}
-				else if (s >= -sidebartop && sidebartop <= 0) {
+				else if (mode == 2 && (curscrolltop - prevscrolltop) * direction < 0 && fixed) {
+					// mode2 absolute position
+					$(sidebarid).css("position", "absolute");
+					$(sidebarid).css("top", fixedsidebartop);
+					$(sidebarid).css("left", sidebaroffset.left);
+					$(sidebarid).css("width", sidebarwidth);
+					fixed = 0;
+				}
+				else if (mode === 2 && curscrolltop < prevscrolltop &&
+						curscrolltop < fixedsidebartop && curscrolltop > sidebaroffset.top - sidebarmargintop) { // TODO: why minus margin?
+					// at the top of sidebar
+					debugger;
+					$(sidebarid).css("position", "fixed");
+					$(sidebarid).css("top", sidebarmargintop);
+					$(sidebarid).css("left", sidebaroffset.left - $(window).scrollLeft());
+					$(sidebarid).css("width", sidebarwidth);
+					fixed = 1;
+					fixedsidebartop = $(sidebarid).offset().top - sidebarmargintop * 2 - sidebarmarginbottom;
+				}
+				else if ((mode == 2 && curscrolltop > prevscrolltop && fixedsidebartop > 0 && curscrolltop > fixedsidebartop + h + sidebarmargintop + sidebarmarginbottom - wh  ) ||
+						(fixedsidebartop < 0 && s >= -sidebartop && sidebartop <= 0)) { // at the bottom of sidebar
 					$(sidebarid).css("position", "fixed");
 					$(sidebarid).css("top", sidebartop);
 					$(sidebarid).css("left", sidebaroffset.left - $(window).scrollLeft());
 					$(sidebarid).css("width", sidebarwidth);
+
+					fixed = 1;
+					fixedsidebartop = $(sidebarid).offset().top - sidebarmargintop - sidebarmarginbottom; // TODO: why?
+					if (fixedsidebartop < 0) {
+						fixedsidebartop = 0;
+					}
+				}
+				else if (curscrolltop < sidebaroffset.top - sidebarmargintop) {
+					$(sidebarid).css("position", "static");
+					fixedsidebartop = -1;
+					fixed = 0;
 				}
 				else {
-					$(sidebarid).css("position", "static");
+					// continue absolute
 				}
 				//$('#dbgtext').text(prevscrolltop);
+				direction = curscrolltop - prevscrolltop;
 				prevscrolltop = curscrolltop;
 			}
 
@@ -126,11 +163,13 @@
 				ph = $(contentid).height();
 				wh = $(window).height();
 				prevscrolltop = -1;
-				fixedscrolltop = -1;
+				fixedsidebartop = -1;
+				fixed = 0;
+				direction = 0;
 
 				$(sidebarid).css("position", "static");
 				sidebaroffset = $(sidebarid).offset();
-				sidebaroffset.top -= sidebarmargintop;
+				sidebaroffset.top -= sidebarmargintop; // TODO: if sidebaroffset is null
 				sidebarwidth = $(sidebarid).width();
 				// Use a fixed width because the parent will change.
 
