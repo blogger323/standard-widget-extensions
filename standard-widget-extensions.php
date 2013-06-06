@@ -12,7 +12,7 @@ License: GPLv2
 class HM_SWE_Plugin_Loader {
 
   const VERSION        = '1.0';
-  const OPTION_VERSION = '1.0';
+  const OPTION_VERSION = '1.1';
   const OPTION_KEY     = 'hm_swe_options';
   const I18N_DOMAIN    = 'standard-widget-extensions';
   const PREFIX         = 'hm_swe_';
@@ -29,6 +29,7 @@ class HM_SWE_Plugin_Loader {
     'scroll_stop'  => 'enabled',
     'disable_iflt' => 620,
     'accordion_widget_areas' => array(''),
+		'scroll_mode' => 1,
   );
 
   // index for field array
@@ -40,7 +41,8 @@ class HM_SWE_Plugin_Loader {
   const I_HEADING_MARKER   = 5;
   const I_ENABLE_CSS       = 6;
   const I_SCROLL_STOP      = 7;
-  const I_DISABLE_IFLT     = 8;
+	const I_SCROLL_MODE      = 8;
+  const I_DISABLE_IFLT     = 9;
 
   // field array
   private static $settings_field = 
@@ -110,6 +112,16 @@ class HM_SWE_Plugin_Loader {
 		  array('id' => 'disable', 'title' => 'Disable', 'value' => 'disabled'),
 				),
 	    ),
+			array(
+				'id' => 'scroll_mode',
+				'title' => 'Quick Reverse Mode',
+				'callback' => 'settings_field_scroll_mode',
+				'section' => 'hm_swe_scroll_stop',
+				'options'  => array(
+					array('id' => 'enable', 'title' => 'Enable', 'value' => '2'),
+					array('id' => 'disable', 'title' => 'Disable', 'value' => '1'),
+				),
+			),
       array(
 	    'id'       => 'disable_iflt',
 	    'title'    => 'Disable if the window width is less than',
@@ -156,6 +168,7 @@ class HM_SWE_Plugin_Loader {
       'accordion_widget'       => $options['accordion_widget'] == 'enabled',
       'disable_iflt'           => intval($options['disable_iflt']),
       'accordion_widget_areas' => array_map('esc_attr', $options['accordion_widget_areas']),
+			'scroll_mode' => ($options['scroll_mode'] == "2" ? 2 : 1),
     );
     wp_localize_script('standard-widget-extensions', 'swe_params', $params);
   }
@@ -278,6 +291,13 @@ class HM_SWE_Plugin_Loader {
     echo "</fieldset>\n";
   }
 
+	function settings_field_scroll_mode() {
+		$i = self::I_SCROLL_MODE;
+		echo "<fieldset><legend class='screen-reader-text'><span>" . self::$settings_field[$i]['title'] . "</span></legend>\n";
+		$this->write_radio_option($i);
+		echo "</fieldset>\n";
+	}
+
   function settings_field_accordion_widget() {
     $i = self::I_ACCORDION_WIDGET;
     echo "<fieldset><legend class='screen-reader-text'><span>" . self::$settings_field[$i]['title'] . "</span></legend>\n";
@@ -302,6 +322,7 @@ class HM_SWE_Plugin_Loader {
 
     $valid['heading_marker'] = $input['heading_marker'];
     $valid['scroll_stop']    = $input['scroll_stop'];
+		$valid['scroll_mode']    = $input['scroll_mode'];
     $valid['accordion_widget'] = $input['accordion_widget'];
     $valid['enable_css']     = $input['enable_css'];
 
@@ -357,6 +378,9 @@ class HM_SWE_Plugin_Loader {
       $valid['widget_class'] = $input['widget_class'];
     }
 
+		if (is_array($input['accordion_widget_areas'])) { // This function would be called from add_option.
+			$input['accordion_widget_areas'] = implode(',', $input['accordion_widget_areas']);
+		}
     if (!preg_match('/^[a-zA-Z0-9_\-, ]*$/', $input['accordion_widget_areas'])) {
       add_settings_error('hm_swe_accordion_widget_areas', 'hm_swe_accordion_widget_areas_error', __('Wrong widget areas', self::I18N_DOMAIN));
       $valid['accordion_widget_areas'] = $prev['accordion_widget_areas'];
