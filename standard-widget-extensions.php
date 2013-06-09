@@ -21,32 +21,42 @@ class HM_SWE_Plugin_Loader {
 		'maincol_id'             => 'primary',
 		'sidebar_id'             => 'secondary',
 		'widget_class'           => 'widget',
+		'readable_js'            => 'disabled',
 		'accordion_widget'       => 'enabled',
-		'enable_css'             => 'enabled',
+		'accordion_widget_areas' => array( '' ),
 		'heading_marker'         => 'default',
 		'custom_plus'            => '',
 		'custom_minus'           => '',
+		'enable_css'             => 'enabled',
+		'single_expansion'       => 'disabled',
+		'heading_string'         => 'h3',
 		'scroll_stop'            => 'enabled',
-		'disable_iflt'           => 620,
-		'accordion_widget_areas' => array( '' ),
 		'scroll_mode'            => 1,
+		'disable_iflt'           => 620,
+		'ignore_footer'          => 'disabled',
 	);
 
 	// index for field array
 	const I_MAINCOL_ID             = 0;
 	const I_SIDEBAR_ID             = 1;
 	const I_WIDGET_CLASS           = 2;
-	const I_ACCORDION_WIDGET       = 3;
-	const I_ACCORDION_WIDGET_AREAS = 4;
+	const I_READABLE_JS            = 3;
+	const I_ACCORDION_WIDGET       = 4;
 	const I_HEADING_MARKER         = 5;
 	const I_ENABLE_CSS             = 6;
-	const I_SCROLL_STOP            = 7;
-	const I_SCROLL_MODE            = 8;
-	const I_DISABLE_IFLT           = 9;
+	const I_SINGLE_EXPANSION       = 7;
+	const I_HEADING_STRING         = 8;
+	const I_ACCORDION_WIDGET_AREAS = 9;
+	const I_SCROLL_STOP            = 10;
+	const I_SCROLL_MODE            = 11;
+	const I_DISABLE_IFLT           = 12;
+	const I_IGNORE_FOOTER          = 13;
 
 	// field array
 	private static $settings_field =
 			array(
+
+				// General options
 				array(
 					'id'       => 'maincol_id',
 					'title'    => 'ID of Your Main Column',
@@ -66,6 +76,19 @@ class HM_SWE_Plugin_Loader {
 					'section'  => 'hm_swe_main',
 				),
 				array(
+					'id'       => 'readable_js',
+					'title'    => 'Readable .js File',
+					'expert'   => 1,
+					'callback' => 'settings_field_readable_js',
+					'section'  => 'hm_swe_main',
+					'options'  => array(
+						array( 'id' => 'enable', 'title' => 'Enable', 'value' => 'enabled' ),
+						array( 'id' => 'disable', 'title' => 'Disable (minimized)', 'value' => 'disabled' ),
+					),
+				),
+
+				// Accordion Widgets options
+				array(
 					'id'       => 'accordion_widget',
 					'title'    => 'Accordion Widgets',
 					'callback' => 'settings_field_accordion_widget',
@@ -76,14 +99,8 @@ class HM_SWE_Plugin_Loader {
 					),
 				),
 				array(
-					'id'       => 'accordion_widget_areas',
-					'title'    => 'Widget area IDs in which AW is effective (optional)',
-					'callback' => 'settings_field_accordion_widget_areas',
-					'section'  => 'hm_swe_accordion_widget',
-				),
-				array(
 					'id'       => 'heading_marker',
-					'title'    => 'Icon for Heading',
+					'title'    => 'Icons for Heading',
 					'callback' => 'settings_field_heading_marker',
 					'section'  => 'hm_swe_accordion_widget',
 					'options'  => array(
@@ -94,7 +111,8 @@ class HM_SWE_Plugin_Loader {
 				),
 				array(
 					'id'       => 'enable_css',
-					'title'    => 'Include Default CSS',
+					'title'    => 'Include Default CSS for Icons',
+					'expert'   => 1,
 					'callback' => 'settings_field_enable_css',
 					'section'  => 'hm_swe_accordion_widget',
 					'options'  => array(
@@ -102,6 +120,33 @@ class HM_SWE_Plugin_Loader {
 						array( 'id' => 'disable', 'title' => 'No', 'value' => 'disabled' ),
 					),
 				),
+				array(
+					'id'       => 'single_expansion',
+					'title'    => 'Single Expansion',
+					'expert'   => 1,
+					'callback' => 'settings_field_single_expansion',
+					'section'  => 'hm_swe_accordion_widget',
+					'options'  => array(
+						array( 'id' => 'enable', 'title' => 'Enable', 'value' => 'enabled' ),
+						array( 'id' => 'disable', 'title' => 'Disable', 'value' => 'disabled' ),
+					),
+				),
+				array(
+					'id'       => 'heading_string',
+					'title'    => 'Selector for headings',
+					'expert'   => 1,
+					'callback' => 'settings_field_heading_string',
+					'section'  => 'hm_swe_accordion_widget',
+				),
+				array(
+					'id'       => 'accordion_widget_areas',
+					'title'    => 'Widget area IDs in which AW is effective (optional, comma delimited)',
+					'expert'   => 1,
+					'callback' => 'settings_field_accordion_widget_areas',
+					'section'  => 'hm_swe_accordion_widget',
+				),
+
+				// Sticky Sidebar options
 				array(
 					'id'       => 'scroll_stop',
 					'title'    => 'Sticky Sidebar',
@@ -114,7 +159,7 @@ class HM_SWE_Plugin_Loader {
 				),
 				array(
 					'id'       => 'scroll_mode',
-					'title'    => 'Quick Reverse Mode',
+					'title'    => 'Quick Switchback Mode',
 					'callback' => 'settings_field_scroll_mode',
 					'section'  => 'hm_swe_scroll_stop',
 					'options'  => array(
@@ -125,8 +170,20 @@ class HM_SWE_Plugin_Loader {
 				array(
 					'id'       => 'disable_iflt',
 					'title'    => 'Disable if the window width is less than',
+					'expert'   => 1,
 					'callback' => 'settings_field_disable_iflt',
 					'section'  => 'hm_swe_scroll_stop',
+				),
+				array(
+					'id'       => 'ignore_footer',
+					'title'    => 'Ignore Footer (for Infinite Scroll Pages)',
+					'expert'   => 1,
+					'callback' => 'settings_field_ignore_footer',
+					'section'  => 'hm_swe_scroll_stop',
+					'options'  => array(
+						array( 'id' => 'enable', 'title' => 'Enable', 'value' => 'enabled' ),
+						array( 'id' => 'disable', 'title' => 'Disable', 'value' => 'disabled' ),
+					),
 				),
 			);
 
@@ -136,6 +193,7 @@ class HM_SWE_Plugin_Loader {
 		add_action( 'wp_enqueue_scripts', array( &$this, 'enqueue_scripts' ), 20 );
 		add_action( 'wp_head', array( &$this, 'wp_head' ) );
 		add_action( 'admin_init', array( &$this, 'admin_init' ) );
+		add_action( 'admin_head', array( &$this, 'admin_head' ) );
 		add_action( 'admin_menu', array( &$this, 'admin_menu' ) );
 	}
 
@@ -153,7 +211,15 @@ class HM_SWE_Plugin_Loader {
 		$options = $this->get_hm_swe_option();
 		wp_enqueue_script( 'jquery' );
 		wp_enqueue_script( 'jquery-cookie', plugins_url( '/js/jquery.cookie.js', __FILE__ ), array( 'jquery' ) );
-		wp_enqueue_script( 'standard-widget-extensions', plugins_url( '/js/standard-widget-extensions.js', __FILE__ ) );
+		wp_enqueue_script( 'standard-widget-extensions',
+			plugins_url( '/js/standard-widget-extensions' . ($this->get_hm_swe_option('readable_js') == 'enabled' ? '.js' : '.min.js'), __FILE__ ) );
+
+		$custom_selectors = ( array_key_exists( 'custom_selectors', $options ) ? $options['custom_selectors'] : array() );
+		if ( !is_array( $custom_selectors ) || implode(',', $custom_selectors ) === '' ) {
+			foreach ( $options['accordion_widget_areas'] as $area ) {
+				array_push( $custom_selectors, "#" . $options['sidebar_id'] . ( $area ? " #" . $area : "" ) . " ." . $options['widget_class'] );
+			}
+		}
 
 		$params = array(
 			'buttonplusurl'          => $options['heading_marker'] == 'custom' ? "url(" . $options['custom_plus'] . ")" :
@@ -163,12 +229,17 @@ class HM_SWE_Plugin_Loader {
 			'maincol_id'             => esc_attr( $options['maincol_id'] ),
 			'sidebar_id'             => esc_attr( $options['sidebar_id'] ),
 			'widget_class'           => esc_attr( $options['widget_class'] ),
+			'readable_js'            => $options['readable_js'] == 'enabled',
 			'heading_marker'         => $options['heading_marker'] != 'none',
 			'scroll_stop'            => $options['scroll_stop'] == 'enabled',
 			'accordion_widget'       => $options['accordion_widget'] == 'enabled',
+			'single_expansion'       => $options['single_expansion'] == 'enabled',
+			'heading_string'         => esc_attr( $options['heading_string'] ),
 			'disable_iflt'           => intval( $options['disable_iflt'] ),
 			'accordion_widget_areas' => array_map( 'esc_attr', $options['accordion_widget_areas'] ),
 			'scroll_mode'            => ( $options['scroll_mode'] == "2" ? 2 : 1 ),
+			'ignore_footer'          => $options['ignore_footer'] == 'enabled',
+			'custom_selectors'              => $custom_selectors,
 		);
 		wp_localize_script( 'standard-widget-extensions', 'swe_params', $params );
 	}
@@ -218,15 +289,46 @@ class HM_SWE_Plugin_Loader {
 			array( &$this, 'empty_text' ), 'hm_swe_option_page' );
 
 		foreach ( self::$settings_field as $f ) {
-			add_settings_field( self::PREFIX . $f['id'], __( $f['title'], self::I18N_DOMAIN ), array( &$this, $f['callback'] ),
+			$title = __( $f['title'], self::I18N_DOMAIN );
+		  if ( isset( $f['expert'] ) ) {
+				$title = "<span class='swe-expert-params'>" . $title . "</span>";
+			}
+			add_settings_field( self::PREFIX . $f['id'], $title, array( &$this, $f['callback'] ),
 				'hm_swe_option_page', $f['section'] );
 		}
 
 		register_setting( 'hm_swe_option_group', self::OPTION_KEY, array( &$this, 'validate_options' ) );
 	}
 
+	function admin_head() {
+?>
+	<style>
+		span.swe-expert-params {
+			font-style: italic;
+		}
+	</style>
+		<script type="text/javascript">
+			(function($, window, document) {
+				$(document).ready(function(){
+					$('span.swe-expert-params').each(function() {
+						$(this).parent().parent().hide();
+					});
+					$('#swe-expert-button').click( function() {
+						$('span.swe-expert-params').each(function() {
+							$(this).parent().parent().show();
+						});
+						$('#swe-expert-button').hide();
+						return false;
+					});
+				});
+			})(jQuery, window, document);
+		</script>
+	<?php
+	}
+
 	function main_section_text() {
 		echo __( "<p>Use primary/secondary/widget for Twenty Twelve and Twenty Eleven.\nUse container/primary/widget-container for Twenty Ten.</p>", self::I18N_DOMAIN );
+		echo '<input id="swe-expert-button" class="button button-primary tor-rm" type="submit" value="Show Expert Options" />';
 	}
 
 	function empty_text() {
@@ -289,32 +391,42 @@ class HM_SWE_Plugin_Loader {
 		echo "</fieldset>\n";
 	}
 
-	function settings_field_scroll_stop() {
-		$i = self::I_SCROLL_STOP;
+	function settings_field_simple_radio_option( $i ) {
 		echo "<fieldset><legend class='screen-reader-text'><span>" . self::$settings_field[$i]['title'] . "</span></legend>\n";
 		$this->write_radio_option( $i );
 		echo "</fieldset>\n";
+	}
+
+	function settings_field_scroll_stop() {
+		$this->settings_field_simple_radio_option( self::I_SCROLL_STOP );
 	}
 
 	function settings_field_scroll_mode() {
-		$i = self::I_SCROLL_MODE;
-		echo "<fieldset><legend class='screen-reader-text'><span>" . self::$settings_field[$i]['title'] . "</span></legend>\n";
-		$this->write_radio_option( $i );
-		echo "</fieldset>\n";
+		$this->settings_field_simple_radio_option( self::I_SCROLL_MODE );
+	}
+
+	function settings_field_readable_js() {
+		$this->settings_field_simple_radio_option( self::I_READABLE_JS );
+	}
+
+	function settings_field_ignore_footer() {
+		$this->settings_field_simple_radio_option( self::I_IGNORE_FOOTER );
 	}
 
 	function settings_field_accordion_widget() {
-		$i = self::I_ACCORDION_WIDGET;
-		echo "<fieldset><legend class='screen-reader-text'><span>" . self::$settings_field[$i]['title'] . "</span></legend>\n";
-		$this->write_radio_option( $i );
-		echo "</fieldset>\n";
+		$this->settings_field_simple_radio_option( self::I_ACCORDION_WIDGET );
 	}
 
 	function settings_field_enable_css() {
-		$i = self::I_ENABLE_CSS;
-		echo "<fieldset><legend class='screen-reader-text'><span>" . self::$settings_field[$i]['title'] . "</span></legend>\n";
-		$this->write_radio_option( $i );
-		echo "</fieldset>\n";
+		$this->settings_field_simple_radio_option( self::I_ENABLE_CSS );
+	}
+
+	function settings_field_single_expansion() {
+		$this->settings_field_simple_radio_option( self::I_SINGLE_EXPANSION );
+	}
+
+	function settings_field_heading_string() {
+		$this->write_text_option( self::I_HEADING_STRING );
 	}
 
 	function settings_field_disable_iflt() {
@@ -330,6 +442,10 @@ class HM_SWE_Plugin_Loader {
 		$valid['scroll_mode']      = $input['scroll_mode'];
 		$valid['accordion_widget'] = $input['accordion_widget'];
 		$valid['enable_css']       = $input['enable_css'];
+		$valid['single_expansion'] = $input['single_expansion'];
+		$valid['readable_js']      = $input['readable_js'];
+		$valid['ignore_footer']    = $input['ignore_footer'];
+
 
 		if ( ! filter_var( $input['disable_iflt'], FILTER_VALIDATE_INT ) ) {
 			add_settings_error( 'hm_swe_disable_iflt', 'hm_swe_disable_iflt_error', __( 'The minimum width has to be a number.', self::I18N_DOMAIN ) );
@@ -394,6 +510,14 @@ class HM_SWE_Plugin_Loader {
 		}
 		else {
 			$valid['accordion_widget_areas'] = explode( ",", str_replace( " ", "", $input['accordion_widget_areas'] ) );
+		}
+
+		if ( ! preg_match( '/^[a-zA-Z0-9_\-\.# ]+$/', $input['heading_string'] ) ) {
+			add_settings_error( 'hm_swe_heading_string', 'hm_swe_heading_string_error', __( 'Wrong heading selector', self::I18N_DOMAIN ) );
+			$valid['heading_string'] = $prev['heading_string'];
+		}
+		else {
+			$valid['heading_string'] = $input['heading_string'];
 		}
 
 		$valid['option_version'] = self::OPTION_VERSION;

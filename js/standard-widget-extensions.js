@@ -1,3 +1,17 @@
+/*
+ standard-widget-extensions.js
+ Copyright 2013 Hirokazu Matsui
+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License, version 2, as
+ published by the Free Software Foundation.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ */
 (function ($, window, document, undefined) {
 
 	$(document).ready(function () {
@@ -18,10 +32,9 @@
 			}
 
 			var i;
-			for (i = 0; i < swe_params.accordion_widget_areas.length; i++) {
-				var area =
-						(swe_params.accordion_widget_areas[i] ? " #" + swe_params.accordion_widget_areas[i] : "");
-				$(sidebarid + area + ' ' + widget + ' h3').hover(
+			for (i = 0; i < swe_params.custom_selectors.length; i++) {
+
+				$(swe_params.custom_selectors[i] + ' ' + swe_params.heading_string).hover(
 						function () {
 							$(this).css("cursor", "pointer");
 						},
@@ -30,7 +43,8 @@
 						}
 				);
 
-				$(sidebarid + area + ' ' + widget).each(function () {
+				// restore status, set heading markers
+				$(swe_params.custom_selectors[i]).each(function () {
 					if (cook && cook[$(this).attr('id')] == "t") {
 						$(this).children('h3').next().show();
 						if (swe_params.heading_marker) {
@@ -45,7 +59,8 @@
 					}
 				});
 
-				$(sidebarid + area + ' ' + widget + ' h3').click(function () {
+				// click event handler
+				$(swe_params.custom_selectors[i] + ' ' + swe_params.heading_string).click(function () {
 					var c = $(this).next();
 					if (c) {
 						if (c.is(":hidden")) {
@@ -63,17 +78,16 @@
 					}
 				});
 			}
-			/* for */
+			/* end of for */
 
+			// save current states in cookies
 			function set_widget_status() {
 				if (typeof JSON !== "undefined") {
 					var c2 = {};
 					var i;
-					for (i = 0; i < swe_params.accordion_widget_areas.length; i++) {
-						var area =
-								(swe_params.accordion_widget_areas[i] ? " #" + swe_params.accordion_widget_areas[i] : "");
+					for (i = 0; i < swe_params.custom_selectors.length; i++) {
 
-						$(sidebarid + area + ' ' + widget + ' h3').each(function () {
+						$(swe_params.custom_selectors[i] + ' ' + swe_params.heading_string).each(function () {
 							if ($(this).next().is(':visible')) {
 								c2[$(this).parent().attr('id')] = "t";
 							}
@@ -104,8 +118,8 @@
 				var curscrolltop = $(window).scrollTop();
 				var s = curscrolltop - sidebaroffset.top;
 
-				if ((s >= ph - wh && sidebartop < 0) ||
-						(sidebartop === 0 /* shorter sidebar */ && s >= ph - h - sidebarmargintop - sidebarmarginbottom)) {
+				if ( !swe_params.ignore_footer && ((s >= ph - wh && sidebartop < 0) ||
+						(sidebartop === 0 /* shorter sidebar */ && s >= ph - h - sidebarmargintop - sidebarmarginbottom))) {
 					// scroll again with footer
 					$(sidebarid).css("position", "absolute");
 					$(sidebarid).css("top", sidebaroffset.top + ph - h - sidebarmargintop - sidebarmarginbottom);
@@ -128,7 +142,7 @@
 					// at the top of sidebar
 
 					$(sidebarid).css("position", "fixed");
-					$(sidebarid).css("top", 0 /*sidebarmargintop*/);
+					$(sidebarid).css("top", 0);
 					$(sidebarid).css("left", sidebaroffset.left - $(window).scrollLeft());
 					$(sidebarid).css("width", sidebarwidth);
 					fixed = 1;
@@ -160,7 +174,7 @@
 
 			function resizefunc() {
 				h = $(sidebarid).height();
-				ph = $(contentid).height();
+				ph = $(contentid).height() + parseInt($(contentid).css('margin-top'), 10) + parseInt($(contentid).css('margin-bottom'), 10);
 				wh = $(window).height();
 				prevscrolltop = -1;
 				fixedsidebartop = -1;
@@ -185,7 +199,12 @@
 				scrollfunc();
 			}
 
-			$.SWEResize = resizefunc;
+
+			swe = {
+				params: swe_params,
+				eventHelper: resizefunc
+			}
+			/* $.SWEResize = resizefunc; */
 
 			$(window).scroll(scrollfunc);
 			$(window).resize(resizefunc);
