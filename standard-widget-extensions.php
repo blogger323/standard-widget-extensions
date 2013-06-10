@@ -24,6 +24,7 @@ class HM_SWE_Plugin_Loader {
 		'readable_js'            => 'disabled',
 		'accordion_widget'       => 'enabled',
 		'accordion_widget_areas' => array( '' ),
+		'custom_selectors'        => array( '' ),
 		'heading_marker'         => 'default',
 		'custom_plus'            => '',
 		'custom_minus'           => '',
@@ -47,10 +48,11 @@ class HM_SWE_Plugin_Loader {
 	const I_SINGLE_EXPANSION       = 7;
 	const I_HEADING_STRING         = 8;
 	const I_ACCORDION_WIDGET_AREAS = 9;
-	const I_SCROLL_STOP            = 10;
-	const I_SCROLL_MODE            = 11;
-	const I_DISABLE_IFLT           = 12;
-	const I_IGNORE_FOOTER          = 13;
+	const I_CUSTOM_SELECTORS       = 10;
+	const I_SCROLL_STOP            = 11;
+	const I_SCROLL_MODE            = 12;
+	const I_DISABLE_IFLT           = 13;
+	const I_IGNORE_FOOTER          = 14;
 
 	// field array
 	private static $settings_field =
@@ -122,7 +124,7 @@ class HM_SWE_Plugin_Loader {
 				),
 				array(
 					'id'       => 'single_expansion',
-					'title'    => 'Single Expansion',
+					'title'    => 'Single Expansion Mode',
 					'expert'   => 1,
 					'callback' => 'settings_field_single_expansion',
 					'section'  => 'hm_swe_accordion_widget',
@@ -143,6 +145,13 @@ class HM_SWE_Plugin_Loader {
 					'title'    => 'Widget area IDs in which AW is effective (optional, comma delimited)',
 					'expert'   => 1,
 					'callback' => 'settings_field_accordion_widget_areas',
+					'section'  => 'hm_swe_accordion_widget',
+				),
+				array(
+					'id'       => 'custom_selectors',
+					'title'    => 'Custom Widget Selectors (will override default)',
+					'expert'   => 1,
+					'callback' => 'settings_field_custom_selectors',
 					'section'  => 'hm_swe_accordion_widget',
 				),
 
@@ -207,6 +216,18 @@ class HM_SWE_Plugin_Loader {
 		}
 	}
 
+	function get_widget_selectors($without_widget_class = false) {
+		$options = $this->get_hm_swe_option();
+		$custom_selectors = $options['custom_selectors'];
+		if ( !is_array( $custom_selectors ) || implode(',', $custom_selectors ) === '' ) {
+			$custom_selectors = array();
+			foreach ( $options['accordion_widget_areas'] as $area ) {
+				array_push( $custom_selectors, ( $area ? "#" . $area : "#" . $options['sidebar_id'] ) . ($without_widget_class ? "" : ( " ." . $options['widget_class'] ) ) );
+			}
+		}
+		return $custom_selectors;
+	}
+
 	function enqueue_scripts() {
 		$options = $this->get_hm_swe_option();
 		wp_enqueue_script( 'jquery' );
@@ -214,12 +235,17 @@ class HM_SWE_Plugin_Loader {
 		wp_enqueue_script( 'standard-widget-extensions',
 			plugins_url( '/js/standard-widget-extensions' . ($this->get_hm_swe_option('readable_js') == 'enabled' ? '.js' : '.min.js'), __FILE__ ) );
 
-		$custom_selectors = ( array_key_exists( 'custom_selectors', $options ) ? $options['custom_selectors'] : array() );
+		$custom_selectors = $this->get_widget_selectors();
+
+		/*
+				$options['custom_selectors'];
 		if ( !is_array( $custom_selectors ) || implode(',', $custom_selectors ) === '' ) {
+			$custom_selectors = array();
 			foreach ( $options['accordion_widget_areas'] as $area ) {
 				array_push( $custom_selectors, "#" . $options['sidebar_id'] . ( $area ? " #" . $area : "" ) . " ." . $options['widget_class'] );
 			}
 		}
+		*/
 
 		$params = array(
 			'buttonplusurl'          => $options['heading_marker'] == 'custom' ? "url(" . $options['custom_plus'] . ")" :
@@ -241,39 +267,33 @@ class HM_SWE_Plugin_Loader {
 			'ignore_footer'          => $options['ignore_footer'] == 'enabled',
 			'custom_selectors'              => $custom_selectors,
 		);
-		wp_localize_script( 'standard-widget-extensions', 'swe_params', $params );
+		wp_localize_script( 'standard-widget-extensions', 'swe', $params );
 	}
 
 	function wp_head() {
 		$options = $this->get_hm_swe_option();
-		if ( $options['heading_marker'] !== 'none' && $options['enable_css'] === 'enabled' ) {
-			$area_array = array_map( 'esc_attr', $options['accordion_widget_areas'] );
-			$h3str      = "";
+		if ( $options['heading_marker'] !== 'none' && $options['enable_css'] === 'enabled'
+				&& implode( ',', $options['custom_selectors'] ) === '' ) {
+			$area_array = array_map( 'esc_attr', $this->get_widget_selectors( true ) );
+			$headstr      = "";
 			$areastr    = "";
 			foreach ( $area_array as $i => $area ) {
-				$h3str .= "#" . $options['sidebar_id'] . ( $area ? ( " #" . $area ) : "" ) .
-						" ." . $options['widget_class'] . " h3" . ( $i + 1 == count( $area_array ) ? "\n" : ",\n" );
-				$areastr .= "#" . $options['sidebar_id'] . ( $area ? ( " #" . $area ) : "" ) .
-						( $i + 1 == count( $area_array ) ? "\n" : ",\n" );
+				$headstr .= $area . " ." . $options['widget_class'] . " " . $options['heading_string'] . ( $i + 1 == count( $area_array ) ? "\n" : ",\n" );
+				$areastr .= $area . ( $i + 1 == count( $area_array ) ? "\n" : ",\n" );
 			} // for
 
 			?>
 			<style type="text/css">
-				<?php echo $h3str; ?>
+				<?php echo $headstr; ?>
 				{
-					zoom: 1
-				;
-					/* for IE7 to display background-image */
-					padding-left: 20px
-				;
-					margin-left: -20px
-				;
+					zoom: 1	; /* for IE7 to display background-image */
+					padding-left: 20px;
+					margin-left: -20px;
 				}
 
 				<?php echo $areastr; ?>
 				{
-					overflow: visible
-				;
+					overflow: visible	;
 				}
 			</style>
 		<?php
@@ -373,6 +393,11 @@ class HM_SWE_Plugin_Loader {
 	function settings_field_accordion_widget_areas() {
 		$this->write_text_option( self::I_ACCORDION_WIDGET_AREAS,
 			implode( ",", (array) $this->get_hm_swe_option( self::$settings_field[self::I_ACCORDION_WIDGET_AREAS]['id'] ) ) );
+	}
+
+	function settings_field_custom_selectors() {
+		$this->write_text_option( self::I_CUSTOM_SELECTORS,
+			implode( ",", (array) $this->get_hm_swe_option( self::$settings_field[self::I_CUSTOM_SELECTORS]['id'] ) ));
 	}
 
 	function settings_field_heading_marker() {
@@ -510,6 +535,17 @@ class HM_SWE_Plugin_Loader {
 		}
 		else {
 			$valid['accordion_widget_areas'] = explode( ",", str_replace( " ", "", $input['accordion_widget_areas'] ) );
+		}
+
+		if ( is_array( $input['custom_selectors'] ) ) { // This function would be called from add_option.
+			$input['custom_selectors'] = implode( ',', $input['custom_selectors'] );
+		}
+		if ( ! preg_match( '/^[a-zA-Z0-9_\-\.#, ]*$/', $input['custom_selectors'] ) ) {
+			add_settings_error( 'hm_swe_custom_selectors', 'hm_swe_custom_selectors_error', __( 'Wrong custom selectors', self::I18N_DOMAIN ) );
+			$valid['custom_selectors'] = $prev['custom_selectors'];
+		}
+		else {
+			$valid['custom_selectors'] = explode( ",", $input['custom_selectors'] );
 		}
 
 		if ( ! preg_match( '/^[a-zA-Z0-9_\-\.# ]+$/', $input['heading_string'] ) ) {

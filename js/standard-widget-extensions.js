@@ -1,6 +1,6 @@
 /*
  standard-widget-extensions.js
- Copyright 2013 Hirokazu Matsui
+ Copyright 2013 Hirokazu Matsui (blogger323)
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License, version 2, as
@@ -16,63 +16,76 @@
 
 	$(document).ready(function () {
 		var cook = null;
-		var contentid = "#" + swe_params.maincol_id;
-		var sidebarid = "#" + swe_params.sidebar_id;
-		var widget = '.' + swe_params.widget_class;
+		var contentid = "#" + swe.maincol_id;
+		var sidebarid = "#" + swe.sidebar_id;
+		var widget = '.' + swe.widget_class;
 		var prevscrolltop = -1;
 		var fixedsidebartop = -1;
-		var mode = parseInt(swe_params.scroll_mode, 10);
+		var mode = parseInt(swe.scroll_mode, 10);
 		var fixed = 0;
 		var direction = 0;
 
-		if (swe_params.accordion_widget) {
+		if (swe.accordion_widget) {
 			if (typeof JSON !== "undefined") {
 				$.cookie.json = true;
 				cook = $.cookie('hm_swe');
 			}
 
 			var i;
-			for (i = 0; i < swe_params.custom_selectors.length; i++) {
+			for (i = 0; i < swe.custom_selectors.length; i++) {
 
-				$(swe_params.custom_selectors[i] + ' ' + swe_params.heading_string).hover(
+				$(swe.custom_selectors[i] + ' ' + swe.heading_string).hover(
 						function () {
-							$(this).css("cursor", "pointer");
+							if (!swe.single_expansion || $(this).next().is(":hidden")) {
+								$(this).css("cursor", "pointer");
+							}
 						},
 						function () {
 							$(this).css("cursor", "default");
 						}
 				);
 
+				$(swe.custom_selectors[i] + ' ' + swe.heading_string).addClass("hm-swe-accordion-head");
+
 				// restore status, set heading markers
-				$(swe_params.custom_selectors[i]).each(function () {
+				$(swe.custom_selectors[i]).each(function () {
 					if (cook && cook[$(this).attr('id')] == "t") {
-						$(this).children('h3').next().show();
-						if (swe_params.heading_marker) {
-							$(this).children('h3').css('background', swe_params.buttonminusurl + " no-repeat left center");
+						$(this).children(swe.heading_string).next().show();
+						if (swe.heading_marker) {
+							$(this).children(swe.heading_string).css('background', swe.buttonminusurl + " no-repeat left center");
 						}
 					}
 					else {
-						$(this).children('h3').next().hide();
-						if (swe_params.heading_marker) {
-							$(this).children('h3').css('background', swe_params.buttonplusurl + " no-repeat left center");
+						$(this).children(swe.heading_string).next().hide();
+						if (swe.heading_marker) {
+							$(this).children(swe.heading_string).css('background', swe.buttonplusurl + " no-repeat left center");
 						}
 					}
 				});
 
 				// click event handler
-				$(swe_params.custom_selectors[i] + ' ' + swe_params.heading_string).click(function () {
+				$(swe.custom_selectors[i] + ' ' + swe.heading_string).click(function () {
 					var c = $(this).next();
 					if (c) {
 						if (c.is(":hidden")) {
-							c.slideDown(set_widget_status);
-							if (swe_params.heading_marker) {
-								$(this).css('background', swe_params.buttonminusurl + " no-repeat left center");
+							if (swe.single_expansion) {
+								$(".hm-swe-accordion-head").not(this).next().slideUp();
+								if (swe.heading_marker) {
+									$(".hm-swe-accordion-head").not(this).css('background', swe.buttonplusurl + " no-repeat left center");
+								}
 							}
+
+							c.slideDown(set_widget_status);
+
+							if (swe.heading_marker) {
+								$(this).css('background', swe.buttonminusurl + " no-repeat left center");
+							}
+
 						}
 						else {
 							c.slideUp(set_widget_status);
-							if (swe_params.heading_marker) {
-								$(this).css('background', swe_params.buttonplusurl + " no-repeat left center");
+							if (swe.heading_marker) {
+								$(this).css('background', swe.buttonplusurl + " no-repeat left center");
 							}
 						}
 					}
@@ -85,9 +98,9 @@
 				if (typeof JSON !== "undefined") {
 					var c2 = {};
 					var i;
-					for (i = 0; i < swe_params.custom_selectors.length; i++) {
+					for (i = 0; i < swe.custom_selectors.length; i++) {
 
-						$(swe_params.custom_selectors[i] + ' ' + swe_params.heading_string).each(function () {
+						$(swe.custom_selectors[i] + ' ' + swe.heading_string).each(function () {
 							if ($(this).next().is(':visible')) {
 								c2[$(this).parent().attr('id')] = "t";
 							}
@@ -105,7 +118,7 @@
 		}
 		/* if accordion_widget */
 
-		if (swe_params.scroll_stop && $(sidebarid) && $(contentid)) {
+		if (swe.scroll_stop && $(sidebarid) && $(contentid)) {
 			var h, ph, wh, sidebaroffset, sidebarwidth, sidebartop;
 			var sidebarmargintop = parseInt($(sidebarid).css('margin-top'), 10);
 			var sidebarmarginbottom = parseInt($(sidebarid).css('margin-bottom'), 10);
@@ -118,7 +131,7 @@
 				var curscrolltop = $(window).scrollTop();
 				var s = curscrolltop - sidebaroffset.top;
 
-				if ( !swe_params.ignore_footer && ((s >= ph - wh && sidebartop < 0) ||
+				if ( !swe.ignore_footer && ((s >= ph - wh && sidebartop < 0) ||
 						(sidebartop === 0 /* shorter sidebar */ && s >= ph - h - sidebarmargintop - sidebarmarginbottom))) {
 					// scroll again with footer
 					$(sidebarid).css("position", "absolute");
@@ -183,12 +196,15 @@
 
 				$(sidebarid).css("position", "static");
 				sidebaroffset = $(sidebarid).offset();
-				sidebaroffset.top -= sidebarmargintop; // TODO: if sidebaroffset is null
+				if (!sidebaroffset) {
+					return; // something wrong.
+				}
+				sidebaroffset.top -= sidebarmargintop;
 				sidebarwidth = $(sidebarid).width();
 				// Use a fixed width because the parent will change.
 
 				sidebartop = wh - h - sidebarmargintop - sidebarmarginbottom;
-				if (ph <= h || $(window).width() < swe_params.disable_iflt) {
+				if (ph <= h || $(window).width() < swe.disable_iflt) {
 					/* longer sidebar than the content || narrow window width */
 					sidebartop = 1;
 					/* special value for no-scroll */
@@ -199,12 +215,7 @@
 				scrollfunc();
 			}
 
-
-			swe = {
-				params: swe_params,
-				eventHelper: resizefunc
-			}
-			/* $.SWEResize = resizefunc; */
+			swe.resizeHandler = resizefunc
 
 			$(window).scroll(scrollfunc);
 			$(window).resize(resizefunc);
