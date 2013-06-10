@@ -135,7 +135,7 @@ class HM_SWE_Plugin_Loader {
 				),
 				array(
 					'id'       => 'heading_string',
-					'title'    => 'Selector for headings',
+					'title'    => 'Selector for Headings',
 					'expert'   => 1,
 					'callback' => 'settings_field_heading_string',
 					'section'  => 'hm_swe_accordion_widget',
