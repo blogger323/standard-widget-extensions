@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Standard Widget Extensions 1.0\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/standard-widget-extensions\n"
-"POT-Creation-Date: 2013-03-17 05:12:45+00:00\n"
+"POT-Creation-Date: 2013-06-10 20:54:15+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -12,70 +12,78 @@ msgstr ""
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 
-#: standard-widget-extensions.php:195
+#: standard-widget-extensions.php:304
 msgctxt "title"
 msgid "General"
 msgstr ""
 
-#: standard-widget-extensions.php:197
+#: standard-widget-extensions.php:306
 msgctxt "title"
 msgid "Accordion Widgets"
 msgstr ""
 
-#: standard-widget-extensions.php:199
+#: standard-widget-extensions.php:308
 msgctxt "title"
 msgid "Sticky Sidebar"
 msgstr ""
 
-#: standard-widget-extensions.php:211
+#: standard-widget-extensions.php:350
 msgid ""
 "<p>Use primary/secondary/widget for Twenty Twelve and Twenty Eleven.\n"
 "Use container/primary/widget-container for Twenty Ten.</p>"
 msgstr ""
 
-#: standard-widget-extensions.php:264
+#: standard-widget-extensions.php:409
 msgid "Plus button URL"
 msgstr ""
 
-#: standard-widget-extensions.php:267
+#: standard-widget-extensions.php:412
 msgid "Minus buttom URL"
 msgstr ""
 
-#: standard-widget-extensions.php:309
+#: standard-widget-extensions.php:476
 msgid "The minimum width has to be a number."
 msgstr ""
 
-#: standard-widget-extensions.php:318
+#: standard-widget-extensions.php:486
 msgid "Wrong URL for the plus button"
 msgstr ""
 
-#: standard-widget-extensions.php:328
+#: standard-widget-extensions.php:497
 msgid "Wrong URL for the minus button"
 msgstr ""
 
-#: standard-widget-extensions.php:337
+#: standard-widget-extensions.php:506
 msgid "Wrong main column ID"
 msgstr ""
 
-#: standard-widget-extensions.php:345
+#: standard-widget-extensions.php:514
 msgid "Wrong sidebar ID"
 msgstr ""
 
-#: standard-widget-extensions.php:353
+#: standard-widget-extensions.php:522
 msgid "Wrong widget class"
 msgstr ""
 
-#: standard-widget-extensions.php:361
+#: standard-widget-extensions.php:533
 msgid "Wrong widget areas"
+msgstr ""
+
+#: standard-widget-extensions.php:544
+msgid "Wrong custom selectors"
+msgstr ""
+
+#: standard-widget-extensions.php:552
+msgid "Wrong heading selector"
 msgstr ""
 
 #. #-#-#-#-#  standard-widget-extensions.pot (Standard Widget Extensions 1.0)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
-#: standard-widget-extensions.php:373 standard-widget-extensions.php:381
+#: standard-widget-extensions.php:564 standard-widget-extensions.php:572
 msgid "Standard Widget Extensions"
 msgstr ""
 
-#: standard-widget-extensions.php:373
+#: standard-widget-extensions.php:564
 msgid "Standard WE"
 msgstr ""
 
@@ -106,34 +114,61 @@ msgstr ""
 msgid "Class of Widgets"
 msgstr ""
 
+# readable_js
+msgid "Readable .js File"
+msgstr ""
+
 # accordion_widget
 msgid "Accordion Widgets"
 msgstr ""
 
-# accordion_widget_areas
-msgid "Widget area IDs in which AW is effective (optional)"
-msgstr ""
-
 # heading_marker
-msgid "Icon for Heading"
+msgid "Icons for Heading"
 msgstr ""
 
 # enable_css
-msgid "Include Default CSS"
+msgid "Include Default CSS for Icons"
+msgstr ""
+
+# single_expansion
+msgid "Single Expansion Mode"
+msgstr ""
+
+# heading_string
+msgid "Selector for Headings"
+msgstr ""
+
+# accordion_widget_areas
+msgid "Widget area IDs in which AW is effective (optional, comma delimited)"
+msgstr ""
+
+# custom_selectors
+msgid "Custom Widget Selectors (will override default)"
 msgstr ""
 
 # scroll_stop
 msgid "Sticky Sidebar"
 msgstr ""
 
+# scroll_mode
+msgid "Quick Switchback Mode"
+msgstr ""
+
 # disable_iflt
 msgid "Disable if the window width is less than"
+msgstr ""
+
+# ignore_footer
+msgid "Ignore Footer (for Infinite Scroll Pages)"
 msgstr ""
 
 msgid "Enable"
 msgstr ""
 
 msgid "Disable"
+msgstr ""
+
+msgid "Disable (minimized)"
 msgstr ""
 
 msgid "None"

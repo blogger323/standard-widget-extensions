@@ -4,7 +4,7 @@ Donate link: http://en.hetarena.com/donate
 Tags: widget, sidebar
 Requires at least: 3.2
 Tested up to: 3.5
-Stable tag: 1.0
+Stable tag: 1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -25,11 +25,6 @@ Twenty Twelve/Twenty Eleven users can use this plugin out of the box.
 Other theme users can adjust class names and/or IDs to suit the theme.
 You can find options for the plugin by selecting a menu 'Settings' - 'Standard WE'. 
 Detailed description for parameters are in [the plugin homepage](http://en.hetarena.com/standard-widget-extensions#setting "Parameter description").
-
-From the version 1.0, Standard Widget Extensions supports multiple widget areas in a sidebar.
-You can specify widget area IDs you want to be collapsible.
-And also a style tag are generated on the fly for heading icons from 1.0.
-Though it's convenient for non-standard themes, some users may want to disable it by setting the option.
 
 I would appreciate your feedbacks of settings for your favorite themes.
 Or if you don't know how to set IDs/classes for your theme, don't hesitate to ask it in the support forum.
@@ -68,6 +63,12 @@ Please tell your audience to upgrade browser.
 
 == Changelog ==
 
+= 1.1 - Jun 12, 2013 = 
+* Quick Switchback Mode
+* Single Expansion Mode
+* Ignore Footer Option
+* Custom Heading/Widget Selector Option
+
 = 1.0 - Mar 17, 2013 =
 * Generating a style tag on the fly. It's convenient when you use Accordion Widget feature for non-standard themes. If you don't like this behavior, disable 'Include Default CSS' from the admin page. Existing users who are using a non-standard theme should be careful for this change.
 * Support for a sidebar which has multiple widget-areas and only some of them to be collapsible.
@@ -88,12 +89,6 @@ Please tell your audience to upgrade browser.
 
 == Upgrade Notice ==
 
-= 1.0 =
-* Many changes. See changelog.
-
-= 0.8.3 =
-* remove anonymous function for PHP under 5.3.
-
-= 0.8.2 =
-* Applied to horizontal scrolling.
+= 1.1 =
+* Some new options added. See changelog.
 

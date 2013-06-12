@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Standard Widget Extensions 1.0\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/standard-widget-extensions\n"
-"POT-Creation-Date: 2013-03-17 05:12:45+00:00\n"
+"POT-Creation-Date: 2013-06-10 20:54:15+00:00\n"
 "PO-Revision-Date: 2013-03-12 02:53+0900\n"
 "Last-Translator: Hirokazu Matsui <blogger323@gmail.com>\n"
 "Language-Team: Japanese\n"
@@ -14,74 +14,82 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: standard-widget-extensions.php:195
+#: standard-widget-extensions.php:304
 msgctxt "title"
 msgid "General"
 msgstr "一般"
 
 # accordion_widget
-#: standard-widget-extensions.php:197
+#: standard-widget-extensions.php:306
 msgctxt "title"
 msgid "Accordion Widgets"
 msgstr ""
 
-#: standard-widget-extensions.php:199
+#: standard-widget-extensions.php:308
 msgctxt "title"
 msgid "Sticky Sidebar"
 msgstr ""
 
-#: standard-widget-extensions.php:211
+#: standard-widget-extensions.php:350
 msgid ""
 "<p>Use primary/secondary/widget for Twenty Twelve and Twenty Eleven.\n"
 "Use container/primary/widget-container for Twenty Ten.</p>"
 msgstr ""
-"Twenty Twelve と Twenty Eleven では最初の 3つのパラメータをそれぞれ primary/"
+"<p>Twenty Twelve と Twenty Eleven では最初の 3つのパラメータをそれぞれ primary/"
 "secondary/widget にしてください。Twenty Ten では container/primary/widget-"
-"container としてください。"
+"container としてください。</p>"
 
-#: standard-widget-extensions.php:264
+#: standard-widget-extensions.php:409
 msgid "Plus button URL"
 msgstr "開ボタンの URL"
 
-#: standard-widget-extensions.php:267
+#: standard-widget-extensions.php:412
 msgid "Minus buttom URL"
 msgstr "閉ボタンの URL"
 
-#: standard-widget-extensions.php:309
+#: standard-widget-extensions.php:476
 msgid "The minimum width has to be a number."
 msgstr "幅の指定は数値で行ってください"
 
-#: standard-widget-extensions.php:318
+#: standard-widget-extensions.php:486
 msgid "Wrong URL for the plus button"
 msgstr "開ボタンの URL が不正です"
 
-#: standard-widget-extensions.php:328
+#: standard-widget-extensions.php:497
 msgid "Wrong URL for the minus button"
 msgstr "閉ボタンの URL が不正です"
 
-#: standard-widget-extensions.php:337
+#: standard-widget-extensions.php:506
 msgid "Wrong main column ID"
 msgstr "メインカラムの ID が不正です"
 
-#: standard-widget-extensions.php:345
+#: standard-widget-extensions.php:514
 msgid "Wrong sidebar ID"
 msgstr "サイドバーの ID が不正です"
 
-#: standard-widget-extensions.php:353
+#: standard-widget-extensions.php:522
 msgid "Wrong widget class"
 msgstr "ウィジェットのクラス名が不正です"
 
-#: standard-widget-extensions.php:361
+#: standard-widget-extensions.php:533
 msgid "Wrong widget areas"
 msgstr "ウィジェットエリアの ID が不正です"
 
+#: standard-widget-extensions.php:544
+msgid "Wrong custom selectors"
+msgstr "カスタムウィジェットセレクターが不正です"
+
+#: standard-widget-extensions.php:552
+msgid "Wrong heading selector"
+msgstr "見出し用セレクターが不正です"
+
 #. #-#-#-#-#  standard-widget-extensions.pot (Standard Widget Extensions 1.0)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
-#: standard-widget-extensions.php:373 standard-widget-extensions.php:381
+#: standard-widget-extensions.php:564 standard-widget-extensions.php:572
 msgid "Standard Widget Extensions"
 msgstr ""
 
-#: standard-widget-extensions.php:373
+#: standard-widget-extensions.php:564
 msgid "Standard WE"
 msgstr ""
 
@@ -113,35 +121,62 @@ msgstr "サイドバーの ID"
 msgid "Class of Widgets"
 msgstr "ウィジェットのクラス名"
 
+# readable_js
+msgid "Readable .js File"
+msgstr "可読性のある .js ファイルを使用"
+
 # accordion_widget
 msgid "Accordion Widgets"
 msgstr "Accordion Widgets 機能を有効にする"
 
-# accordion_widget_areas
-msgid "Widget area IDs in which AW is effective (optional)"
-msgstr "次の ID を持つウィジェットエリアのみで有効 (省略可)"
-
 # heading_marker
-msgid "Icon for Heading"
+msgid "Icons for Heading"
 msgstr "見出しのアイコン"
 
 # enable_css
-msgid "Include Default CSS"
+msgid "Include Default CSS for Icons"
 msgstr "デフォルト CSS を生成する"
+
+# single_expansion
+msgid "Single Expansion Mode"
+msgstr "同時に一つのウィジェットだけ伸ばす"
+
+# heading_marker
+msgid "Selector for Headings"
+msgstr "見出し用セレクター"
+
+# accordion_widget_areas
+msgid "Widget area IDs in which AW is effective (optional, comma delimited)"
+msgstr "次の ID を持つウィジェットエリアのみで有効 (省略可、カンマ区切り)"
+
+# custom_selectors
+msgid "Custom Widget Selectors (will override default)"
+msgstr "カスタムウィジェットセレクター"
 
 # scroll_stop
 msgid "Sticky Sidebar"
 msgstr "Sticky Sidebar 機能を有効にする"
 
+# scroll_mode
+msgid "Quick Switchback Mode"
+msgstr "Quick Switchback モードを有効にする"
+
 # disable_iflt
 msgid "Disable if the window width is less than"
 msgstr "次の幅以下で無効化"
+
+# ignore_footer
+msgid "Ignore Footer (for Infinite Scroll Pages)"
+msgstr "フッターを無視 (無限スクロール時)"
 
 msgid "Enable"
 msgstr "有効"
 
 msgid "Disable"
 msgstr "無効"
+
+msgid "Disable (minimized)"
+msgstr "無効 (圧縮版)"
 
 msgid "None"
 msgstr "無効"
