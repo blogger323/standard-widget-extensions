@@ -35,9 +35,9 @@ msgid ""
 "<p>Use primary/secondary/widget for Twenty Twelve and Twenty Eleven.\n"
 "Use container/primary/widget-container for Twenty Ten.</p>"
 msgstr ""
-"Twenty Twelve と Twenty Eleven では最初の 3つのパラメータをそれぞれ primary/"
+"<p>Twenty Twelve と Twenty Eleven では最初の 3つのパラメータをそれぞれ primary/"
 "secondary/widget にしてください。Twenty Ten では container/primary/widget-"
-"container としてください。"
+"container としてください。</p>"
 
 #: standard-widget-extensions.php:409
 msgid "Plus button URL"
@@ -130,7 +130,7 @@ msgid "Accordion Widgets"
 msgstr "Accordion Widgets 機能を有効にする"
 
 # heading_marker
-msgid "Icon for Heading"
+msgid "Icons for Heading"
 msgstr "見出しのアイコン"
 
 # enable_css
