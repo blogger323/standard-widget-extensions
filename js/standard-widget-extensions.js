@@ -36,9 +36,7 @@
 
 				$(swe.custom_selectors[i] + ' ' + swe.heading_string).hover(
 						function () {
-							if (!swe.single_expansion || $(this).next().is(":hidden")) {
-								$(this).css("cursor", "pointer");
-							}
+							$(this).css("cursor", "pointer");
 						},
 						function () {
 							$(this).css("cursor", "default");
@@ -122,6 +120,9 @@
 			var h, ph, wh, sidebaroffset, sidebarwidth, sidebartop;
 			var sidebarmargintop = parseInt($(sidebarid).css('margin-top'), 10);
 			var sidebarmarginbottom = parseInt($(sidebarid).css('margin-bottom'), 10);
+			var absolute_adjustment_top = 0;
+			var absolute_adjustment_left = 0;
+			var main_side_adjustment = 0;
 
 			function scrollfunc() {
 				if (sidebartop === 1) {
@@ -131,12 +132,12 @@
 				var curscrolltop = $(window).scrollTop();
 				var s = curscrolltop - sidebaroffset.top;
 
-				if ( !swe.ignore_footer && ((s >= ph - wh && sidebartop < 0) ||
-						(sidebartop === 0 /* shorter sidebar */ && s >= ph - h - sidebarmargintop - sidebarmarginbottom))) {
+				if ( !swe.ignore_footer && ((s >= ph - wh - main_side_adjustment && sidebartop < 0) ||
+						(sidebartop === 0 /* shorter sidebar */ && s >= ph - h - sidebarmargintop - sidebarmarginbottom - main_side_adjustment))) {
 					// scroll again with footer
 					$(sidebarid).css("position", "absolute");
-					$(sidebarid).css("top", sidebaroffset.top + ph - h - sidebarmargintop - sidebarmarginbottom);
-					$(sidebarid).css("left", sidebaroffset.left);
+					$(sidebarid).css("top", sidebaroffset.top + ph - h - sidebarmargintop - sidebarmarginbottom - absolute_adjustment_top - main_side_adjustment);
+					$(sidebarid).css("left", sidebaroffset.left - absolute_adjustment_left);
 					$(sidebarid).css("width", sidebarwidth);
 					fixedsidebartop = $(sidebarid).offset().top;
 					fixed = 0;
@@ -145,8 +146,8 @@
 					// mode2 absolute position
 					var o = $(sidebarid).offset().top - sidebarmargintop;
 					$(sidebarid).css("position", "absolute");
-					$(sidebarid).css("top", o);
-					$(sidebarid).css("left", sidebaroffset.left);
+					$(sidebarid).css("top", o - absolute_adjustment_top);
+					$(sidebarid).css("left", sidebaroffset.left - absolute_adjustment_left);
 					$(sidebarid).css("width", sidebarwidth);
 					fixed = 0;
 				}
@@ -202,6 +203,22 @@
 				sidebaroffset.top -= sidebarmargintop;
 				sidebarwidth = $(sidebarid).width();
 				// Use a fixed width because the parent will change.
+
+				// determine the adjustment value for the absolute position
+				// find a parent which has a position other than static
+				var o = $(sidebarid).parent();
+				absolute_adjustment_top = 0;
+				while (o && o.get(0).tagName && o.get(0).tagName.toUpperCase() !== "BODY") {
+					if (o.css('position').toLowerCase() !== 'static') {
+						absolute_adjustment_top  = o.offset().top;
+						absolute_adjustment_left = o.offset().left;
+						break;
+					}
+					o = o.parent();
+				}
+
+				// determine the adjustment value for the position diff between the content and the sidebar
+				main_side_adjustment = $(sidebarid).offset().top - $(contentid).offset().top;
 
 				sidebartop = wh - h - sidebarmargintop - sidebarmarginbottom;
 				if (ph <= h || $(window).width() < swe.disable_iflt) {
