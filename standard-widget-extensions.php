@@ -3,7 +3,7 @@
 Plugin Name: Standard Widget Extensions
 Plugin URI: http://en.hetarena.com/standard-widget-extensions
 Description: A plugin to extend widget behavior.
-Version: 1.1
+Version: 1.1.1
 Author: Hirokazu Matsui (blogger323)
 Author URI: http://en.hetarena.com/
 License: GPLv2
@@ -11,7 +11,7 @@ License: GPLv2
 
 class HM_SWE_Plugin_Loader {
 
-	const VERSION        = '1.1';
+	const VERSION        = '1.1.1';
 	const OPTION_VERSION = '1.1';
 	const OPTION_KEY     = 'hm_swe_options';
 	const I18N_DOMAIN    = 'standard-widget-extensions';
