@@ -208,6 +208,7 @@
 				// find a parent which has a position other than static
 				var o = $(sidebarid).parent();
 				absolute_adjustment_top = 0;
+				absolute_adjustment_left = 0;
 				while (o && o.get(0).tagName && o.get(0).tagName.toUpperCase() !== "BODY") {
 					if (o.css('position').toLowerCase() !== 'static') {
 						absolute_adjustment_top  = o.offset().top;
