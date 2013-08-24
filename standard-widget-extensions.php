@@ -3,7 +3,7 @@
 Plugin Name: Standard Widget Extensions
 Plugin URI: http://en.hetarena.com/standard-widget-extensions
 Description: A plugin to extend widget behavior.
-Version: 1.1.1
+Version: 1.2
 Author: Hirokazu Matsui (blogger323)
 Author URI: http://en.hetarena.com/
 License: GPLv2
@@ -11,8 +11,8 @@ License: GPLv2
 
 class HM_SWE_Plugin_Loader {
 
-	const VERSION        = '1.1.1';
-	const OPTION_VERSION = '1.1';
+	const VERSION        = '1.2';
+	const OPTION_VERSION = '1.2';
 	const OPTION_KEY     = 'hm_swe_options';
 	const I18N_DOMAIN    = 'standard-widget-extensions';
 	const PREFIX         = 'hm_swe_';
@@ -30,10 +30,12 @@ class HM_SWE_Plugin_Loader {
 		'custom_minus'           => '',
 		'enable_css'             => 'enabled',
 		'single_expansion'       => 'disabled',
+		'slide_duration'         => 400,
 		'heading_string'         => 'h3',
 		'scroll_stop'            => 'enabled',
 		'scroll_mode'            => 1,
 		'disable_iflt'           => 620,
+		'recalc_after'           => 0,
 		'ignore_footer'          => 'disabled',
 	);
 
@@ -46,13 +48,15 @@ class HM_SWE_Plugin_Loader {
 	const I_HEADING_MARKER         = 5;
 	const I_ENABLE_CSS             = 6;
 	const I_SINGLE_EXPANSION       = 7;
-	const I_HEADING_STRING         = 8;
-	const I_ACCORDION_WIDGET_AREAS = 9;
-	const I_CUSTOM_SELECTORS       = 10;
-	const I_SCROLL_STOP            = 11;
-	const I_SCROLL_MODE            = 12;
-	const I_DISABLE_IFLT           = 13;
-	const I_IGNORE_FOOTER          = 14;
+	const I_SLIDE_DURATION         = 8;
+	const I_HEADING_STRING         = 9;
+	const I_ACCORDION_WIDGET_AREAS = 10;
+	const I_CUSTOM_SELECTORS       = 11;
+	const I_SCROLL_STOP            = 12;
+	const I_SCROLL_MODE            = 13;
+	const I_DISABLE_IFLT           = 14;
+	const I_RECALC_AFTER           = 15;
+	const I_IGNORE_FOOTER          = 16;
 
 	// field array
 	private static $settings_field =
@@ -134,6 +138,13 @@ class HM_SWE_Plugin_Loader {
 					),
 				),
 				array(
+					'id'       => 'slide_duration',
+					'title'    => 'Slide Duration',
+					'expert'   => 1,
+					'callback' => 'settings_field_slide_duration',
+					'section'  => 'hm_swe_accordion_widget',
+				),
+				array(
 					'id'       => 'heading_string',
 					'title'    => 'Selector for Headings',
 					'expert'   => 1,
@@ -181,6 +192,13 @@ class HM_SWE_Plugin_Loader {
 					'title'    => 'Disable if the window width is less than',
 					'expert'   => 1,
 					'callback' => 'settings_field_disable_iflt',
+					'section'  => 'hm_swe_scroll_stop',
+				),
+				array(
+					'id'       => 'recalc_after',
+					'title'    => 'Re-calc Content Size After (sec, 0=never)',
+					'expert'   => 1,
+					'callback' => 'settings_field_recalc_after',
 					'section'  => 'hm_swe_scroll_stop',
 				),
 				array(
@@ -265,7 +283,9 @@ class HM_SWE_Plugin_Loader {
 			'accordion_widget_areas' => array_map( 'esc_attr', $options['accordion_widget_areas'] ),
 			'scroll_mode'            => ( $options['scroll_mode'] == "2" ? 2 : 1 ),
 			'ignore_footer'          => $options['ignore_footer'] == 'enabled',
-			'custom_selectors'              => $custom_selectors,
+			'custom_selectors'       => $custom_selectors,
+			'slide_duration'         => $options['slide_duration'],
+			'recalc_after'           => $options['recalc_after'],
 		);
 		wp_localize_script( 'standard-widget-extensions', 'swe', $params );
 	}
@@ -458,6 +478,14 @@ class HM_SWE_Plugin_Loader {
 		$this->write_text_option( self::I_DISABLE_IFLT );
 	}
 
+	function settings_field_slide_duration() {
+		$this->write_text_option( self::I_SLIDE_DURATION );
+	}
+
+	function settings_field_recalc_after() {
+		$this->write_text_option( self::I_RECALC_AFTER );
+	}
+
 	function validate_options( $input ) {
 		$valid = array();
 		$prev  = $this->get_hm_swe_option();
@@ -472,7 +500,7 @@ class HM_SWE_Plugin_Loader {
 		$valid['ignore_footer']    = $input['ignore_footer'];
 
 
-		if ( ! filter_var( $input['disable_iflt'], FILTER_VALIDATE_INT ) ) {
+		if ( filter_var( $input['disable_iflt'], FILTER_VALIDATE_INT ) === FALSE ) {
 			add_settings_error( 'hm_swe_disable_iflt', 'hm_swe_disable_iflt_error', __( 'The minimum width has to be a number.', self::I18N_DOMAIN ) );
 			$valid['disable_iflt'] = $prev['disable_iflt'];
 		}
@@ -481,7 +509,7 @@ class HM_SWE_Plugin_Loader {
 		}
 
 		if ( $input['heading_marker'] == 'custom' &&
-				! ( filter_var( $input['custom_plus'], FILTER_VALIDATE_URL ) && preg_match( '/http/i', $input['custom_plus'] ) )
+				! ( filter_var( $input['custom_plus'], FILTER_VALIDATE_URL ) !== FALSE && preg_match( '/http/i', $input['custom_plus'] ) )
 		) {
 			add_settings_error( 'hm_swe_custom_plus', 'hm_swe_custom_plus_error', __( 'Wrong URL for the plus button', self::I18N_DOMAIN ) );
 			$valid['custom_plus']    = $prev['custom_plus'];
@@ -492,7 +520,7 @@ class HM_SWE_Plugin_Loader {
 		}
 
 		if ( $input['heading_marker'] == 'custom' &&
-				! ( filter_var( $input['custom_minus'], FILTER_VALIDATE_URL ) && preg_match( '/http/i', $input['custom_minus'] ) )
+				! ( filter_var( $input['custom_minus'], FILTER_VALIDATE_URL ) !== FALSE && preg_match( '/http/i', $input['custom_minus'] ) )
 		) {
 			add_settings_error( 'hm_swe_custom_minus', 'hm_swe_custom_minus_error', __( 'Wrong URL for the minus button', self::I18N_DOMAIN ) );
 			$valid['custom_minus']   = $prev['custom_minus'];
@@ -554,6 +582,22 @@ class HM_SWE_Plugin_Loader {
 		}
 		else {
 			$valid['heading_string'] = $input['heading_string'];
+		}
+
+		if ( filter_var( $input['slide_duration'], FILTER_VALIDATE_INT ) === FALSE ) {
+			add_settings_error( 'hm_swe_slide_duration', 'hm_swe_slide_duration_error', __( 'The Slide Duration has to be a number.', self::I18N_DOMAIN ) );
+			$valid['slide_duration'] = $prev['slide_duration'];
+		}
+		else {
+			$valid['slide_duration'] = $input['slide_duration'];
+		}
+
+		if ( filter_var( $input['recalc_after'], FILTER_VALIDATE_INT ) === FALSE ) {
+			add_settings_error( 'hm_swe_recalc_after', 'hm_swe_recalc_after_error', __( 'The Re-calc After has to be a number.', self::I18N_DOMAIN ) );
+			$valid['recalc_after'] = $prev['recalc_after'];
+		}
+		else {
+			$valid['recalc_after'] = $input['recalc_after'];
 		}
 
 		$valid['option_version'] = self::OPTION_VERSION;
