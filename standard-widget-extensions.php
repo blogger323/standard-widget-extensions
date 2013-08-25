@@ -18,6 +18,7 @@ class HM_SWE_Plugin_Loader {
 	const PREFIX         = 'hm_swe_';
 
 	public static $default_hm_swe_option = array(
+		'expert_options'         => 'disabled',
 		'maincol_id'             => 'primary',
 		'sidebar_id'             => 'secondary',
 		'widget_class'           => 'widget',
@@ -40,27 +41,35 @@ class HM_SWE_Plugin_Loader {
 	);
 
 	// index for field array
-	const I_MAINCOL_ID             = 0;
-	const I_SIDEBAR_ID             = 1;
-	const I_WIDGET_CLASS           = 2;
-	const I_READABLE_JS            = 3;
-	const I_ACCORDION_WIDGET       = 4;
-	const I_HEADING_MARKER         = 5;
-	const I_ENABLE_CSS             = 6;
-	const I_SINGLE_EXPANSION       = 7;
-	const I_SLIDE_DURATION         = 8;
-	const I_HEADING_STRING         = 9;
-	const I_ACCORDION_WIDGET_AREAS = 10;
-	const I_CUSTOM_SELECTORS       = 11;
-	const I_SCROLL_STOP            = 12;
-	const I_SCROLL_MODE            = 13;
-	const I_DISABLE_IFLT           = 14;
-	const I_RECALC_AFTER           = 15;
-	const I_IGNORE_FOOTER          = 16;
+	const I_EXPORT_OPTIONS         = 0;
+	const I_MAINCOL_ID             = 1;
+	const I_SIDEBAR_ID             = 2;
+	const I_WIDGET_CLASS           = 3;
+	const I_READABLE_JS            = 4;
+	const I_ACCORDION_WIDGET       = 5;
+	const I_HEADING_MARKER         = 6;
+	const I_ENABLE_CSS             = 7;
+	const I_SINGLE_EXPANSION       = 8;
+	const I_SLIDE_DURATION         = 9;
+	const I_HEADING_STRING         = 10;
+	const I_ACCORDION_WIDGET_AREAS = 11;
+	const I_CUSTOM_SELECTORS       = 12;
+	const I_SCROLL_STOP            = 13;
+	const I_SCROLL_MODE            = 14;
+	const I_DISABLE_IFLT           = 15;
+	const I_RECALC_AFTER           = 16;
+	const I_IGNORE_FOOTER          = 17;
 
 	// field array
 	private static $settings_field =
 			array(
+				// Hidden options
+				array(
+					'id'       => 'expert_options',
+					'title'    => '',
+					'callback' => 'settings_field_expert_options',
+					'section'  => 'hm_swe_main',
+				),
 
 				// General options
 				array(
@@ -196,7 +205,7 @@ class HM_SWE_Plugin_Loader {
 				),
 				array(
 					'id'       => 'recalc_after',
-					'title'    => 'Re-calc Content Size After (sec, 0=never)',
+					'title'    => 'Recalc Timer (sec, 0=never)',
 					'expert'   => 1,
 					'callback' => 'settings_field_recalc_after',
 					'section'  => 'hm_swe_scroll_stop',
@@ -350,14 +359,37 @@ class HM_SWE_Plugin_Loader {
 		<script type="text/javascript">
 			(function($, window, document) {
 				$(document).ready(function(){
+					<?php
+							if ($this->get_hm_swe_option( 'expert_options' ) != 'enabled') {
+					?>
 					$('span.swe-expert-params').each(function() {
 						$(this).parent().parent().hide();
 					});
+					<?php
+							}
+							else {
+					?>
+					$('#swe-expert-button').addClass('swe-show-expert');
+					<?php
+							}
+					?>
 					$('#swe-expert-button').click( function() {
-						$('span.swe-expert-params').each(function() {
-							$(this).parent().parent().show();
-						});
-						$('#swe-expert-button').hide();
+						if ($(this).hasClass('swe-show-expert')) {
+							$(this).attr('value', '<?php echo __( 'Show Expert Options', self::I18N_DOMAIN ) ?>');
+							$(this).removeClass('swe-show-expert');
+							$('#expert_options').attr('value', 'disabled');
+							$('span.swe-expert-params').each(function() {
+								$(this).parent().parent().hide();
+							});
+						}
+						else {
+							$(this).attr('value', '<?php echo __( 'Hide Expert Options', self::I18N_DOMAIN ) ?>');
+							$(this).addClass('swe-show-expert');
+							$('#expert_options').attr('value', 'enabled');
+							$('span.swe-expert-params').each(function() {
+								$(this).parent().parent().show();
+							});
+						}
 						return false;
 					});
 				});
@@ -368,7 +400,8 @@ class HM_SWE_Plugin_Loader {
 
 	function main_section_text() {
 		echo __( "<p>Use primary/secondary/widget for Twenty Twelve and Twenty Eleven.\nUse container/primary/widget-container for Twenty Ten.</p>", self::I18N_DOMAIN );
-		echo '<input id="swe-expert-button" class="button button-primary tor-rm" type="submit" value="Show Expert Options" />';
+		echo '<input id="swe-expert-button" class="button button-primary tor-rm" type="submit" value="' .
+				( $this->get_hm_swe_option( 'expert_options' ) == 'enabled' ? __( 'Hide Expert Options', self::I18N_DOMAIN ) : __( 'Show Expert Options', self::I18N_DOMAIN ) ) . '" />';
 	}
 
 	function empty_text() {
@@ -486,6 +519,14 @@ class HM_SWE_Plugin_Loader {
 		$this->write_text_option( self::I_RECALC_AFTER );
 	}
 
+	function settings_field_expert_options() {
+		$id = self::$settings_field[ self::I_EXPORT_OPTIONS ]['id'];
+		$v = $this->get_hm_swe_option( $id );
+
+		echo "<input id='$id' name='" . self::OPTION_KEY . "[$id]' type='hidden' value='" . esc_attr( $v ) . "' />";
+
+	}
+
 	function validate_options( $input ) {
 		$valid = array();
 		$prev  = $this->get_hm_swe_option();
@@ -498,6 +539,7 @@ class HM_SWE_Plugin_Loader {
 		$valid['single_expansion'] = $input['single_expansion'];
 		$valid['readable_js']      = $input['readable_js'];
 		$valid['ignore_footer']    = $input['ignore_footer'];
+		$valid['expert_options']   = $input['expert_options'];
 
 
 		if ( filter_var( $input['disable_iflt'], FILTER_VALIDATE_INT ) === FALSE ) {
@@ -593,7 +635,7 @@ class HM_SWE_Plugin_Loader {
 		}
 
 		if ( filter_var( $input['recalc_after'], FILTER_VALIDATE_INT ) === FALSE ) {
-			add_settings_error( 'hm_swe_recalc_after', 'hm_swe_recalc_after_error', __( 'The Re-calc After has to be a number.', self::I18N_DOMAIN ) );
+			add_settings_error( 'hm_swe_recalc_after', 'hm_swe_recalc_after_error', __( 'The Recalc Timer has to be a number.', self::I18N_DOMAIN ) );
 			$valid['recalc_after'] = $prev['recalc_after'];
 		}
 		else {
@@ -618,7 +660,7 @@ class HM_SWE_Plugin_Loader {
 			<form action="options.php" method="post">
 				<?php settings_fields( 'hm_swe_option_group' ); ?>
 				<?php do_settings_sections( 'hm_swe_option_page' ); ?>
-				<p class="submit"><input class="button-primary" name="Submit" type="submit" value="Save Changes" /></p>
+				<p class="submit"><input class="button-primary" name="Submit" type="submit" value="<?php echo __( 'Save Changes' ); ?>" /></p>
 			</form>
 		</div>
 	<?php
