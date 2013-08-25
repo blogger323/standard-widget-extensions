@@ -4,7 +4,7 @@ Donate link: http://en.hetarena.com/donate
 Tags: widget, sidebar
 Requires at least: 3.2
 Tested up to: 3.6
-Stable tag: 1.1.1
+Stable tag: 1.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -65,6 +65,10 @@ Please tell your audience to upgrade browser.
 
 == Changelog ==
 
+= 1.2 - Aug 25, 2013 =
+* New options: 'Recalc Timer', 'Slide Duration'.
+* Now expert option's hidden/displayed status is saved.
+
 = 1.1.1 - Jul 13, 2013 =
 * WordPress 3.6 (Twenty Thirteen) compliant.
 * Now work with sidebars whose ancestor has the 'absolute' position.
@@ -97,9 +101,7 @@ Please tell your audience to upgrade browser.
 
 == Upgrade Notice ==
 
-= 1.1.1 =
-* WordPress 3.6 (Twenty Thirteen) compliant.
-* Now work with sidebars whose ancestor has the 'absolute' position.
-* Difference between the content top and the sidebar top is now to be adjusted.
-* Some minor changes.
+= 1.2 =
+* New options: 'Recalc Timer', 'Slide Duration'
+
 

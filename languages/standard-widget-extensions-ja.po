@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Standard Widget Extensions 1.0\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/standard-widget-extensions\n"
-"POT-Creation-Date: 2013-06-10 20:54:15+00:00\n"
+"POT-Creation-Date: 2013-08-25 00:49:07+00:00\n"
 "PO-Revision-Date: 2013-03-12 02:53+0900\n"
 "Last-Translator: Hirokazu Matsui <blogger323@gmail.com>\n"
 "Language-Team: Japanese\n"
@@ -14,82 +14,98 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: standard-widget-extensions.php:304
+#: standard-widget-extensions.php:333
 msgctxt "title"
 msgid "General"
 msgstr "一般"
 
 # accordion_widget
-#: standard-widget-extensions.php:306
+#: standard-widget-extensions.php:335
 msgctxt "title"
 msgid "Accordion Widgets"
 msgstr ""
 
-#: standard-widget-extensions.php:308
+#: standard-widget-extensions.php:337
 msgctxt "title"
 msgid "Sticky Sidebar"
 msgstr ""
 
-#: standard-widget-extensions.php:350
+#: standard-widget-extensions.php:373 standard-widget-extensions.php:400
+msgid "Show Expert Options"
+msgstr "詳細オプションを表示"
+
+#: standard-widget-extensions.php:381 standard-widget-extensions.php:400
+msgid "Hide Expert Options"
+msgstr "詳細オプションを隠す"
+
+#: standard-widget-extensions.php:398
 msgid ""
 "<p>Use primary/secondary/widget for Twenty Twelve and Twenty Eleven.\n"
 "Use container/primary/widget-container for Twenty Ten.</p>"
 msgstr ""
-"<p>Twenty Twelve と Twenty Eleven では最初の 3つのパラメータをそれぞれ primary/"
-"secondary/widget にしてください。Twenty Ten では container/primary/widget-"
-"container としてください。</p>"
+"<p>Twenty Twelve と Twenty Eleven では最初の 3つのパラメータをそれぞれ "
+"primary/secondary/widget にしてください。Twenty Ten では container/primary/"
+"widget-container としてください。</p>"
 
-#: standard-widget-extensions.php:409
+#: standard-widget-extensions.php:458
 msgid "Plus button URL"
 msgstr "開ボタンの URL"
 
-#: standard-widget-extensions.php:412
+#: standard-widget-extensions.php:461
 msgid "Minus buttom URL"
 msgstr "閉ボタンの URL"
 
-#: standard-widget-extensions.php:476
+#: standard-widget-extensions.php:542
 msgid "The minimum width has to be a number."
 msgstr "幅の指定は数値で行ってください"
 
-#: standard-widget-extensions.php:486
+#: standard-widget-extensions.php:552
 msgid "Wrong URL for the plus button"
 msgstr "開ボタンの URL が不正です"
 
-#: standard-widget-extensions.php:497
+#: standard-widget-extensions.php:563
 msgid "Wrong URL for the minus button"
 msgstr "閉ボタンの URL が不正です"
 
-#: standard-widget-extensions.php:506
+#: standard-widget-extensions.php:572
 msgid "Wrong main column ID"
 msgstr "メインカラムの ID が不正です"
 
-#: standard-widget-extensions.php:514
+#: standard-widget-extensions.php:580
 msgid "Wrong sidebar ID"
 msgstr "サイドバーの ID が不正です"
 
-#: standard-widget-extensions.php:522
+#: standard-widget-extensions.php:588
 msgid "Wrong widget class"
 msgstr "ウィジェットのクラス名が不正です"
 
-#: standard-widget-extensions.php:533
+#: standard-widget-extensions.php:599
 msgid "Wrong widget areas"
 msgstr "ウィジェットエリアの ID が不正です"
 
-#: standard-widget-extensions.php:544
+#: standard-widget-extensions.php:610
 msgid "Wrong custom selectors"
 msgstr "カスタムウィジェットセレクターが不正です"
 
-#: standard-widget-extensions.php:552
+#: standard-widget-extensions.php:618
 msgid "Wrong heading selector"
 msgstr "見出し用セレクターが不正です"
 
-#. #-#-#-#-#  standard-widget-extensions.pot (Standard Widget Extensions 1.0)  #-#-#-#-#
+#: standard-widget-extensions.php:626
+msgid "The Slide Duration has to be a number."
+msgstr "伸縮時間の指定は数値で行ってください"
+
+#: standard-widget-extensions.php:634
+msgid "The Recalc Timer has to be a number."
+msgstr "再計算タイマーの指定は数値で行ってください"
+
+#. #-#-#-#-#  standard-widget-extensions.pot (Standard Widget Extensions 1.2)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
-#: standard-widget-extensions.php:564 standard-widget-extensions.php:572
+#: standard-widget-extensions.php:646 standard-widget-extensions.php:654
 msgid "Standard Widget Extensions"
 msgstr ""
 
-#: standard-widget-extensions.php:564
+#: standard-widget-extensions.php:646
 msgid "Standard WE"
 msgstr ""
 
@@ -130,7 +146,7 @@ msgid "Accordion Widgets"
 msgstr "Accordion Widgets 機能を有効にする"
 
 # heading_marker
-msgid "Icons for Heading"
+msgid "Icon for Heading"
 msgstr "見出しのアイコン"
 
 # enable_css
@@ -140,6 +156,10 @@ msgstr "デフォルト CSS を生成する"
 # single_expansion
 msgid "Single Expansion Mode"
 msgstr "同時に一つのウィジェットだけ伸ばす"
+
+# slide_duration
+msgid "Slide Duration"
+msgstr "伸縮時間 (ms)"
 
 # heading_marker
 msgid "Selector for Headings"
@@ -164,6 +184,10 @@ msgstr "Quick Switchback モードを有効にする"
 # disable_iflt
 msgid "Disable if the window width is less than"
 msgstr "次の幅以下で無効化"
+
+# recalc_after
+msgid "Recalc Timer (sec, 0=never)"
+msgstr "再計算タイマー (単位:秒、0=無効)"
 
 # ignore_footer
 msgid "Ignore Footer (for Infinite Scroll Pages)"
