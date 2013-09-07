@@ -35,6 +35,7 @@ class HM_SWE_Plugin_Loader {
 		'heading_string'         => 'h3',
 		'scroll_stop'            => 'enabled',
 		'scroll_mode'            => 1,
+		'proportional_sidebar'   => 0,
 		'disable_iflt'           => 620,
 		'recalc_after'           => 0,
 		'ignore_footer'          => 'disabled',
@@ -56,9 +57,10 @@ class HM_SWE_Plugin_Loader {
 	const I_CUSTOM_SELECTORS       = 12;
 	const I_SCROLL_STOP            = 13;
 	const I_SCROLL_MODE            = 14;
-	const I_DISABLE_IFLT           = 15;
-	const I_RECALC_AFTER           = 16;
-	const I_IGNORE_FOOTER          = 17;
+	const I_PROPORTIONAL_SIDEBAR   = 15;
+	const I_DISABLE_IFLT           = 16;
+	const I_RECALC_AFTER           = 17;
+	const I_IGNORE_FOOTER          = 18;
 
 	// field array
 	private static $settings_field =
@@ -197,6 +199,13 @@ class HM_SWE_Plugin_Loader {
 					),
 				),
 				array(
+					'id'       => 'proportional_sidebar',
+					'title'    => 'Proportional Sidebar <br />(width in percent, 0=fixed)',
+					'expert'   => 1,
+					'callback' => 'settings_field_proportional_sidebar',
+					'section'  => 'hm_swe_scroll_stop',
+				),
+				array(
 					'id'       => 'disable_iflt',
 					'title'    => 'Disable if the window width is less than',
 					'expert'   => 1,
@@ -288,7 +297,8 @@ class HM_SWE_Plugin_Loader {
 			'accordion_widget'       => $options['accordion_widget'] == 'enabled',
 			'single_expansion'       => $options['single_expansion'] == 'enabled',
 			'heading_string'         => esc_attr( $options['heading_string'] ),
-			'disable_iflt'           => intval( $options['disable_iflt'] ),
+			'proportional_sidebar'   => $options['proportional_sidebar'],
+			'disable_iflt'           => $options['disable_iflt'],
 			'accordion_widget_areas' => array_map( 'esc_attr', $options['accordion_widget_areas'] ),
 			'scroll_mode'            => ( $options['scroll_mode'] == "2" ? 2 : 1 ),
 			'ignore_footer'          => $options['ignore_footer'] == 'enabled',
@@ -507,6 +517,10 @@ class HM_SWE_Plugin_Loader {
 		$this->write_text_option( self::I_HEADING_STRING );
 	}
 
+	function settings_field_proportional_sidebar() {
+		$this->write_text_option( self::I_PROPORTIONAL_SIDEBAR );
+	}
+
 	function settings_field_disable_iflt() {
 		$this->write_text_option( self::I_DISABLE_IFLT );
 	}
@@ -542,6 +556,15 @@ class HM_SWE_Plugin_Loader {
 		$valid['expert_options']   = $input['expert_options'];
 
 
+		// Proportional Sidebar
+		if ( filter_var( $input['proportional_sidebar'], FILTER_VALIDATE_FLOAT ) === FALSE ) {
+			add_settings_error( 'hm_swe_proportional_sidebar', 'hm_swe_proportional_sidebar_error', __( 'The Proportional Sidebar value has to be a number.', self::I18N_DOMAIN ) );
+			$valid['proportional_sidebar'] = $prev['proportional_sidebar'];
+		}
+		else {
+			$valid['proportional_sidebar'] = $input['proportional_sidebar'];
+		}
+
 		if ( filter_var( $input['disable_iflt'], FILTER_VALIDATE_INT ) === FALSE ) {
 			add_settings_error( 'hm_swe_disable_iflt', 'hm_swe_disable_iflt_error', __( 'The minimum width has to be a number.', self::I18N_DOMAIN ) );
 			$valid['disable_iflt'] = $prev['disable_iflt'];
@@ -550,6 +573,7 @@ class HM_SWE_Plugin_Loader {
 			$valid['disable_iflt'] = $input['disable_iflt'];
 		}
 
+		// the plus icon
 		if ( $input['heading_marker'] == 'custom' &&
 				! ( filter_var( $input['custom_plus'], FILTER_VALIDATE_URL ) !== FALSE && preg_match( '/http/i', $input['custom_plus'] ) )
 		) {
@@ -561,6 +585,7 @@ class HM_SWE_Plugin_Loader {
 			$valid['custom_plus'] = $input['custom_plus'];
 		}
 
+		// the minus icon
 		if ( $input['heading_marker'] == 'custom' &&
 				! ( filter_var( $input['custom_minus'], FILTER_VALIDATE_URL ) !== FALSE && preg_match( '/http/i', $input['custom_minus'] ) )
 		) {

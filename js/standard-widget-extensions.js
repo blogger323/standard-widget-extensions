@@ -18,11 +18,13 @@
 		var cook = null;
 		var contentid = "#" + swe.maincol_id;
 		var sidebarid = "#" + swe.sidebar_id;
+		var sidebarparent = $(sidebarid).parent();
 		var widget = '.' + swe.widget_class;
 		var prevscrolltop = -1;
 		var fixedsidebartop = -1;
 		var mode = parseInt(swe.scroll_mode, 10);
 		var slide_duration = parseInt(swe.slide_duration, 10);
+		var percent_width  = parseFloat(swe.proportional_sidebar, 10);
 		var fixed = 0;
 		var direction = 0;
 
@@ -195,13 +197,21 @@
 				direction = 0;
 
 				$(sidebarid).css("position", "static");
+
+				if (percent_width === 0) {
+					sidebarwidth = $(sidebarid).width();
+					// Use a fixed width because the parent will change.
+				}
+				else {
+					sidebarwidth = sidebarparent.width() * percent_width / 100;
+					$(sidebarid).width(sidebarwidth)
+				}
+
 				sidebaroffset = $(sidebarid).offset();
 				if (!sidebaroffset) {
 					return; // something wrong.
 				}
 				sidebaroffset.top -= sidebarmargintop;
-				sidebarwidth = $(sidebarid).width();
-				// Use a fixed width because the parent will change.
 
 				// determine the adjustment value for the absolute position
 				// find a parent which has a position other than static
