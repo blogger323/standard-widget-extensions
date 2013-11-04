@@ -121,6 +121,7 @@
 			var h, ph, wh, sidebaroffset, sidebarwidth, sidebartop;
 			var sidebarmargintop = parseInt($(sidebarid).css('margin-top'), 10);
 			var sidebarmarginbottom = parseInt($(sidebarid).css('margin-bottom'), 10);
+			var sidebarmarginleft   = parseInt($(sidebarid).css('margin-left'), 10);
 			var absolute_adjustment_top = 0;
 			var absolute_adjustment_left = 0;
 			var main_side_adjustment = 0;
@@ -138,7 +139,7 @@
 					// scroll again with footer
 					$(sidebarid).css("position", "absolute");
 					$(sidebarid).css("top", sidebaroffset.top + ph - h - sidebarmargintop - sidebarmarginbottom - absolute_adjustment_top - main_side_adjustment);
-					$(sidebarid).css("left", sidebaroffset.left - absolute_adjustment_left);
+					$(sidebarid).css("left", sidebaroffset.left - absolute_adjustment_left - sidebarmarginleft);
 					$(sidebarid).css("width", sidebarwidth);
 					fixedsidebartop = $(sidebarid).offset().top;
 					fixed = 0;
@@ -148,7 +149,7 @@
 					var o = $(sidebarid).offset().top - sidebarmargintop;
 					$(sidebarid).css("position", "absolute");
 					$(sidebarid).css("top", o - absolute_adjustment_top);
-					$(sidebarid).css("left", sidebaroffset.left - absolute_adjustment_left);
+					$(sidebarid).css("left", sidebaroffset.left - absolute_adjustment_left - sidebarmarginleft);
 					$(sidebarid).css("width", sidebarwidth);
 					fixed = 0;
 				}
@@ -158,7 +159,7 @@
 
 					$(sidebarid).css("position", "fixed");
 					$(sidebarid).css("top", 0);
-					$(sidebarid).css("left", sidebaroffset.left - $(window).scrollLeft());
+					$(sidebarid).css("left", sidebaroffset.left - $(window).scrollLeft() - sidebarmarginleft);
 					$(sidebarid).css("width", sidebarwidth);
 					fixed = 1;
 					fixedsidebartop = $(sidebarid).offset().top + sidebarmarginbottom;
@@ -168,7 +169,7 @@
 					// at the bottom of sidebar
 					$(sidebarid).css("position", "fixed");
 					$(sidebarid).css("top", sidebartop);
-					$(sidebarid).css("left", sidebaroffset.left - $(window).scrollLeft());
+					$(sidebarid).css("left", sidebaroffset.left - $(window).scrollLeft() - sidebarmarginleft);
 					$(sidebarid).css("width", sidebarwidth);
 
 					fixed = 1;
