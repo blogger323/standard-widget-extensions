@@ -410,7 +410,7 @@ class HM_SWE_Plugin_Loader {
 
 	function main_section_text() {
 		echo __( "<p>Use primary/secondary/widget for Twenty Twelve and Twenty Eleven.\nUse container/primary/widget-container for Twenty Ten.</p>", self::I18N_DOMAIN );
-		echo '<input id="swe-expert-button" class="button button-primary tor-rm" type="submit" value="' .
+		echo '<input id="swe-expert-button" class="button button-primary" type="submit" value="' .
 				( $this->get_hm_swe_option( 'expert_options' ) == 'enabled' ? __( 'Hide Expert Options', self::I18N_DOMAIN ) : __( 'Show Expert Options', self::I18N_DOMAIN ) ) . '" />';
 	}
 
