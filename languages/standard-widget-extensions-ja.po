@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Standard Widget Extensions 1.0\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/standard-widget-extensions\n"
-"POT-Creation-Date: 2013-08-25 00:49:07+00:00\n"
+"POT-Creation-Date: 2013-08-27 10:57:48+00:00\n"
 "PO-Revision-Date: 2013-03-12 02:53+0900\n"
 "Last-Translator: Hirokazu Matsui <blogger323@gmail.com>\n"
 "Language-Team: Japanese\n"
@@ -30,15 +30,15 @@ msgctxt "title"
 msgid "Sticky Sidebar"
 msgstr ""
 
-#: standard-widget-extensions.php:373 standard-widget-extensions.php:400
+#: standard-widget-extensions.php:378 standard-widget-extensions.php:404
 msgid "Show Expert Options"
 msgstr "詳細オプションを表示"
 
-#: standard-widget-extensions.php:381 standard-widget-extensions.php:400
+#: standard-widget-extensions.php:386 standard-widget-extensions.php:404
 msgid "Hide Expert Options"
 msgstr "詳細オプションを隠す"
 
-#: standard-widget-extensions.php:398
+#: standard-widget-extensions.php:402
 msgid ""
 "<p>Use primary/secondary/widget for Twenty Twelve and Twenty Eleven.\n"
 "Use container/primary/widget-container for Twenty Ten.</p>"
@@ -47,66 +47,70 @@ msgstr ""
 "primary/secondary/widget にしてください。Twenty Ten では container/primary/"
 "widget-container としてください。</p>"
 
-#: standard-widget-extensions.php:458
+#: standard-widget-extensions.php:462
 msgid "Plus button URL"
 msgstr "開ボタンの URL"
 
-#: standard-widget-extensions.php:461
+#: standard-widget-extensions.php:465
 msgid "Minus buttom URL"
 msgstr "閉ボタンの URL"
 
-#: standard-widget-extensions.php:542
+#: standard-widget-extensions.php:546
 msgid "The minimum width has to be a number."
 msgstr "幅の指定は数値で行ってください"
 
-#: standard-widget-extensions.php:552
+#: standard-widget-extensions.php:556
 msgid "Wrong URL for the plus button"
 msgstr "開ボタンの URL が不正です"
 
-#: standard-widget-extensions.php:563
+#: standard-widget-extensions.php:567
 msgid "Wrong URL for the minus button"
 msgstr "閉ボタンの URL が不正です"
 
-#: standard-widget-extensions.php:572
+#: standard-widget-extensions.php:576
 msgid "Wrong main column ID"
 msgstr "メインカラムの ID が不正です"
 
-#: standard-widget-extensions.php:580
+#: standard-widget-extensions.php:584
 msgid "Wrong sidebar ID"
 msgstr "サイドバーの ID が不正です"
 
-#: standard-widget-extensions.php:588
+#: standard-widget-extensions.php:592
 msgid "Wrong widget class"
 msgstr "ウィジェットのクラス名が不正です"
 
-#: standard-widget-extensions.php:599
+#: standard-widget-extensions.php:603
 msgid "Wrong widget areas"
 msgstr "ウィジェットエリアの ID が不正です"
 
-#: standard-widget-extensions.php:610
+#: standard-widget-extensions.php:614
 msgid "Wrong custom selectors"
 msgstr "カスタムウィジェットセレクターが不正です"
 
-#: standard-widget-extensions.php:618
+#: standard-widget-extensions.php:622
 msgid "Wrong heading selector"
 msgstr "見出し用セレクターが不正です"
 
-#: standard-widget-extensions.php:626
+#: standard-widget-extensions.php:630
 msgid "The Slide Duration has to be a number."
 msgstr "伸縮時間の指定は数値で行ってください"
 
-#: standard-widget-extensions.php:634
+#: standard-widget-extensions.php:638
 msgid "The Recalc Timer has to be a number."
 msgstr "再計算タイマーの指定は数値で行ってください"
 
 #. #-#-#-#-#  standard-widget-extensions.pot (Standard Widget Extensions 1.2)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
-#: standard-widget-extensions.php:646 standard-widget-extensions.php:654
+#: standard-widget-extensions.php:650 standard-widget-extensions.php:658
 msgid "Standard Widget Extensions"
 msgstr ""
 
-#: standard-widget-extensions.php:646
+#: standard-widget-extensions.php:650
 msgid "Standard WE"
+msgstr ""
+
+#: standard-widget-extensions.php:663
+msgid "Save Changes"
 msgstr ""
 
 #. Plugin URI of the plugin/theme
@@ -146,7 +150,7 @@ msgid "Accordion Widgets"
 msgstr "Accordion Widgets 機能を有効にする"
 
 # heading_marker
-msgid "Icon for Heading"
+msgid "Icons for Heading"
 msgstr "見出しのアイコン"
 
 # enable_css
