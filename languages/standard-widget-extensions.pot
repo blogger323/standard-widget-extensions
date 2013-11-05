@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Standard Widget Extensions 1.2\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/standard-widget-extensions\n"
-"POT-Creation-Date: 2013-08-27 10:57:48+00:00\n"
+"POT-Creation-Date: 2013-11-05 01:57:44+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -12,98 +12,102 @@ msgstr ""
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 
-#: standard-widget-extensions.php:333
+#: standard-widget-extensions.php:343
 msgctxt "title"
 msgid "General"
 msgstr ""
 
-#: standard-widget-extensions.php:335
+#: standard-widget-extensions.php:345
 msgctxt "title"
 msgid "Accordion Widgets"
 msgstr ""
 
-#: standard-widget-extensions.php:337
+#: standard-widget-extensions.php:347
 msgctxt "title"
 msgid "Sticky Sidebar"
 msgstr ""
 
-#: standard-widget-extensions.php:378 standard-widget-extensions.php:404
+#: standard-widget-extensions.php:388 standard-widget-extensions.php:414
 msgid "Show Expert Options"
 msgstr ""
 
-#: standard-widget-extensions.php:386 standard-widget-extensions.php:404
+#: standard-widget-extensions.php:396 standard-widget-extensions.php:414
 msgid "Hide Expert Options"
 msgstr ""
 
-#: standard-widget-extensions.php:402
+#: standard-widget-extensions.php:412
 msgid ""
 "<p>Use primary/secondary/widget for Twenty Twelve and Twenty Eleven.\n"
 "Use container/primary/widget-container for Twenty Ten.</p>"
 msgstr ""
 
-#: standard-widget-extensions.php:462
+#: standard-widget-extensions.php:472
 msgid "Plus button URL"
 msgstr ""
 
-#: standard-widget-extensions.php:465
+#: standard-widget-extensions.php:475
 msgid "Minus buttom URL"
 msgstr ""
 
-#: standard-widget-extensions.php:546
+#: standard-widget-extensions.php:561
+msgid "The Proportional Sidebar value has to be a number."
+msgstr ""
+
+#: standard-widget-extensions.php:569
 msgid "The minimum width has to be a number."
 msgstr ""
 
-#: standard-widget-extensions.php:556
+#: standard-widget-extensions.php:580
 msgid "Wrong URL for the plus button"
 msgstr ""
 
-#: standard-widget-extensions.php:567
+#: standard-widget-extensions.php:592
 msgid "Wrong URL for the minus button"
 msgstr ""
 
-#: standard-widget-extensions.php:576
+#: standard-widget-extensions.php:601
 msgid "Wrong main column ID"
 msgstr ""
 
-#: standard-widget-extensions.php:584
+#: standard-widget-extensions.php:609
 msgid "Wrong sidebar ID"
 msgstr ""
 
-#: standard-widget-extensions.php:592
+#: standard-widget-extensions.php:617
 msgid "Wrong widget class"
 msgstr ""
 
-#: standard-widget-extensions.php:603
+#: standard-widget-extensions.php:628
 msgid "Wrong widget areas"
 msgstr ""
 
-#: standard-widget-extensions.php:614
+#: standard-widget-extensions.php:639
 msgid "Wrong custom selectors"
 msgstr ""
 
-#: standard-widget-extensions.php:622
+#: standard-widget-extensions.php:647
 msgid "Wrong heading selector"
 msgstr ""
 
-#: standard-widget-extensions.php:630
+#: standard-widget-extensions.php:655
 msgid "The Slide Duration has to be a number."
 msgstr ""
 
-#: standard-widget-extensions.php:638
+#: standard-widget-extensions.php:663
 msgid "The Recalc Timer has to be a number."
 msgstr ""
 
 #. #-#-#-#-#  standard-widget-extensions.pot (Standard Widget Extensions 1.2)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
-#: standard-widget-extensions.php:650 standard-widget-extensions.php:658
+#: standard-widget-extensions.php:675 standard-widget-extensions.php:683
 msgid "Standard Widget Extensions"
 msgstr ""
 
-#: standard-widget-extensions.php:650
+#: standard-widget-extensions.php:675
 msgid "Standard WE"
 msgstr ""
 
-#: standard-widget-extensions.php:663
+#: standard-widget-extensions.php:688
 msgid "Save Changes"
 msgstr ""
 
@@ -155,7 +159,7 @@ msgid "Single Expansion Mode"
 msgstr ""
 
 # slide_duration
-msgid "Slide Duration"
+msgid "Slide Duration (ms)"
 msgstr ""
 
 # heading_string
@@ -176,6 +180,10 @@ msgstr ""
 
 # scroll_mode
 msgid "Quick Switchback Mode"
+msgstr ""
+
+# proportional_sidebar
+msgid "Proportional Sidebar (width in percent, 0=fixed)"
 msgstr ""
 
 # disable_iflt

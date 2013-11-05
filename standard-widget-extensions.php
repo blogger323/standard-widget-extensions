@@ -3,7 +3,7 @@
 Plugin Name: Standard Widget Extensions
 Plugin URI: http://en.hetarena.com/standard-widget-extensions
 Description: A plugin to extend widget behavior.
-Version: 1.2
+Version: 1.3
 Author: Hirokazu Matsui (blogger323)
 Author URI: http://en.hetarena.com/
 License: GPLv2
@@ -11,8 +11,8 @@ License: GPLv2
 
 class HM_SWE_Plugin_Loader {
 
-	const VERSION        = '1.2';
-	const OPTION_VERSION = '1.2';
+	const VERSION        = '1.3';
+	const OPTION_VERSION = '1.3';
 	const OPTION_KEY     = 'hm_swe_options';
 	const I18N_DOMAIN    = 'standard-widget-extensions';
 	const PREFIX         = 'hm_swe_';
@@ -24,8 +24,6 @@ class HM_SWE_Plugin_Loader {
 		'widget_class'           => 'widget',
 		'readable_js'            => 'disabled',
 		'accordion_widget'       => 'enabled',
-		'accordion_widget_areas' => array( '' ),
-		'custom_selectors'        => array( '' ),
 		'heading_marker'         => 'default',
 		'custom_plus'            => '',
 		'custom_minus'           => '',
@@ -33,11 +31,13 @@ class HM_SWE_Plugin_Loader {
 		'single_expansion'       => 'disabled',
 		'slide_duration'         => 400,
 		'heading_string'         => 'h3',
+		'accordion_widget_areas' => array( '' ),
+		'custom_selectors'       => array( '' ),
 		'scroll_stop'            => 'enabled',
 		'scroll_mode'            => 1,
 		'proportional_sidebar'   => 0,
 		'disable_iflt'           => 620,
-		'recalc_after'           => 0,
+		'recalc_after'           => 5,
 		'ignore_footer'          => 'disabled',
 	);
 
@@ -150,7 +150,7 @@ class HM_SWE_Plugin_Loader {
 				),
 				array(
 					'id'       => 'slide_duration',
-					'title'    => 'Slide Duration',
+					'title'    => 'Slide Duration (ms)',
 					'expert'   => 1,
 					'callback' => 'settings_field_slide_duration',
 					'section'  => 'hm_swe_accordion_widget',
@@ -200,7 +200,7 @@ class HM_SWE_Plugin_Loader {
 				),
 				array(
 					'id'       => 'proportional_sidebar',
-					'title'    => 'Proportional Sidebar <br />(width in percent, 0=fixed)',
+					'title'    => 'Proportional Sidebar (width in percent, 0=fixed)',
 					'expert'   => 1,
 					'callback' => 'settings_field_proportional_sidebar',
 					'section'  => 'hm_swe_scroll_stop',
@@ -273,15 +273,6 @@ class HM_SWE_Plugin_Loader {
 
 		$custom_selectors = $this->get_widget_selectors();
 
-		/*
-				$options['custom_selectors'];
-		if ( !is_array( $custom_selectors ) || implode(',', $custom_selectors ) === '' ) {
-			$custom_selectors = array();
-			foreach ( $options['accordion_widget_areas'] as $area ) {
-				array_push( $custom_selectors, "#" . $options['sidebar_id'] . ( $area ? " #" . $area : "" ) . " ." . $options['widget_class'] );
-			}
-		}
-		*/
 
 		$params = array(
 			'buttonplusurl'          => $options['heading_marker'] == 'custom' ? "url(" . $options['custom_plus'] . ")" :

@@ -216,17 +216,9 @@
 
 				// determine the adjustment value for the absolute position
 				// find a parent which has a position other than static
-				var o = $(sidebarid).parent();
-				absolute_adjustment_top = 0;
-				absolute_adjustment_left = 0;
-				while (o && o.get(0).tagName && o.get(0).tagName.toUpperCase() !== "BODY") {
-					if (o.css('position').toLowerCase() !== 'static') {
-						absolute_adjustment_top  = o.offset().top;
-						absolute_adjustment_left = o.offset().left;
-						break;
-					}
-					o = o.parent();
-				}
+				var o = $(sidebarid).offsetParent();
+				absolute_adjustment_top  = o.offset().top;
+				absolute_adjustment_left = o.offset().left;
 
 				// determine the adjustment value for the position diff between the content and the sidebar
 				main_side_adjustment = $(sidebarid).offset().top - $(contentid).offset().top;

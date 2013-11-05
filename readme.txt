@@ -3,8 +3,8 @@ Contributors: blogger323
 Donate link: http://en.hetarena.com/donate
 Tags: widget, sidebar
 Requires at least: 3.2
-Tested up to: 3.6
-Stable tag: 1.2
+Tested up to: 3.7
+Stable tag: 1.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -65,6 +65,12 @@ Please tell your audience to upgrade browser.
 
 == Changelog ==
 
+= 1.3 - Nov 5, 2013 =
+* A new option, Proportional Sidebar, is introduced for better support of responsive web design.
+* [Fixed] Support sidebars whose left margin is not zero.
+* WordPress 3.7 compliant
+
+
 = 1.2 - Aug 25, 2013 =
 * New options: 'Recalc Timer', 'Slide Duration'.
 * Now expert option's hidden/displayed status is saved.
@@ -101,7 +107,8 @@ Please tell your audience to upgrade browser.
 
 == Upgrade Notice ==
 
-= 1.2 =
-* New options: 'Recalc Timer', 'Slide Duration'
-
+= 1.3 - Nov 5, 2013 =
+* A new option, Proportional Sidebar, is introduced for better support of responsive web design.
+* [Fixed] Support sidebars whose left margin is not zero.
+* WordPress 3.7 compliant
 
