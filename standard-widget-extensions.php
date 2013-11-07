@@ -302,7 +302,7 @@ class HM_SWE_Plugin_Loader {
 
 	function wp_head() {
 		$options = $this->get_hm_swe_option();
-		if ( $options['heading_marker'] !== 'none' && $options['enable_css'] === 'enabled'
+		if ( $options['accordion_widget'] === 'enabled' && $options['heading_marker'] !== 'none' && $options['enable_css'] === 'enabled'
 				&& implode( ',', $options['custom_selectors'] ) === '' ) {
 			$area_array = array_map( 'esc_attr', $this->get_widget_selectors( true ) );
 			$headstr      = "";
