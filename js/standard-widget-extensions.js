@@ -127,6 +127,29 @@
 			var main_side_adjustment = 0;
 
 			function scrollfunc() {
+				/*
+				  ph: height of the main content
+				  wh: height of the window
+				  h: height of the sidebar
+				  sidebartop: top of the sidebar
+				  curscrolltop: $(window).scrollTop()
+				  sidebaroffset: top&left
+				  sidebarmargintop:
+				  sidebarmarginbottom:
+				  sidebarmarginleft:
+				  sidebarwidth:
+				  absoluto_adjustment_top:
+				  main_side_adjustment:
+				  mode:
+
+				  global variables:
+				    fixed, sidebar dependent
+				    fixedsidebartop, sidebar dependent
+				    direction, global
+				    prevscrolltop global
+				 */
+
+				//
 				if (sidebartop === 1) {
 					$(sidebarid).css("position", "static");
 					return;
