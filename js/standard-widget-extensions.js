@@ -17,33 +17,8 @@
 	$(document).ready(function () {
 		var cook = null;
 		var contentid = "#" + swe.maincol_id;
-		var sidebarid = "#" + swe.sidebar_id;
-		var sidebarparent = $(sidebarid).parent();
 		var widget = '.' + swe.widget_class;
 		var slide_duration = parseInt(swe.slide_duration, 10);
-
-		/*
-		 ph: height of the main content
-		 wh: height of the window
-		 h: height of the sidebar
-		 sidebartop: top of the sidebar
-		 curscrolltop: $(window).scrollTop()
-		 sidebaroffset: top&left
-		 sidebarmargintop:
-		 sidebarmarginbottom:
-		 sidebarmarginleft:
-		 sidebarwidth:
-		 absolute_adjustment_top:
-		 absolute_adjustment_left:
-		 main_side_adjustment:
-		 mode:
-
-		 global variables:
-		 fixed, sidebar dependent
-		 fixedsidebartop, sidebar dependent
-		 direction, global
-		 prevscrolltop global
-		 */
 
 		var CONDITION = {
 			content_height: 0, /* including margins */
@@ -67,7 +42,8 @@
 			absolute_adjustment_top: 0,
 			absolute_adjustment_left: 0,
 			main_side_adjustment: 0,
-			percent_width: parseFloat(swe.proportional_sidebar, 10)
+			percent_width: 0,
+			disable_iflt: 0
 		};
 
 		var SIDEBAR2 = {
@@ -84,13 +60,31 @@
 			absolute_adjustment_top: 0,
 			absolute_adjustment_left: 0,
 			main_side_adjustment: 0,
-			percent_width: 0
+			percent_width: 0,
+			disable_iflt: 0
 		};
 
-		SIDEBAR1.id = "#" + swe.sidebar_id;
-		SIDEBAR2.id = "#" + swe.sidebar_id2;
-		SIDEBAR1.parent = $(SIDEBAR1.id).parent();
-		SIDEBAR2.parent = $(SIDEBAR2.id).parent();
+		function init_sidebar(sidebar, param_id, percent_width, disable_iflt) {
+			if (param_id) {
+				sidebar.id = '#' + param_id;
+				if (sidebar.id && $(sidebar.id).length > 0) {
+					sidebar.o = $(sidebar.id);
+					sidebar.parent = sidebar.o.parent();
+					sidebar.margintop = parseInt(sidebar.o.css('margin-top'), 10);
+					sidebar.marginbottom = parseInt(sidebar.o.css('margin-bottom'), 10);
+					sidebar.marginleft = parseInt(sidebar.o.css('margin-left'), 10);
+					sidebar.percent_width = parseFloat(percent_width, 10);
+					sidebar.disable_iflt = parseInt(disable_iflt, 10);
+
+					/* fix for margins in percent */
+					sidebar.o.css('margin-left', sidebar.marginleft);
+
+				}
+			}
+		}
+
+		init_sidebar(SIDEBAR1, swe.sidebar_id, swe.proportional_sidebar, swe.disable_iflt);
+		init_sidebar(SIDEBAR2, swe.sidebar_id2, swe.proportional_sidebar2, swe.disable_iflt2);
 
 		if (swe.accordion_widget) {
 			if (typeof JSON !== "undefined") {
@@ -182,22 +176,6 @@
 		} // if accordion_widget
 
 		if (swe.scroll_stop && $(contentid)) {
-			/*
-			var h, ph, wh, sidebaroffset, sidebarwidth, sidebartop;
-			var sidebarmargintop = parseInt($(sidebarid).css('margin-top'), 10);
-			var sidebarmarginbottom = parseInt($(sidebarid).css('margin-bottom'), 10);
-			var sidebarmarginleft   = parseInt($(sidebarid).css('margin-left'), 10);
-			var absolute_adjustment_top = 0;
-			var absolute_adjustment_left = 0;
-			var main_side_adjustment = 0;
-			*/
-
-			if ($(SIDEBAR1.id)) {
-				SIDEBAR1.o = $(SIDEBAR1.id);
-				SIDEBAR1.margintop = parseInt($(SIDEBAR1.id).css('margin-top'), 10);
-				SIDEBAR1.marginbottom = parseInt($(SIDEBAR1.id).css('margin-bottom'), 10);
-				SIDEBAR1.marginleft = parseInt($(SIDEBAR1.id).css('margin-left'), 10);
-			}
 
 			function scrollfunc() {
 				var curscrolltop = $(window).scrollTop();
@@ -217,7 +195,10 @@
 				var s = curscrolltop - sidebar.offset.top;
 
 				if (sidebar.top === 1) {
-					sidebar.o.css("position", "static");
+					// For z-index based Themes, do not use css("position", "static")
+					sidebar.o.css("position", "relative");
+					sidebar.o.css("top", "0");
+					sidebar.o.css("left", "0");
 					return;
 				}
 
@@ -263,7 +244,10 @@
 					sidebar.fixedtop = sidebar.o.offset().top;
 				}
 				else if (CONDITION.mode != 2 || curscrolltop < sidebar.offset.top) {
-					sidebar.o.css("position", "static");
+					// For z-index based Themes, do not use css("position", "static")
+					sidebar.o.css("position", "relative");
+					sidebar.o.css("top", "0");
+					sidebar.o.css("left", "0");
 					sidebar.fixedtop = -1;
 					sidebar.fixed = 0;
 				}
@@ -295,9 +279,12 @@
 				sidebar.fixed = 0;
 
 				sidebar.o.css("position", "static");
+				//sidebar.o.css("position", "relative");
+				//sidebar.o.css("top", "0");
+				//sidebar.o.css("left", "0");
 
 				if (sidebar.percent_width === 0) {
-					sidebar.width = sidebar.o.width();
+					sidebar.width = sidebar.o.css('width'); // using css('width') (not width())
 					// Use a fixed width because the parent will change.
 				}
 				else {
@@ -321,7 +308,7 @@
 				sidebar.main_side_adjustment = sidebar.o.offset().top - $(contentid).offset().top;
 
 				sidebar.top = CONDITION.window_height - sidebar.height - sidebar.margintop - sidebar.marginbottom;
-				if (CONDITION.content_height <= sidebar.height || $(window).width() < swe.disable_iflt) {
+				if (CONDITION.content_height <= sidebar.height || $(window).width() < sidebar.disable_iflt) {
 					/* longer sidebar than the content || narrow window width */
 					sidebar.top = 1;
 					/* special value for no-scroll */
