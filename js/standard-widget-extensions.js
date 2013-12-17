@@ -17,16 +17,74 @@
 	$(document).ready(function () {
 		var cook = null;
 		var contentid = "#" + swe.maincol_id;
-		var sidebarid = "#" + swe.sidebar_id;
-		var sidebarparent = $(sidebarid).parent();
 		var widget = '.' + swe.widget_class;
-		var prevscrolltop = -1;
-		var fixedsidebartop = -1;
-		var mode = parseInt(swe.scroll_mode, 10);
 		var slide_duration = parseInt(swe.slide_duration, 10);
-		var percent_width  = parseFloat(swe.proportional_sidebar, 10);
-		var fixed = 0;
-		var direction = 0;
+
+		var CONDITION = {
+			content_height: 0, /* including margins */
+			window_height: 0,
+			mode: parseInt(swe.scroll_mode, 10), /* 2: switch back */
+			direction: 0,
+			prevscrolltop: -1
+		};
+
+		var SIDEBAR1 = {
+			o: null, // jQuery object
+			top: 0,
+			height: 0,
+			fixedtop: -1,
+			fixed: 0,
+			offset: 0,
+			margintop: 0,
+			marginbottom: 0,
+			marginleft: 0,
+			width: 0,
+			absolute_adjustment_top: 0,
+			absolute_adjustment_left: 0,
+			main_side_adjustment: 0,
+			percent_width: 0,
+			disable_iflt: 0
+		};
+
+		var SIDEBAR2 = {
+			o: null,
+			top: 0,
+			height: 0,
+			fixedtop: -1,
+			fixed: 0,
+			offset: 0,
+			margintop: 0,
+			marginbottom: 0,
+			marginleft: 0,
+			width: 0,
+			absolute_adjustment_top: 0,
+			absolute_adjustment_left: 0,
+			main_side_adjustment: 0,
+			percent_width: 0,
+			disable_iflt: 0
+		};
+
+		function init_sidebar(sidebar, param_id, percent_width, disable_iflt) {
+			if (param_id) {
+				sidebar.id = '#' + param_id;
+				if (sidebar.id && $(sidebar.id).length > 0) {
+					sidebar.o = $(sidebar.id);
+					sidebar.parent = sidebar.o.parent();
+					sidebar.margintop = parseInt(sidebar.o.css('margin-top'), 10);
+					sidebar.marginbottom = parseInt(sidebar.o.css('margin-bottom'), 10);
+					sidebar.marginleft = parseInt(sidebar.o.css('margin-left'), 10);
+					sidebar.percent_width = parseFloat(percent_width, 10);
+					sidebar.disable_iflt = parseInt(disable_iflt, 10);
+
+					/* fix for margins in percent */
+					sidebar.o.css('margin-left', sidebar.marginleft);
+
+				}
+			}
+		}
+
+		init_sidebar(SIDEBAR1, swe.sidebar_id, swe.proportional_sidebar, swe.disable_iflt);
+		init_sidebar(SIDEBAR2, swe.sidebar_id2, swe.proportional_sidebar2, swe.disable_iflt2);
 
 		if (swe.accordion_widget) {
 			if (typeof JSON !== "undefined") {
@@ -117,125 +175,150 @@
 
 		} // if accordion_widget
 
-		if (swe.scroll_stop && $(sidebarid) && $(contentid)) {
-			var h, ph, wh, sidebaroffset, sidebarwidth, sidebartop;
-			var sidebarmargintop = parseInt($(sidebarid).css('margin-top'), 10);
-			var sidebarmarginbottom = parseInt($(sidebarid).css('margin-bottom'), 10);
-			var sidebarmarginleft   = parseInt($(sidebarid).css('margin-left'), 10);
-			var absolute_adjustment_top = 0;
-			var absolute_adjustment_left = 0;
-			var main_side_adjustment = 0;
+		if (swe.scroll_stop && $(contentid).length > 0) {
 
 			function scrollfunc() {
-				if (sidebartop === 1) {
-					$(sidebarid).css("position", "static");
+				var curscrolltop = $(window).scrollTop();
+
+				if (SIDEBAR1.o) {
+					manage_sidebar(SIDEBAR1, curscrolltop);
+				}
+				if (SIDEBAR2.o) {
+					manage_sidebar(SIDEBAR2, curscrolltop);
+				}
+
+				CONDITION.direction = curscrolltop - CONDITION.prevscrolltop;
+				CONDITION.prevscrolltop = curscrolltop;
+			}
+
+			function manage_sidebar(sidebar, curscrolltop) {
+				var s = curscrolltop - sidebar.offset.top;
+
+				if (sidebar.top === 1) {
+					// For z-index based Themes, do not use css("position", "static")
+					sidebar.o.css("position", "relative");
+					sidebar.o.css("top", "0");
+					sidebar.o.css("left", "0");
 					return;
 				}
-				var curscrolltop = $(window).scrollTop();
-				var s = curscrolltop - sidebaroffset.top;
 
-				if ( !swe.ignore_footer && ((s >= ph - wh - main_side_adjustment && sidebartop < 0) ||
-						(sidebartop === 0 /* shorter sidebar */ && s >= ph - h - sidebarmargintop - sidebarmarginbottom - main_side_adjustment))) {
+				if ( !swe.ignore_footer && ((s >= CONDITION.content_height - CONDITION.window_height - sidebar.main_side_adjustment && sidebar.top < 0) ||
+						(sidebar.top === 0 /* shorter sidebar */ && s >= CONDITION.content_height - sidebar.height - sidebar.margintop - sidebar.marginbottom - sidebar.main_side_adjustment))) {
 					// scroll again with footer
-					$(sidebarid).css("position", "absolute");
-					$(sidebarid).css("top", sidebaroffset.top + ph - h - sidebarmargintop - sidebarmarginbottom - absolute_adjustment_top - main_side_adjustment);
-					$(sidebarid).css("left", sidebaroffset.left - absolute_adjustment_left - sidebarmarginleft);
-					$(sidebarid).css("width", sidebarwidth);
-					fixedsidebartop = $(sidebarid).offset().top;
-					fixed = 0;
+					sidebar.o.css("position", "absolute");
+					sidebar.o.css("top", sidebar.offset.top + CONDITION.content_height - sidebar.height - sidebar.margintop - sidebar.marginbottom - sidebar.absolute_adjustment_top - sidebar.main_side_adjustment);
+					sidebar.o.css("left", sidebar.offset.left - sidebar.absolute_adjustment_left - sidebar.marginleft);
+					sidebar.o.css("width", sidebar.width);
+					sidebar.fixedtop = sidebar.o.offset().top;
+					sidebar.fixed = 0;
 				}
-				else if (mode == 2 && (curscrolltop - prevscrolltop) * direction < 0 && fixed) {
+				else if (CONDITION.mode == 2 && (curscrolltop - CONDITION.prevscrolltop) * CONDITION.direction < 0 && sidebar.fixed) {
 					// mode2 absolute position
-					var o = $(sidebarid).offset().top - sidebarmargintop;
-					$(sidebarid).css("position", "absolute");
-					$(sidebarid).css("top", o - absolute_adjustment_top);
-					$(sidebarid).css("left", sidebaroffset.left - absolute_adjustment_left - sidebarmarginleft);
-					$(sidebarid).css("width", sidebarwidth);
-					fixed = 0;
+					var o = sidebar.o.offset().top - sidebar.margintop;
+					sidebar.o.css("position", "absolute");
+					sidebar.o.css("top", o - sidebar.absolute_adjustment_top);
+					sidebar.o.css("left", sidebar.offset.left - sidebar.absolute_adjustment_left - sidebar.marginleft);
+					sidebar.o.css("width", sidebar.width);
+					sidebar.fixed = 0;
 				}
-				else if (mode == 2 && curscrolltop < prevscrolltop &&
-						curscrolltop < fixedsidebartop  - sidebarmargintop && curscrolltop > sidebaroffset.top) {
+				else if (CONDITION.mode == 2 && curscrolltop < CONDITION.prevscrolltop &&
+						curscrolltop < sidebar.fixedtop  - sidebar.margintop && curscrolltop > sidebar.offset.top) {
 					// at the top of sidebar
 
-					$(sidebarid).css("position", "fixed");
-					$(sidebarid).css("top", 0);
-					$(sidebarid).css("left", sidebaroffset.left - $(window).scrollLeft() - sidebarmarginleft);
-					$(sidebarid).css("width", sidebarwidth);
-					fixed = 1;
-					fixedsidebartop = $(sidebarid).offset().top + sidebarmarginbottom;
+					sidebar.o.css("position", "fixed");
+					sidebar.o.css("top", 0);
+					sidebar.o.css("left", sidebar.offset.left - $(window).scrollLeft() - sidebar.marginleft);
+					sidebar.o.css("width", sidebar.width);
+					sidebar.fixed = 1;
+					sidebar.fixedtop = sidebar.o.offset().top + sidebar.marginbottom;
 				}
-				else if ((mode == 2 && curscrolltop > prevscrolltop && fixedsidebartop > 0 && curscrolltop > fixedsidebartop + h - wh  ) ||
-						((mode != 2 || (mode == 2 && fixedsidebartop < 0)) && s >= -sidebartop && sidebartop <= 0)) {
+				else if ((CONDITION.mode == 2 && curscrolltop > CONDITION.prevscrolltop && sidebar.fixedtop > 0 && curscrolltop > sidebar.fixedtop + sidebar.height - CONDITION.window_height  ) ||
+						((CONDITION.mode != 2 || (CONDITION.mode == 2 && sidebar.fixedtop < 0)) && s >= -sidebar.top && sidebar.top <= 0)) {
 					// at the bottom of sidebar
-					$(sidebarid).css("position", "fixed");
-					$(sidebarid).css("top", sidebartop);
-					$(sidebarid).css("left", sidebaroffset.left - $(window).scrollLeft() - sidebarmarginleft);
-					$(sidebarid).css("width", sidebarwidth);
+					sidebar.o.css("position", "fixed");
+					sidebar.o.css("top", sidebar.top);
+					sidebar.o.css("left", sidebar.offset.left - $(window).scrollLeft() - sidebar.marginleft);
+					sidebar.o.css("width", sidebar.width);
 
-					fixed = 1;
-					fixedsidebartop = $(sidebarid).offset().top;
+					sidebar.fixed = 1;
+					sidebar.fixedtop = sidebar.o.offset().top;
 				}
-				else if (mode != 2 || curscrolltop < sidebaroffset.top) {
-					$(sidebarid).css("position", "static");
-					fixedsidebartop = -1;
-					fixed = 0;
+				else if (CONDITION.mode != 2 || curscrolltop < sidebar.offset.top) {
+					// For z-index based Themes, do not use css("position", "static")
+					sidebar.o.css("position", "relative");
+					sidebar.o.css("top", "0");
+					sidebar.o.css("left", "0");
+					sidebar.fixedtop = -1;
+					sidebar.fixed = 0;
 				}
 				else {
 					// continue absolute
 				}
 
-				direction = curscrolltop - prevscrolltop;
-				prevscrolltop = curscrolltop;
 			}
 
 			function resizefunc() {
-				h = $(sidebarid).height();
-				ph = $(contentid).height() + parseInt($(contentid).css('margin-top'), 10) + parseInt($(contentid).css('margin-bottom'), 10);
-				wh = $(window).height();
-				prevscrolltop = -1;
-				fixedsidebartop = -1;
-				fixed = 0;
-				direction = 0;
+				CONDITION.content_height = $(contentid).height() + parseInt($(contentid).css('margin-top'), 10) + parseInt($(contentid).css('margin-bottom'), 10);
+				CONDITION.window_height = $(window).height();
+				CONDITION.prevscrolltop = -1;
+				CONDITION.direction = 0;
 
-				$(sidebarid).css("position", "static");
-
-				if (percent_width === 0) {
-					sidebarwidth = $(sidebarid).width();
-					// Use a fixed width because the parent will change.
+				if (SIDEBAR1.o) {
+					resize_sidebar(SIDEBAR1);
 				}
-				else {
-					sidebarwidth = sidebarparent.width() * percent_width / 100;
-					$(sidebarid).width(sidebarwidth)
+				if (SIDEBAR2.o) {
+					resize_sidebar(SIDEBAR2);
 				}
 
-				sidebaroffset = $(sidebarid).offset();
-				if (!sidebaroffset) {
-					return; // something wrong.
-				}
-				sidebaroffset.top -= sidebarmargintop;
-
-				// determine the adjustment value for the absolute position
-				// find a parent which has a position other than static
-				var o = $(sidebarid).offsetParent();
-				absolute_adjustment_top  = o.offset().top;
-				absolute_adjustment_left = o.offset().left;
-
-				// determine the adjustment value for the position diff between the content and the sidebar
-				main_side_adjustment = $(sidebarid).offset().top - $(contentid).offset().top;
-
-				sidebartop = wh - h - sidebarmargintop - sidebarmarginbottom;
-				if (ph <= h || $(window).width() < swe.disable_iflt) {
-					/* longer sidebar than the content || narrow window width */
-					sidebartop = 1;
-					/* special value for no-scroll */
-				}
-				else if (sidebartop > 0) { /* shorter sidebar than the window */
-					sidebartop = 0;
-				}
 				scrollfunc();
 			}
 
-			swe.resizeHandler = resizefunc
+			function resize_sidebar(sidebar) {
+				sidebar.height = sidebar.o.height();
+				sidebar.fixedtop = -1;
+				sidebar.fixed = 0;
+
+				sidebar.o.css("position", "static");
+				//sidebar.o.css("position", "relative");
+				//sidebar.o.css("top", "0");
+				//sidebar.o.css("left", "0");
+
+				if (sidebar.percent_width === 0) {
+					sidebar.width = sidebar.o.css('width'); // using css('width') (not width())
+					// Use a fixed width because the parent will change.
+				}
+				else {
+					sidebar.width = sidebar.parent.css('width') * sidebar.percent_width / 100;
+					sidebar.o.css('width', sidebar.width);
+				}
+
+				sidebar.offset = sidebar.o.offset();
+				if (!sidebar.offset) {
+					return; // something wrong.
+				}
+				sidebar.offset.top -= sidebar.margintop;
+
+				// determine the adjustment value for the absolute position
+				// find a parent which has a position other than static
+				var o = sidebar.o.offsetParent();
+				sidebar.absolute_adjustment_top  = o.offset().top;
+				sidebar.absolute_adjustment_left = o.offset().left;
+
+				// determine the adjustment value for the position diff between the content and the sidebar
+				sidebar.main_side_adjustment = sidebar.o.offset().top - $(contentid).offset().top;
+
+				sidebar.top = CONDITION.window_height - sidebar.height - sidebar.margintop - sidebar.marginbottom;
+				if (CONDITION.content_height <= sidebar.height || $(window).width() < sidebar.disable_iflt) {
+					/* longer sidebar than the content || narrow window width */
+					sidebar.top = 1;
+					/* special value for no-scroll */
+				}
+				else if (sidebar.top > 0) { /* shorter sidebar than the window */
+					sidebar.top = 0;
+				}
+			} // function resize_sidebar
+
+			swe.resizeHandler = resizefunc;
 
 			$(window).scroll(scrollfunc);
 			$(window).resize(resizefunc);

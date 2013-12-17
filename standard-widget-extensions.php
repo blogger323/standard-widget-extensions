@@ -3,7 +3,7 @@
 Plugin Name: Standard Widget Extensions
 Plugin URI: http://en.hetarena.com/standard-widget-extensions
 Description: A plugin to extend widget behavior.
-Version: 1.3
+Version: 1.4
 Author: Hirokazu Matsui (blogger323)
 Author URI: http://en.hetarena.com/
 License: GPLv2
@@ -11,8 +11,8 @@ License: GPLv2
 
 class HM_SWE_Plugin_Loader {
 
-	const VERSION        = '1.3';
-	const OPTION_VERSION = '1.3';
+	const VERSION        = '1.4';
+	const OPTION_VERSION = '1.4';
 	const OPTION_KEY     = 'hm_swe_options';
 	const I18N_DOMAIN    = 'standard-widget-extensions';
 	const PREFIX         = 'hm_swe_';
@@ -39,6 +39,10 @@ class HM_SWE_Plugin_Loader {
 		'disable_iflt'           => 620,
 		'recalc_after'           => 5,
 		'ignore_footer'          => 'disabled',
+
+		'sidebar_id2'            => '',
+		'proportional_sidebar2'  => 0,
+		'disable_iflt2'          => 0,
 	);
 
 	// index for field array
@@ -61,6 +65,12 @@ class HM_SWE_Plugin_Loader {
 	const I_DISABLE_IFLT           = 16;
 	const I_RECALC_AFTER           = 17;
 	const I_IGNORE_FOOTER          = 18;
+
+	// for 2nd sidebar
+	const I_SIDEBAR_ID2            = 19;
+	const I_PROPORTIONA_SIDEBAR2   = 20;
+	const I_DISABLE_IFLT2          = 21;
+
 
 	// field array
 	private static $settings_field =
@@ -230,6 +240,29 @@ class HM_SWE_Plugin_Loader {
 						array( 'id' => 'disable', 'title' => 'Disable', 'value' => 'disabled' ),
 					),
 				),
+
+				// 2nd sidebar
+				array(
+					'id'       => 'sidebar_id2',
+					'title'    => '[2nd] ID of the 2nd Sidebar',
+					'expert'   => 1,
+					'callback' => 'settings_field_sidebar_id2',
+					'section'  => 'hm_swe_scroll_stop',
+				),
+				array(
+					'id'       => 'proportional_sidebar2',
+					'title'    => '[2nd] Proportional Sidebar',
+					'expert'   => 1,
+					'callback' => 'settings_field_proportional_sidebar2',
+					'section'  => 'hm_swe_scroll_stop',
+				),
+				array(
+					'id'       => 'disable_iflt2',
+					'title'    => '[2nd] Disable the 2nd sidebar if the window width is less than',
+					'expert'   => 1,
+					'callback' => 'settings_field_disable_iflt2',
+					'section'  => 'hm_swe_scroll_stop',
+				),
 			);
 
 	function __construct() {
@@ -296,13 +329,17 @@ class HM_SWE_Plugin_Loader {
 			'custom_selectors'       => $custom_selectors,
 			'slide_duration'         => $options['slide_duration'],
 			'recalc_after'           => $options['recalc_after'],
+
+			'sidebar_id2'            => esc_attr( $options['sidebar_id2'] ),
+			'proportional_sidebar2'  => $options['proportional_sidebar2'],
+			'disable_iflt2'          => $options['disable_iflt2'],
 		);
 		wp_localize_script( 'standard-widget-extensions', 'swe', $params );
 	}
 
 	function wp_head() {
 		$options = $this->get_hm_swe_option();
-		if ( $options['heading_marker'] !== 'none' && $options['enable_css'] === 'enabled'
+		if ( $options['accordion_widget'] === 'enabled' && $options['heading_marker'] !== 'none' && $options['enable_css'] === 'enabled'
 				&& implode( ',', $options['custom_selectors'] ) === '' ) {
 			$area_array = array_map( 'esc_attr', $this->get_widget_selectors( true ) );
 			$headstr      = "";
@@ -524,6 +561,18 @@ class HM_SWE_Plugin_Loader {
 		$this->write_text_option( self::I_RECALC_AFTER );
 	}
 
+	function settings_field_sidebar_id2() {
+		$this->write_text_option( self::I_SIDEBAR_ID2 );
+	}
+
+	function settings_field_proportional_sidebar2() {
+		$this->write_text_option( self::I_PROPORTIONA_SIDEBAR2) ;
+	}
+
+	function settings_field_disable_iflt2() {
+		$this->write_text_option( self::I_DISABLE_IFLT2 );
+	}
+
 	function settings_field_expert_options() {
 		$id = self::$settings_field[ self::I_EXPORT_OPTIONS ]['id'];
 		$v = $this->get_hm_swe_option( $id );
@@ -656,6 +705,30 @@ class HM_SWE_Plugin_Loader {
 		}
 		else {
 			$valid['recalc_after'] = $input['recalc_after'];
+		}
+
+		if ( $input['sidebar_id2'] !== '' && ! preg_match( '/^[a-zA-Z0-9_\-]+$/', $input['sidebar_id2'] ) ) {
+			add_settings_error( 'hm_swe_sidebar_id2', 'hm_swe_sidebar_id2_error', __( 'Wrong 2nd sidebar ID', self::I18N_DOMAIN ) );
+			$valid['sidebar_id2'] = $prev['sidebar_id2'];
+		}
+		else {
+			$valid['sidebar_id2'] = $input['sidebar_id2'];
+		}
+
+		if ( filter_var( $input['proportional_sidebar2'], FILTER_VALIDATE_FLOAT ) === FALSE ) {
+			add_settings_error( 'hm_swe_proportional_sidebar2', 'hm_swe_proportional_sidebar2_error', __( 'The 2nd proportional sidebar value has to be a number.', self::I18N_DOMAIN ) );
+			$valid['proportional_sidebar2'] = $prev['proportional_sidebar2'];
+		}
+		else {
+			$valid['proportional_sidebar2'] = $input['proportional_sidebar2'];
+		}
+
+		if ( filter_var( $input['disable_iflt2'], FILTER_VALIDATE_INT ) === FALSE ) {
+			add_settings_error( 'hm_swe_disable_iflt2', 'hm_swe_disable_iflt2_error', __( 'The minimum width for the 2nd sidebar has to be a number.', self::I18N_DOMAIN ) );
+			$valid['disable_iflt2'] = $prev['disable_iflt2'];
+		}
+		else {
+			$valid['disable_iflt2'] = $input['disable_iflt2'];
 		}
 
 		$valid['option_version'] = self::OPTION_VERSION;
