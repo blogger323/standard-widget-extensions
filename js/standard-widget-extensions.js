@@ -175,7 +175,7 @@
 
 		} // if accordion_widget
 
-		if (swe.scroll_stop && $(contentid)) {
+		if (swe.scroll_stop && $(contentid).length > 0) {
 
 			function scrollfunc() {
 				var curscrolltop = $(window).scrollTop();
@@ -288,8 +288,8 @@
 					// Use a fixed width because the parent will change.
 				}
 				else {
-					sidebar.width = sidebar.parent.width() * sidebar.percent_width / 100;
-					sidebar.o.width(sidebar.width)
+					sidebar.width = sidebar.parent.css('width') * sidebar.percent_width / 100;
+					sidebar.o.css('width', sidebar.width);
 				}
 
 				sidebar.offset = sidebar.o.offset();
