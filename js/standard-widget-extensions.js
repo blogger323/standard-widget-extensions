@@ -72,9 +72,16 @@
 					sidebar.parent = sidebar.o.parent();
 					sidebar.margintop = parseInt(sidebar.o.css('margin-top'), 10);
 					sidebar.marginbottom = parseInt(sidebar.o.css('margin-bottom'), 10);
-					sidebar.marginleft = parseInt(sidebar.o.css('margin-left'), 10);
+					sidebar.padding_top    = parseInt(sidebar.o.css('padding-top'), 10);
+					sidebar.padding_bottom = parseInt(sidebar.o.css('padding-bottom'), 10);
+					sidebar.marginleft = parseFloat(sidebar.o.css('margin-left'), 10);  // might be float in responsive themes
 					sidebar.percent_width = parseFloat(percent_width, 10);
 					sidebar.disable_iflt = parseInt(disable_iflt, 10);
+
+					/* fix for negative percent margins in decimal (for TwentyFourteen) */
+					if (sidebar.marginleft < 0) {
+						sidebar.marginleft = Math.floor(sidebar.marginleft);
+					}
 
 					/* fix for margins in percent */
 					sidebar.o.css('margin-left', sidebar.marginleft);
@@ -207,6 +214,7 @@
 					// scroll again with footer
 					sidebar.o.css("position", "absolute");
 					sidebar.o.css("top", sidebar.offset.top + CONDITION.content_height - sidebar.height - sidebar.margintop - sidebar.marginbottom - sidebar.absolute_adjustment_top - sidebar.main_side_adjustment);
+					/* top <= - padding_(top/bottom) * 2 ? */
 					sidebar.o.css("left", sidebar.offset.left - sidebar.absolute_adjustment_left - sidebar.marginleft);
 					sidebar.o.css("width", sidebar.width);
 					sidebar.fixedtop = sidebar.o.offset().top;
@@ -248,6 +256,7 @@
 					sidebar.o.css("position", "relative");
 					sidebar.o.css("top", "0");
 					sidebar.o.css("left", "0");
+					sidebar.o.css("width", sidebar.width);
 					sidebar.fixedtop = -1;
 					sidebar.fixed = 0;
 				}
