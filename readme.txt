@@ -65,6 +65,9 @@ Please tell your audience to upgrade browser.
 
 == Changelog ==
 
+= 1.4 - Dec, 2013 =
+* Support for the 2nd sidebar.
+
 = 1.3 - Nov 5, 2013 =
 * A new option, Proportional Sidebar, is introduced for better support of responsive web design.
 * [Fixed] Support sidebars whose left margin is not zero.
@@ -107,8 +110,6 @@ Please tell your audience to upgrade browser.
 
 == Upgrade Notice ==
 
-= 1.3 - Nov 5, 2013 =
-* A new option, Proportional Sidebar, is introduced for better support of responsive web design.
-* [Fixed] Support sidebars whose left margin is not zero.
-* WordPress 3.7 compliant
+= 1.4 =
+Support for the 2nd sidebar.
 
