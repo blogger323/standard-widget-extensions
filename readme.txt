@@ -4,7 +4,7 @@ Donate link: http://en.hetarena.com/donate
 Tags: widget, sidebar
 Requires at least: 3.2
 Tested up to: 3.8
-Stable tag: 1.3
+Stable tag: 1.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,7 +12,7 @@ Adds Sticky Sidebar and Accordion Widget features to your WordPress sites.
 
 == Description ==
 
-Standard Widget Extensions is extension for WordPress standard themes, Twenty Thirteen/Twenty Twelve/Twenty Eleven/Twenty Ten.
+Standard Widget Extensions is extension for WordPress standard themes, Twenty Fourteen/Twenty Thirteen/Twenty Twelve/etc.
 It's also effective for themes which use widgets in a standard manner.
 
 Current version of the plugin offers following two features.
@@ -23,6 +23,8 @@ You can individually turn on and off these features.
 
 Twenty Twelve/Twenty Eleven users can use this plugin out of the box.
 Twenty Thirteen users have to need [some work to use it](http://en.hetarena.com/archives/207 "some work to use it").
+For Twenty Fourteen users, [check this setting](http://en.hetarena.com/standard-widget-extensions/settings-for-standard-themes#twentyfourteen-set "Setting for Twenty Fourteen").
+
 Other theme users can adjust class names and/or IDs to suit the theme.
 You can find options for the plugin by selecting a menu 'Settings' - 'Standard WE'. 
 Detailed description for parameters are in [the plugin homepage](http://en.hetarena.com/standard-widget-extensions#setting "Parameter description").
@@ -65,8 +67,9 @@ Please tell your audience to upgrade browser.
 
 == Changelog ==
 
-= 1.4 - Dec, 2013 =
+= 1.4 - Jan 6, 2014 =
 * Support for the 2nd sidebar.
+* Support for sidebars using z-index or padding. Now working with Twenty Fourteen.
 
 = 1.3 - Nov 5, 2013 =
 * A new option, Proportional Sidebar, is introduced for better support of responsive web design.
