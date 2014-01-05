@@ -1,113 +1,125 @@
-# Copyright (C) 2013 Standard Widget Extensions
+# Copyright (C) 2014 Standard Widget Extensions
 # This file is distributed under the same license as the Standard Widget Extensions package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Standard Widget Extensions 1.2\n"
+"Project-Id-Version: Standard Widget Extensions 1.4\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/standard-widget-extensions\n"
-"POT-Creation-Date: 2013-11-05 01:57:44+00:00\n"
+"POT-Creation-Date: 2014-01-05 06:47:43+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2013-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2014-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 
-#: standard-widget-extensions.php:343
+#: standard-widget-extensions.php:376
 msgctxt "title"
 msgid "General"
 msgstr ""
 
-#: standard-widget-extensions.php:345
+#: standard-widget-extensions.php:378
 msgctxt "title"
 msgid "Accordion Widgets"
 msgstr ""
 
-#: standard-widget-extensions.php:347
+#: standard-widget-extensions.php:380
 msgctxt "title"
 msgid "Sticky Sidebar"
 msgstr ""
 
-#: standard-widget-extensions.php:388 standard-widget-extensions.php:414
+#: standard-widget-extensions.php:421 standard-widget-extensions.php:447
 msgid "Show Expert Options"
 msgstr ""
 
-#: standard-widget-extensions.php:396 standard-widget-extensions.php:414
+#: standard-widget-extensions.php:429 standard-widget-extensions.php:447
 msgid "Hide Expert Options"
 msgstr ""
 
-#: standard-widget-extensions.php:412
+#: standard-widget-extensions.php:445
 msgid ""
 "<p>Use primary/secondary/widget for Twenty Twelve and Twenty Eleven.\n"
 "Use container/primary/widget-container for Twenty Ten.</p>"
 msgstr ""
 
-#: standard-widget-extensions.php:472
+#: standard-widget-extensions.php:505
 msgid "Plus button URL"
 msgstr ""
 
-#: standard-widget-extensions.php:475
+#: standard-widget-extensions.php:508
 msgid "Minus buttom URL"
 msgstr ""
 
-#: standard-widget-extensions.php:561
+#: standard-widget-extensions.php:606
 msgid "The Proportional Sidebar value has to be a number."
 msgstr ""
 
-#: standard-widget-extensions.php:569
+#: standard-widget-extensions.php:614
 msgid "The minimum width has to be a number."
 msgstr ""
 
-#: standard-widget-extensions.php:580
+#: standard-widget-extensions.php:625
 msgid "Wrong URL for the plus button"
 msgstr ""
 
-#: standard-widget-extensions.php:592
+#: standard-widget-extensions.php:637
 msgid "Wrong URL for the minus button"
 msgstr ""
 
-#: standard-widget-extensions.php:601
+#: standard-widget-extensions.php:646
 msgid "Wrong main column ID"
 msgstr ""
 
-#: standard-widget-extensions.php:609
+#: standard-widget-extensions.php:654
 msgid "Wrong sidebar ID"
 msgstr ""
 
-#: standard-widget-extensions.php:617
+#: standard-widget-extensions.php:662
 msgid "Wrong widget class"
 msgstr ""
 
-#: standard-widget-extensions.php:628
+#: standard-widget-extensions.php:673
 msgid "Wrong widget areas"
 msgstr ""
 
-#: standard-widget-extensions.php:639
+#: standard-widget-extensions.php:684
 msgid "Wrong custom selectors"
 msgstr ""
 
-#: standard-widget-extensions.php:647
+#: standard-widget-extensions.php:692
 msgid "Wrong heading selector"
 msgstr ""
 
-#: standard-widget-extensions.php:655
+#: standard-widget-extensions.php:700
 msgid "The Slide Duration has to be a number."
 msgstr ""
 
-#: standard-widget-extensions.php:663
+#: standard-widget-extensions.php:708
 msgid "The Recalc Timer has to be a number."
 msgstr ""
 
-#. #-#-#-#-#  standard-widget-extensions.pot (Standard Widget Extensions 1.2)  #-#-#-#-#
+#: standard-widget-extensions.php:716
+msgid "Wrong 2nd sidebar ID"
+msgstr ""
+
+#: standard-widget-extensions.php:724
+msgid "The 2nd proportional sidebar value has to be a number."
+msgstr ""
+
+#: standard-widget-extensions.php:732
+msgid "The minimum width for the 2nd sidebar has to be a number."
+msgstr ""
+
+#. #-#-#-#-#  standard-widget-extensions.pot (Standard Widget Extensions 1.4)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
-#: standard-widget-extensions.php:675 standard-widget-extensions.php:683
+#: standard-widget-extensions.php:744 standard-widget-extensions.php:752
 msgid "Standard Widget Extensions"
 msgstr ""
 
-#: standard-widget-extensions.php:675
+#: standard-widget-extensions.php:744
 msgid "Standard WE"
 msgstr ""
 
-#: standard-widget-extensions.php:688
+#: standard-widget-extensions.php:757
 msgid "Save Changes"
 msgstr ""
 
@@ -116,7 +128,8 @@ msgid "http://en.hetarena.com/standard-widget-extensions"
 msgstr ""
 
 #. Description of the plugin/theme
-msgid "A plugin to extend widget behavior."
+msgid ""
+"Adds Sticky Sidebar and Accordion Widget features to your WordPress sites."
 msgstr ""
 
 #. Author of the plugin/theme
@@ -182,6 +195,14 @@ msgstr ""
 msgid "Quick Switchback Mode"
 msgstr ""
 
+# recalc_after
+msgid "Recalc Timer (sec, 0=never)"
+msgstr ""
+
+# ignore_footer
+msgid "Ignore Footer (for Infinite Scroll Pages)"
+msgstr ""
+
 # proportional_sidebar
 msgid "Proportional Sidebar (width in percent, 0=fixed)"
 msgstr ""
@@ -190,12 +211,16 @@ msgstr ""
 msgid "Disable if the window width is less than"
 msgstr ""
 
-# recalc_after
-msgid "Recalc Timer (sec, 0=never)"
+# 2nd:ID
+msgid "[2nd] ID of the 2nd Sidebar"
 msgstr ""
 
-# ignore_footer
-msgid "Ignore Footer (for Infinite Scroll Pages)"
+# 2nd:proportional_sidebar
+msgid "[2nd] Proportional Sidebar"
+msgstr ""
+
+# 2nd:disable_iflt
+msgid "[2nd] Disable the 2nd sidebar if the window width is less than"
 msgstr ""
 
 msgid "Enable"
