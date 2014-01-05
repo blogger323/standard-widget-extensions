@@ -2,9 +2,11 @@
 /*
 Plugin Name: Standard Widget Extensions
 Plugin URI: http://en.hetarena.com/standard-widget-extensions
-Description: A plugin to extend widget behavior.
+Description: Adds Sticky Sidebar and Accordion Widget features to your WordPress sites.
 Version: 1.4
 Author: Hirokazu Matsui (blogger323)
+Text Domain: standard-widget-extensions
+Domain Path: /languages
 Author URI: http://en.hetarena.com/
 License: GPLv2
 */
@@ -60,11 +62,13 @@ class HM_SWE_Plugin_Loader {
 	const I_ACCORDION_WIDGET_AREAS = 11;
 	const I_CUSTOM_SELECTORS       = 12;
 	const I_SCROLL_STOP            = 13;
+
 	const I_SCROLL_MODE            = 14;
-	const I_PROPORTIONAL_SIDEBAR   = 15;
-	const I_DISABLE_IFLT           = 16;
-	const I_RECALC_AFTER           = 17;
-	const I_IGNORE_FOOTER          = 18;
+	const I_RECALC_AFTER           = 15;
+	const I_IGNORE_FOOTER          = 16;
+
+	const I_PROPORTIONAL_SIDEBAR   = 17;
+	const I_DISABLE_IFLT           = 18;
 
 	// for 2nd sidebar
 	const I_SIDEBAR_ID2            = 19;
@@ -209,20 +213,6 @@ class HM_SWE_Plugin_Loader {
 					),
 				),
 				array(
-					'id'       => 'proportional_sidebar',
-					'title'    => 'Proportional Sidebar (width in percent, 0=fixed)',
-					'expert'   => 1,
-					'callback' => 'settings_field_proportional_sidebar',
-					'section'  => 'hm_swe_scroll_stop',
-				),
-				array(
-					'id'       => 'disable_iflt',
-					'title'    => 'Disable if the window width is less than',
-					'expert'   => 1,
-					'callback' => 'settings_field_disable_iflt',
-					'section'  => 'hm_swe_scroll_stop',
-				),
-				array(
 					'id'       => 'recalc_after',
 					'title'    => 'Recalc Timer (sec, 0=never)',
 					'expert'   => 1,
@@ -239,6 +229,21 @@ class HM_SWE_Plugin_Loader {
 						array( 'id' => 'enable', 'title' => 'Enable', 'value' => 'enabled' ),
 						array( 'id' => 'disable', 'title' => 'Disable', 'value' => 'disabled' ),
 					),
+				),
+
+				array(
+					'id'       => 'proportional_sidebar',
+					'title'    => 'Proportional Sidebar (width in percent, 0=fixed)',
+					'expert'   => 1,
+					'callback' => 'settings_field_proportional_sidebar',
+					'section'  => 'hm_swe_scroll_stop',
+				),
+				array(
+					'id'       => 'disable_iflt',
+					'title'    => 'Disable if the window width is less than',
+					'expert'   => 1,
+					'callback' => 'settings_field_disable_iflt',
+					'section'  => 'hm_swe_scroll_stop',
 				),
 
 				// 2nd sidebar

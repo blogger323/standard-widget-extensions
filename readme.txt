@@ -3,12 +3,12 @@ Contributors: blogger323
 Donate link: http://en.hetarena.com/donate
 Tags: widget, sidebar
 Requires at least: 3.2
-Tested up to: 3.7
+Tested up to: 3.8
 Stable tag: 1.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-This plugin adds some nice features to your standard widgets.
+Adds Sticky Sidebar and Accordion Widget features to your WordPress sites.
 
 == Description ==
 

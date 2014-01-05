@@ -1,6 +1,6 @@
 /*
  standard-widget-extensions.js
- Copyright 2013 Hirokazu Matsui (blogger323)
+ Copyright 2013, 2014 Hirokazu Matsui (blogger323)
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License, version 2, as
@@ -28,43 +28,23 @@
 			prevscrolltop: -1
 		};
 
-		var SIDEBAR1 = {
-			o: null, // jQuery object
-			top: 0,
-			height: 0,
-			fixedtop: -1,
-			fixed: 0,
-			offset: 0,
-			margintop: 0,
-			marginbottom: 0,
-			marginleft: 0,
-			width: 0,
-			absolute_adjustment_top: 0,
-			absolute_adjustment_left: 0,
-			main_side_adjustment: 0,
-			percent_width: 0,
-			disable_iflt: 0
-		};
-
-		var SIDEBAR2 = {
-			o: null,
-			top: 0,
-			height: 0,
-			fixedtop: -1,
-			fixed: 0,
-			offset: 0,
-			margintop: 0,
-			marginbottom: 0,
-			marginleft: 0,
-			width: 0,
-			absolute_adjustment_top: 0,
-			absolute_adjustment_left: 0,
-			main_side_adjustment: 0,
-			percent_width: 0,
-			disable_iflt: 0
-		};
-
 		function init_sidebar(sidebar, param_id, percent_width, disable_iflt) {
+			sidebar.o =  null; // jQuery object
+			sidebar.top = 0;
+			sidebar.height = 0;
+			sidebar.fixedtop = -1;
+			sidebar.fixed = 0;
+			sidebar.offset = 0;
+			sidebar.margintop = 0;
+			sidebar.marginbottom = 0;
+			sidebar.marginleft = 0;
+			sidebar.width = 0;
+			sidebar.absolute_adjustment_top = 0;
+			sidebar.absolute_adjustment_left = 0;
+			sidebar.main_side_adjustment = 0;
+			sidebar.percent_width = 0;
+			sidebar.disable_iflt = 0;
+
 			if (param_id) {
 				sidebar.id = '#' + param_id;
 				if (sidebar.id && $(sidebar.id).length > 0) {
@@ -89,6 +69,9 @@
 				}
 			}
 		}
+
+	var SIDEBAR1 = {};
+	var SIDEBAR2 = {};
 
 		init_sidebar(SIDEBAR1, swe.sidebar_id, swe.proportional_sidebar, swe.disable_iflt);
 		init_sidebar(SIDEBAR2, swe.sidebar_id2, swe.proportional_sidebar2, swe.disable_iflt2);
@@ -171,8 +154,7 @@
 							}
 						});
 						$.cookie('hm_swe', c2, { path: '/' });
-					}
-					/* for */
+					} /* for */
 				}
 				if (typeof resizefunc === 'function') {
 					resizefunc();
