@@ -13,8 +13,8 @@ License: GPLv2
 
 class HM_SWE_Plugin_Loader {
 
-	const VERSION        = '1.4';
-	const OPTION_VERSION = '1.4';
+	const VERSION        = '1.5';
+	const OPTION_VERSION = '1.5';
 	const OPTION_KEY     = 'hm_swe_options';
 	const I18N_DOMAIN    = 'standard-widget-extensions';
 	const PREFIX         = 'hm_swe_';
