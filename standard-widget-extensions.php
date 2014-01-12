@@ -3,7 +3,7 @@
 Plugin Name: Standard Widget Extensions
 Plugin URI: http://en.hetarena.com/standard-widget-extensions
 Description: Adds Sticky Sidebar and Accordion Widget features to your WordPress sites.
-Version: 1.4
+Version: 1.5-alpha
 Author: Hirokazu Matsui (blogger323)
 Text Domain: standard-widget-extensions
 Domain Path: /languages
@@ -40,7 +40,9 @@ class HM_SWE_Plugin_Loader {
 		'proportional_sidebar'   => 0,
 		'disable_iflt'           => 620,
 		'recalc_after'           => 5,
+		'header_space'           => 0,
 		'ignore_footer'          => 'disabled',
+		'enable_reload_me'       => 'disabled',
 
 		'sidebar_id2'            => '',
 		'proportional_sidebar2'  => 0,
@@ -65,15 +67,17 @@ class HM_SWE_Plugin_Loader {
 
 	const I_SCROLL_MODE            = 14;
 	const I_RECALC_AFTER           = 15;
-	const I_IGNORE_FOOTER          = 16;
+	const I_HEADER_SPACE           = 16;
+	const I_IGNORE_FOOTER          = 17;
+	const I_ENABLE_RELOAD_ME       = 18;
 
-	const I_PROPORTIONAL_SIDEBAR   = 17;
-	const I_DISABLE_IFLT           = 18;
+	const I_PROPORTIONAL_SIDEBAR   = 19;
+	const I_DISABLE_IFLT           = 20;
 
 	// for 2nd sidebar
-	const I_SIDEBAR_ID2            = 19;
-	const I_PROPORTIONA_SIDEBAR2   = 20;
-	const I_DISABLE_IFLT2          = 21;
+	const I_SIDEBAR_ID2            = 21;
+	const I_PROPORTIONA_SIDEBAR2   = 22;
+	const I_DISABLE_IFLT2          = 23;
 
 
 	// field array
@@ -220,10 +224,28 @@ class HM_SWE_Plugin_Loader {
 					'section'  => 'hm_swe_scroll_stop',
 				),
 				array(
+					'id'       => 'header_space',
+					'title'    => 'Header Space',
+					'expert'   => 1,
+					'callback' => 'settings_field_header_space',
+					'section'  => 'hm_swe_scroll_stop',
+				),
+				array(
 					'id'       => 'ignore_footer',
 					'title'    => 'Ignore Footer (for Infinite Scroll Pages)',
 					'expert'   => 1,
 					'callback' => 'settings_field_ignore_footer',
+					'section'  => 'hm_swe_scroll_stop',
+					'options'  => array(
+						array( 'id' => 'enable', 'title' => 'Enable', 'value' => 'enabled' ),
+						array( 'id' => 'disable', 'title' => 'Disable', 'value' => 'disabled' ),
+					),
+				),
+				array(
+					'id'       => 'enable_reload_me',
+					'title'    => 'Enable Reload-me Warning',
+					'expert'   => 1,
+					'callback' => 'settings_field_enable_reload_me',
 					'section'  => 'hm_swe_scroll_stop',
 					'options'  => array(
 						array( 'id' => 'enable', 'title' => 'Enable', 'value' => 'enabled' ),
@@ -334,6 +356,8 @@ class HM_SWE_Plugin_Loader {
 			'custom_selectors'       => $custom_selectors,
 			'slide_duration'         => $options['slide_duration'],
 			'recalc_after'           => $options['recalc_after'],
+			'header_space'           => $options['header_space'],
+			'enable_reload_me'       => $options['enable_reload_me'] == 'enabled',
 
 			'sidebar_id2'            => esc_attr( $options['sidebar_id2'] ),
 			'proportional_sidebar2'  => $options['proportional_sidebar2'],
@@ -566,6 +590,14 @@ class HM_SWE_Plugin_Loader {
 		$this->write_text_option( self::I_RECALC_AFTER );
 	}
 
+	function settings_field_header_space() {
+		$this->write_text_option( self::I_HEADER_SPACE );
+	}
+
+	function settings_field_enable_reload_me() {
+		$this->settings_field_simple_radio_option( self::I_ENABLE_RELOAD_ME );
+	}
+
 	function settings_field_sidebar_id2() {
 		$this->write_text_option( self::I_SIDEBAR_ID2 );
 	}
@@ -599,6 +631,7 @@ class HM_SWE_Plugin_Loader {
 		$valid['readable_js']      = $input['readable_js'];
 		$valid['ignore_footer']    = $input['ignore_footer'];
 		$valid['expert_options']   = $input['expert_options'];
+		$valid['enable_reload_me'] = $input['enable_reload_me'];
 
 
 		// Proportional Sidebar
@@ -710,6 +743,14 @@ class HM_SWE_Plugin_Loader {
 		}
 		else {
 			$valid['recalc_after'] = $input['recalc_after'];
+		}
+
+		if ( filter_var( $input['header_space'], FILTER_VALIDATE_INT ) === FALSE ) {
+			add_settings_error( 'hm_swe_header_space', 'hm_swe_header_space', __( 'The Header Space has to be a number.', self::I18N_DOMAIN ) );
+			$valid['header_space'] = $prev['header_space'];
+		}
+		else {
+			$valid['header_space'] = $input['header_space'];
 		}
 
 		if ( $input['sidebar_id2'] !== '' && ! preg_match( '/^[a-zA-Z0-9_\-]+$/', $input['sidebar_id2'] ) ) {
