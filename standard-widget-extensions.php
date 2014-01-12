@@ -42,7 +42,7 @@ class HM_SWE_Plugin_Loader {
 		'recalc_after'           => 5,
 		'header_space'           => 0,
 		'ignore_footer'          => 'disabled',
-		'enable_reload_me'       => 'enabled',
+		'enable_reload_me'       => 'disabled',
 
 		'sidebar_id2'            => '',
 		'proportional_sidebar2'  => 0,
