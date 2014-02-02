@@ -319,6 +319,26 @@
 			$(window).scroll(scrollfunc);
 			$(window).resize(resizefunc);
 
+			if (swe.enable_reload_me) {
+				// add elements to display warning
+				$('body').append('<div class="hm-swe-modal-background"><div class="hm-swe-resize-message">' +
+						swe.msg_reload_me +
+						'<br /><input type="button" id="hm-swe-reload-button" value="' + swe.msg_reload + '" /></div></div>');
+
+				// set handlers
+				$(window).resize(function() {
+					$('.hm-swe-modal-background').css('display', 'block');
+				});
+
+				$('.hm-swe-modal-background').click(function() {
+					$('.hm-swe-modal-background').css('display', 'none');
+				});
+
+				$('#hm-swe-reload-button').click(function() {
+					location.reload();
+				});
+			}
+
 			resizefunc();
 
 			var recalc_after = parseInt(swe.recalc_after, 10);
