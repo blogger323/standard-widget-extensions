@@ -272,10 +272,9 @@
 				sidebar.fixedtop = -1;
 				sidebar.fixed = 0;
 
-				sidebar.o.css("position", "static");
-				//sidebar.o.css("position", "relative");
-				//sidebar.o.css("top", "0");
-				//sidebar.o.css("left", "0");
+				sidebar.o.css("position", "relative");
+				sidebar.o.css("top", "0");
+				sidebar.o.css("left", "0");
 
 				if (sidebar.percent_width === 0) {
 					sidebar.width = sidebar.o.css('width'); // using css('width') (not width())
