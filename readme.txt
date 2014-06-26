@@ -67,6 +67,12 @@ Please tell your audience to upgrade browser.
 
 == Changelog ==
 
+= 1.5 - ??? =
+* Initial collapsed behavior changed to reflect initial block/none status.
+* Header Space.
+* Reload Me warning.
+* Better behavior of sticky sidebars.
+
 = 1.4 - Jan 6, 2014 =
 * Support for the 2nd sidebar.
 * Support for sidebars using z-index or padding. Now working with Twenty Fourteen.

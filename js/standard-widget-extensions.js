@@ -46,6 +46,8 @@
 			sidebar.percent_width = 0;
 			sidebar.disable_iflt = 0;
 
+            sidebar.previoustop = 0;
+
 			if (param_id) {
 				sidebar.id = '#' + param_id;
 				if (sidebar.id && $(sidebar.id).length > 0) {
@@ -71,8 +73,9 @@
 			}
 		}
 
-	var SIDEBAR1 = {};
-	var SIDEBAR2 = {};
+        var SIDEBAR1 = {};
+        var SIDEBAR2 = {};
+        var DISABLED_SIDEBAR = 9999;
 
 		init_sidebar(SIDEBAR1, swe.sidebar_id, swe.proportional_sidebar, swe.disable_iflt);
 		init_sidebar(SIDEBAR2, swe.sidebar_id2, swe.proportional_sidebar2, swe.disable_iflt2);
@@ -99,7 +102,7 @@
 
 				// restore status, set heading markers
 				$(swe.custom_selectors[i]).each(function () {
-					if (cook && cook[$(this).attr('id')] == "t") {
+					if (cook && cook[$(this).attr('id')] == "t" /* TODO: || ! cook && visible */) {
 						$(this).children(swe.heading_string).next().show();
 						if (swe.heading_marker) {
 							$(this).children(swe.heading_string).css('background', swe.buttonminusurl + " no-repeat left center");
@@ -184,7 +187,7 @@
 			function manage_sidebar(sidebar, curscrolltop) {
 				var s = curscrolltop - sidebar.offset.top;
 
-				if (sidebar.top === 1) {
+				if (sidebar.top === DISABLED_SIDEBAR) {
 					// For z-index based Themes, do not use css("position", "static")
 					sidebar.o.css("position", "relative");
 					sidebar.o.css("top", "0");
@@ -202,7 +205,8 @@
 					sidebar.fixedtop = sidebar.o.offset().top;
 					sidebar.fixed = 0;
 				}
-				else if (CONDITION.mode == 2 && (curscrolltop - CONDITION.prevscrolltop) * CONDITION.direction < 0 && sidebar.fixed) {
+				else if (CONDITION.mode == 2 && (curscrolltop - CONDITION.prevscrolltop) * CONDITION.direction < 0 && sidebar.fixed
+                    && sidebar.top != CONDITION.header_space /* not shorter sidebar */) {
 					// FOR MODE2 BLOCK
 					// the direction has changed
 					// mode2 absolute position
@@ -248,6 +252,7 @@
 				else {
 					// continue absolute
 				}
+                sidebar.previoustop = sidebar.o.offset().top;
 
 			}
 
@@ -305,7 +310,7 @@
 				  - sidebar.padding_top - sidebar.padding_bottom + CONDITION.header_space;
 				if (CONDITION.content_height <= sidebar.height + sidebar.padding_top + sidebar.padding_bottom || $(window).width() < sidebar.disable_iflt) {
 					/* longer sidebar than the content || narrow window width */
-					sidebar.top = 1;
+					sidebar.top = DISABLED_SIDEBAR;
 					/* special value for no-scroll */
 				}
 				else if (sidebar.top > CONDITION.header_space) { /* shorter sidebar than the window */
