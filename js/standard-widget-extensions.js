@@ -32,12 +32,10 @@
 		};
 
 		function init_sidebar(sidebar, param_id, percent_width, disable_iflt) {
-			sidebar.o =  null; // jQuery object
-			sidebar.top = 0;
-			sidebar.height = 0; /* include margins, borders and paddings */
-			sidebar.fixedtop = -1;
+            sidebar.o =  null; // jQuery object
+			sidebar.height = 0; /* include borders and paddings */
 			sidebar.fixed = 0;
-			sidebar.offset = 0;
+            sidebar.default_offset = null;
 			sidebar.margin_top = 0;
 			sidebar.margin_bottom = 0;
 			sidebar.margin_left = 0;
@@ -207,9 +205,6 @@
 					return;
 				}
 
-				// sidebar.top = CONDITION.window_height - sidebar.height + CONDITION.header_space;
-				// sidebar.main_side_adjustment = sidebar.o.offset().top - $(contentid).offset().top;
-
 				var sidebar_cur_top = sidebar.o.offset().top;
 
 				if ( !swe.ignore_footer &&
@@ -224,23 +219,10 @@
 					    - sidebar.height + sidebar.margin_top - sidebar.absolute_adjustment_top);
 					sidebar.o.css("left", sidebar.default_offset.left - sidebar.absolute_adjustment_left - sidebar.margin_left);
 					sidebar.o.css("width", sidebar.width);
-					sidebar.fixedtop = sidebar.o.offset().top;
-					sidebar.fixed = 0;
-				}
-				else if (CONDITION.mode == 2 && sidebar.mode == LONG_SIDEBAR && (curscrolltop - CONDITION.prevscrolltop) * CONDITION.direction < 0 && sidebar.fixed) {
-					// FOR MODE2 BLOCK
-					// the direction has changed
-					// mode2 absolute position
-
-					sidebar.o.css("position", "absolute");
-					sidebar.o.css("top", sidebar_cur_top - sidebar.margin_top - sidebar.absolute_adjustment_top);
-					sidebar.o.css("left", sidebar.default_offset.left - sidebar.absolute_adjustment_left - sidebar.margin_left);
-					sidebar.o.css("width", sidebar.width);
 					sidebar.fixed = 0;
 				}
 				else if (CONDITION.mode == 2 && sidebar.mode == LONG_SIDEBAR &&  curscrolltop < CONDITION.prevscrolltop &&
-                        curscrolltop < sidebar_cur_top - sidebar.margin_top - CONDITION.header_space
-						/* curscrolltop < sidebar.fixedtop  - sidebar.margin_top - CONDITION.header_space  && curscrolltop > sidebar.default_offset.top*/ ) {
+                        curscrolltop < sidebar_cur_top - sidebar.margin_top - CONDITION.header_space) {
 					// FOR MODE2 BLOCK
 					// at the top of sidebar
 
@@ -249,32 +231,35 @@
 					sidebar.o.css("left", sidebar.default_offset.left - $(window).scrollLeft() - sidebar.margin_left);
 					sidebar.o.css("width", sidebar.width);
 					sidebar.fixed = 1;
-					sidebar.fixedtop = sidebar.o.offset().top;
 				}
-				else if ((CONDITION.mode == 2 && sidebar.mode == LONG_SIDEBAR && curscrolltop > sidebar_cur_top - sidebar.margin_top + sidebar.height - CONDITION.window_height &&
-				   curscrolltop > CONDITION.prevscrolltop /* && sidebar.fixedtop > 0 &&
-                           curscrolltop > sidebar.fixedtop + sidebar.height + sidebar.padding_top + sidebar.padding_bottom - CONDITION.window_height */ ) ||
-						 ((CONDITION.mode != 2 /* || (CONDITION.mode == 2 && sidebar.mode == LONG_SIDEBAR && sidebar.fixedtop < 0)*/ ) &&
-                           curscrolltop >= sidebar.default_offset.top - sidebar.margin_top + sidebar.height - CONDITION.window_height &&
-                           sidebar.mode == LONG_SIDEBAR)) {
+				else if ((CONDITION.mode == 2 && sidebar.mode == LONG_SIDEBAR && curscrolltop >= sidebar_cur_top - sidebar.margin_top + sidebar.height - CONDITION.window_height &&
+				   curscrolltop > CONDITION.prevscrolltop) ||
+						  (CONDITION.mode != 2 && sidebar.mode == LONG_SIDEBAR && curscrolltop >= sidebar.default_offset.top - sidebar.margin_top + sidebar.height - CONDITION.window_height)) {
 					// at the bottom of sidebar
 					sidebar.o.css("position", "fixed");
 					sidebar.o.css("top", CONDITION.window_height - sidebar.height + sidebar.margin_top);
 					sidebar.o.css("left", sidebar.default_offset.left - $(window).scrollLeft() - sidebar.margin_left);
 					sidebar.o.css("width", sidebar.width);
-
 					sidebar.fixed = 1;
-					sidebar.fixedtop = sidebar.o.offset().top;
 				}
+                else if (CONDITION.mode == 2 && sidebar.mode == LONG_SIDEBAR && (curscrolltop - CONDITION.prevscrolltop) * CONDITION.direction < 0 && sidebar.fixed) {
+                    // FOR MODE2 BLOCK
+                    // the direction has changed
+                    // mode2 absolute position
+
+                    sidebar.o.css("position", "absolute");
+                    sidebar.o.css("top", sidebar_cur_top - sidebar.margin_top - sidebar.absolute_adjustment_top);
+                    sidebar.o.css("left", sidebar.default_offset.left - sidebar.absolute_adjustment_left - sidebar.margin_left);
+                    sidebar.o.css("width", sidebar.width);
+                    sidebar.fixed = 0;
+                }
                 else if (sidebar.mode == SHORT_SIDEBAR && curscrolltop > sidebar.default_offset.top - sidebar.margin_top - CONDITION.header_space ) {
                     // shorter sidebar as fixed
                     sidebar.o.css("position", "fixed");
                     sidebar.o.css("top", CONDITION.header_space - sidebar.margin_top);
                     sidebar.o.css("left", sidebar.default_offset.left - $(window).scrollLeft() - sidebar.margin_left);
                     sidebar.o.css("width", sidebar.width);
-
                     sidebar.fixed = 1;
-                    sidebar.fixedtop = sidebar.o.offset().top;
                 }
 				else if (CONDITION.mode != 2 || curscrolltop < sidebar.default_offset.top - CONDITION.header_space) {
 					// For z-index based Themes, do not use css("position", "static")
@@ -282,7 +267,6 @@
 					sidebar.o.css("top", "0");
 					sidebar.o.css("left", "0");
 					sidebar.o.css("width", sidebar.width);
-					sidebar.fixedtop = -1;
 					sidebar.fixed = 0;
 				}
 				else {
@@ -330,7 +314,6 @@
                     sidebar.height += sidebar.padding_top + sidebar.padding_bottom + sidebar.border_top + sidebar.border_bottom;
                 }
 
-				sidebar.fixedtop = -1;
 				sidebar.fixed = 0;
                 sidebar.previoustop = 0;
 
@@ -351,7 +334,6 @@
 				if (!sidebar.default_offset) {
 					return; // something wrong.
 				}
-				//sidebar.offset.top -= sidebar.margintop;
 
 				// determine the adjustment value for the absolute position
 				// find a parent which has a position other than static
@@ -361,9 +343,6 @@
 
 				// determine the adjustment value for the position diff between the content and the sidebar
 				sidebar.main_side_adjustment = sidebar.o.offset().top - $(contentid).offset().top;
-
-				// The top position of the sidebar when fixed. Usually has a negative value.
-				// sidebar.top = CONDITION.window_height - sidebar.height + CONDITION.header_space;
 
                 if (sidebar.default_offset.top - sidebar.margin_top + sidebar.height > CONDITION.content_top - CONDITION.content_margin_top + CONDITION.content_height ||
                     $(window).width() < sidebar.disable_iflt) {
@@ -376,14 +355,6 @@
                     sidebar.mode = LONG_SIDEBAR
                 }
 
-//				if (CONDITION.content_height <= sidebar.height + sidebar.padding_top + sidebar.padding_bottom || $(window).width() < sidebar.disable_iflt) {
-//					/* longer sidebar than the content || narrow window width */
-//					sidebar.offset_from_header = DISABLED_SIDEBAR;
-//					/* special value for no-scroll */
-//				}
-//				else if (sidebar.offset_from_header > CONDITION.header_space) { /* shorter sidebar than the window */
-//					sidebar.offset_from_header = CONDITION.header_space;
-//				}
 			} // function resize_sidebar
 
 			swe.resizeHandler = resizefunc;
