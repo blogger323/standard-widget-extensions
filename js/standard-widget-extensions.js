@@ -21,8 +21,10 @@
 		var slide_duration = parseInt(swe.slide_duration, 10);
 
 		var CONDITION = {
-			content_height: 0, /* including margins */
-			window_height: 0,
+			content_height: 0, /* including margins, borders and paddings */
+            content_top: 0,
+            content_margin_top: 0,
+            window_height: 0,
 			mode: parseInt(swe.scroll_mode, 10), /* 2: switch back */
 			header_space: parseInt(swe.header_space, 10),
 			direction: 0,
@@ -32,19 +34,21 @@
 		function init_sidebar(sidebar, param_id, percent_width, disable_iflt) {
 			sidebar.o =  null; // jQuery object
 			sidebar.top = 0;
-			sidebar.height = 0;
+			sidebar.height = 0; /* include margins, borders and paddings */
 			sidebar.fixedtop = -1;
 			sidebar.fixed = 0;
 			sidebar.offset = 0;
-			sidebar.margintop = 0;
-			sidebar.marginbottom = 0;
-			sidebar.marginleft = 0;
+			sidebar.margin_top = 0;
+			sidebar.margin_bottom = 0;
+			sidebar.margin_left = 0;
 			sidebar.width = 0;
 			sidebar.absolute_adjustment_top = 0;
 			sidebar.absolute_adjustment_left = 0;
 			sidebar.main_side_adjustment = 0;
 			sidebar.percent_width = 0;
 			sidebar.disable_iflt = 0;
+
+            sidebar.mode = 0; // 0:disabled, 1:long, 2:short
 
             sidebar.previoustop = 0;
 
@@ -53,21 +57,24 @@
 				if (sidebar.id && $(sidebar.id).length > 0) {
 					sidebar.o = $(sidebar.id);
 					sidebar.parent = sidebar.o.parent();
-					sidebar.margintop = parseInt(sidebar.o.css('margin-top'), 10);
-					sidebar.marginbottom = parseInt(sidebar.o.css('margin-bottom'), 10);
+					sidebar.margin_top = parseInt(sidebar.o.css('margin-top'), 10);
+					sidebar.margin_bottom = parseInt(sidebar.o.css('margin-bottom'), 10);
 					sidebar.padding_top    = parseInt(sidebar.o.css('padding-top'), 10);
 					sidebar.padding_bottom = parseInt(sidebar.o.css('padding-bottom'), 10);
-					sidebar.marginleft = parseFloat(sidebar.o.css('margin-left'), 10);  // might be float in responsive themes
+                    sidebar.border_top    = parseInt(sidebar.o.css('border-top'), 10);
+                    sidebar.border_bottom = parseInt(sidebar.o.css('border-bottom'), 10);
+                    sidebar.box_sizing = sidebar.o.css('box-sizing').toLowerCase();
+					sidebar.margin_left = parseFloat(sidebar.o.css('margin-left'), 10);  // might be float in responsive themes
 					sidebar.percent_width = parseFloat(percent_width, 10);
 					sidebar.disable_iflt = parseInt(disable_iflt, 10);
 
 					/* fix for negative percent margins in decimal (for TwentyFourteen) */
-					if (sidebar.marginleft < 0) {
-						sidebar.marginleft = Math.floor(sidebar.marginleft);
+					if (sidebar.margin_left < 0) {
+						sidebar.margin_left = Math.floor(sidebar.margin_left);
 					}
 
 					/* fix for margins in percent */
-					sidebar.o.css('margin-left', sidebar.marginleft);
+					sidebar.o.css('margin-left', sidebar.margin_left);
 
 				}
 			}
@@ -75,7 +82,13 @@
 
         var SIDEBAR1 = {};
         var SIDEBAR2 = {};
-        var DISABLED_SIDEBAR = 9999;
+        var DISABLED_SIDEBAR = 0;
+        var LONG_SIDEBAR     = 1;
+        var SHORT_SIDEBAR    = 2;
+
+        swe.sidebar1 = SIDEBAR1;
+        swe.sidebar2 = SIDEBAR2;
+        swe.condition = CONDITION;
 
 		init_sidebar(SIDEBAR1, swe.sidebar_id, swe.proportional_sidebar, swe.disable_iflt);
 		init_sidebar(SIDEBAR2, swe.sidebar_id2, swe.proportional_sidebar2, swe.disable_iflt2);
@@ -185,9 +198,8 @@
 			}
 
 			function manage_sidebar(sidebar, curscrolltop) {
-				var s = curscrolltop - sidebar.offset.top;
 
-				if (sidebar.top === DISABLED_SIDEBAR) {
+				if (sidebar.mode === DISABLED_SIDEBAR) {
 					// For z-index based Themes, do not use css("position", "static")
 					sidebar.o.css("position", "relative");
 					sidebar.o.css("top", "0");
@@ -195,52 +207,76 @@
 					return;
 				}
 
-				if ( !swe.ignore_footer && ((s >= CONDITION.content_height - CONDITION.window_height - sidebar.main_side_adjustment  && sidebar.top < CONDITION.header_space) ||
-						(sidebar.top === CONDITION.header_space /* shorter sidebar */ && s >= CONDITION.content_height - sidebar.height - sidebar.margintop - sidebar.marginbottom - sidebar.main_side_adjustment - sidebar.padding_top - sidebar.padding_bottom))) {
+				// sidebar.top = CONDITION.window_height - sidebar.height + CONDITION.header_space;
+				// sidebar.main_side_adjustment = sidebar.o.offset().top - $(contentid).offset().top;
+
+				var sidebar_cur_top = sidebar.o.offset().top;
+
+				if ( !swe.ignore_footer &&
+				    (   (sidebar.mode == LONG_SIDEBAR &&
+				         curscrolltop >= CONDITION.content_top - CONDITION.content_margin_top + CONDITION.content_height - CONDITION.window_height) ||
+				        (sidebar.mode == SHORT_SIDEBAR &&
+				         curscrolltop >= CONDITION.content_top - CONDITION.content_margin_top + CONDITION.content_height - sidebar.height - CONDITION.header_space)
+				    )) {
 					// scroll again with footer
 					sidebar.o.css("position", "absolute");
-					sidebar.o.css("top", sidebar.offset.top + CONDITION.content_height - sidebar.height - sidebar.margintop - sidebar.marginbottom - sidebar.absolute_adjustment_top - sidebar.main_side_adjustment - sidebar.padding_top - sidebar.padding_bottom + CONDITION.header_space);
-					sidebar.o.css("left", sidebar.offset.left - sidebar.absolute_adjustment_left - sidebar.marginleft);
+					sidebar.o.css("top", CONDITION.content_top - CONDITION.content_margin_top + CONDITION.content_height
+					    - sidebar.height + sidebar.margin_top - sidebar.absolute_adjustment_top);
+					sidebar.o.css("left", sidebar.default_offset.left - sidebar.absolute_adjustment_left - sidebar.margin_left);
 					sidebar.o.css("width", sidebar.width);
 					sidebar.fixedtop = sidebar.o.offset().top;
 					sidebar.fixed = 0;
 				}
-				else if (CONDITION.mode == 2 && (curscrolltop - CONDITION.prevscrolltop) * CONDITION.direction < 0 && sidebar.fixed
-                    && sidebar.top != CONDITION.header_space /* not shorter sidebar */) {
+				else if (CONDITION.mode == 2 && sidebar.mode == LONG_SIDEBAR && (curscrolltop - CONDITION.prevscrolltop) * CONDITION.direction < 0 && sidebar.fixed) {
 					// FOR MODE2 BLOCK
 					// the direction has changed
 					// mode2 absolute position
-					var o = sidebar.o.offset().top - sidebar.margintop;
+
 					sidebar.o.css("position", "absolute");
-					sidebar.o.css("top", o - sidebar.absolute_adjustment_top);
-					sidebar.o.css("left", sidebar.offset.left - sidebar.absolute_adjustment_left - sidebar.marginleft);
+					sidebar.o.css("top", sidebar_cur_top - sidebar.margin_top - sidebar.absolute_adjustment_top);
+					sidebar.o.css("left", sidebar.default_offset.left - sidebar.absolute_adjustment_left - sidebar.margin_left);
 					sidebar.o.css("width", sidebar.width);
 					sidebar.fixed = 0;
 				}
-				else if (CONDITION.mode == 2 && curscrolltop < CONDITION.prevscrolltop &&
-						curscrolltop < sidebar.fixedtop  - sidebar.margintop - CONDITION.header_space  && curscrolltop > sidebar.offset.top) {
+				else if (CONDITION.mode == 2 && sidebar.mode == LONG_SIDEBAR &&  curscrolltop < CONDITION.prevscrolltop &&
+                        curscrolltop < sidebar_cur_top - sidebar.margin_top - CONDITION.header_space
+						/* curscrolltop < sidebar.fixedtop  - sidebar.margin_top - CONDITION.header_space  && curscrolltop > sidebar.default_offset.top*/ ) {
 					// FOR MODE2 BLOCK
 					// at the top of sidebar
 
 					sidebar.o.css("position", "fixed");
-					sidebar.o.css("top", CONDITION.header_space);
-					sidebar.o.css("left", sidebar.offset.left - $(window).scrollLeft() - sidebar.marginleft);
+					sidebar.o.css("top", CONDITION.header_space + sidebar.margin_top);
+					sidebar.o.css("left", sidebar.default_offset.left - $(window).scrollLeft() - sidebar.margin_left);
 					sidebar.o.css("width", sidebar.width);
 					sidebar.fixed = 1;
-					sidebar.fixedtop = sidebar.o.offset().top + sidebar.marginbottom;
+					sidebar.fixedtop = sidebar.o.offset().top;
 				}
-				else if ((CONDITION.mode == 2 && curscrolltop > CONDITION.prevscrolltop && sidebar.fixedtop > 0 && curscrolltop > sidebar.fixedtop + sidebar.height + sidebar.padding_top + sidebar.padding_bottom - CONDITION.window_height  ) ||
-						((CONDITION.mode != 2 || (CONDITION.mode == 2 && sidebar.fixedtop < 0)) && s >= -sidebar.top && sidebar.top <= CONDITION.header_space)) {
+				else if ((CONDITION.mode == 2 && sidebar.mode == LONG_SIDEBAR && curscrolltop > sidebar_cur_top - sidebar.margin_top + sidebar.height - CONDITION.window_height &&
+				   curscrolltop > CONDITION.prevscrolltop /* && sidebar.fixedtop > 0 &&
+                           curscrolltop > sidebar.fixedtop + sidebar.height + sidebar.padding_top + sidebar.padding_bottom - CONDITION.window_height */ ) ||
+						 ((CONDITION.mode != 2 /* || (CONDITION.mode == 2 && sidebar.mode == LONG_SIDEBAR && sidebar.fixedtop < 0)*/ ) &&
+                           curscrolltop >= sidebar.default_offset.top - sidebar.margin_top + sidebar.height - CONDITION.window_height &&
+                           sidebar.mode == LONG_SIDEBAR)) {
 					// at the bottom of sidebar
 					sidebar.o.css("position", "fixed");
-					sidebar.o.css("top", sidebar.top /*- CONDITION.header_space */); /* No adjustment for shorter sidebars but needs adjustment for longer ones Jan. 2014 */
-					sidebar.o.css("left", sidebar.offset.left - $(window).scrollLeft() - sidebar.marginleft);
+					sidebar.o.css("top", CONDITION.window_height - sidebar.height + sidebar.margin_top);
+					sidebar.o.css("left", sidebar.default_offset.left - $(window).scrollLeft() - sidebar.margin_left);
 					sidebar.o.css("width", sidebar.width);
 
 					sidebar.fixed = 1;
 					sidebar.fixedtop = sidebar.o.offset().top;
 				}
-				else if (CONDITION.mode != 2 || curscrolltop < sidebar.offset.top - CONDITION.header_space) {
+                else if (sidebar.mode == SHORT_SIDEBAR && curscrolltop > sidebar.default_offset.top - sidebar.margin_top - CONDITION.header_space ) {
+                    // shorter sidebar as fixed
+                    sidebar.o.css("position", "fixed");
+                    sidebar.o.css("top", CONDITION.header_space - sidebar.margin_top);
+                    sidebar.o.css("left", sidebar.default_offset.left - $(window).scrollLeft() - sidebar.margin_left);
+                    sidebar.o.css("width", sidebar.width);
+
+                    sidebar.fixed = 1;
+                    sidebar.fixedtop = sidebar.o.offset().top;
+                }
+				else if (CONDITION.mode != 2 || curscrolltop < sidebar.default_offset.top - CONDITION.header_space) {
 					// For z-index based Themes, do not use css("position", "static")
 					sidebar.o.css("position", "relative");
 					sidebar.o.css("top", "0");
@@ -252,12 +288,22 @@
 				else {
 					// continue absolute
 				}
-                sidebar.previoustop = sidebar.o.offset().top;
+                sidebar.previoustop = sidebar_cur_top;
 
 			}
 
 			function resizefunc() {
-				CONDITION.content_height = $(contentid).height() + parseInt($(contentid).css('margin-top'), 10) + parseInt($(contentid).css('margin-bottom'), 10);
+                var c = $(contentid);
+                CONDITION.content_top = c.offset().top;
+                CONDITION.content_margin_top = parseInt(c.css('margin-top'), 10);
+				CONDITION.content_height = c.height() + CONDITION.content_margin_top + parseInt(c.css('margin-bottom'), 10);
+
+                if (c.css('box-sizing').toLowerCase() == 'border-box') {
+
+                }
+                else {
+                    CONDITION.content_height += parseInt(c.css('padding-top')) + parseInt(c.css('padding-left')) + parseInt(c.css('border-top')) + parseInt(c.css('border-bottom'));
+                }
 				CONDITION.window_height = $(window).height();
 				CONDITION.prevscrolltop = -1;
 				CONDITION.direction = 0;
@@ -274,8 +320,19 @@
 
 			function resize_sidebar(sidebar) {
 				sidebar.height = sidebar.o.height();
+
+                sidebar.height += sidebar.margin_top + sidebar.margin_bottom;
+
+                if (sidebar.o.box_sizing == 'border-box') {
+
+                }
+                else {
+                    sidebar.height += sidebar.padding_top + sidebar.padding_bottom + sidebar.border_top + sidebar.border_bottom;
+                }
+
 				sidebar.fixedtop = -1;
 				sidebar.fixed = 0;
+                sidebar.previoustop = 0;
 
 				sidebar.o.css("position", "relative");
 				sidebar.o.css("top", "0");
@@ -290,11 +347,11 @@
 					sidebar.o.css('width', sidebar.width);
 				}
 
-				sidebar.offset = sidebar.o.offset();
-				if (!sidebar.offset) {
+				sidebar.default_offset = sidebar.o.offset();
+				if (!sidebar.default_offset) {
 					return; // something wrong.
 				}
-				sidebar.offset.top -= sidebar.margintop;
+				//sidebar.offset.top -= sidebar.margintop;
 
 				// determine the adjustment value for the absolute position
 				// find a parent which has a position other than static
@@ -306,16 +363,27 @@
 				sidebar.main_side_adjustment = sidebar.o.offset().top - $(contentid).offset().top;
 
 				// The top position of the sidebar when fixed. Usually has a negative value.
-				sidebar.top = CONDITION.window_height - sidebar.height - sidebar.margintop - sidebar.marginbottom
-				  - sidebar.padding_top - sidebar.padding_bottom + CONDITION.header_space;
-				if (CONDITION.content_height <= sidebar.height + sidebar.padding_top + sidebar.padding_bottom || $(window).width() < sidebar.disable_iflt) {
-					/* longer sidebar than the content || narrow window width */
-					sidebar.top = DISABLED_SIDEBAR;
-					/* special value for no-scroll */
-				}
-				else if (sidebar.top > CONDITION.header_space) { /* shorter sidebar than the window */
-					sidebar.top = CONDITION.header_space;
-				}
+				// sidebar.top = CONDITION.window_height - sidebar.height + CONDITION.header_space;
+
+                if (sidebar.default_offset.top - sidebar.margin_top + sidebar.height > CONDITION.content_top - CONDITION.content_margin_top + CONDITION.content_height ||
+                    $(window).width() < sidebar.disable_iflt) {
+                    sidebar.mode = DISABLED_SIDEBAR;
+                }
+                else if (sidebar.height + CONDITION.header_space <= CONDITION.window_height) {
+                    sidebar.mode = SHORT_SIDEBAR;
+                }
+                else {
+                    sidebar.mode = LONG_SIDEBAR
+                }
+
+//				if (CONDITION.content_height <= sidebar.height + sidebar.padding_top + sidebar.padding_bottom || $(window).width() < sidebar.disable_iflt) {
+//					/* longer sidebar than the content || narrow window width */
+//					sidebar.offset_from_header = DISABLED_SIDEBAR;
+//					/* special value for no-scroll */
+//				}
+//				else if (sidebar.offset_from_header > CONDITION.header_space) { /* shorter sidebar than the window */
+//					sidebar.offset_from_header = CONDITION.header_space;
+//				}
 			} // function resize_sidebar
 
 			swe.resizeHandler = resizefunc;
