@@ -373,6 +373,10 @@ class HM_SWE_Plugin_Loader {
 
 	function wp_head() {
 		$options = $this->get_hm_swe_option();
+        ?>
+
+        <style type="text/css">
+        <?php
 		if ( $options['accordion_widget'] === 'enabled' && $options['heading_marker'] !== 'none' && $options['enable_css'] === 'enabled'
 				&& implode( ',', $options['custom_selectors'] ) === '' ) {
 			$area_array = array_map( 'esc_attr', $this->get_widget_selectors( true ) );
@@ -384,7 +388,6 @@ class HM_SWE_Plugin_Loader {
 			} // for
 
 			?>
-			<style type="text/css">
 				<?php echo $headstr; ?>
 				{
 					zoom: 1	; /* for IE7 to display background-image */
@@ -397,27 +400,29 @@ class HM_SWE_Plugin_Loader {
 					overflow: visible	;
 				}
 
-				.hm-swe-resize-message {
-					height: 50%;
-					width: 50%;
-					margin: auto;
-					position: absolute;
-					top: 0; left: 0; bottom: 0; right: 0;
-					z-index: 999;
-
-					color: white;
-				}
-
-				.hm-swe-modal-background {
-					position: fixed;
-					top: 0; left: 0; 	bottom: 0; right: 0;
-					background: none repeat scroll 0% 0% rgba(0, 0, 0, 0.85);
-					z-index: 998;
-					display: none;
-				}
-			</style>
 		<?php
 		} // if
+        ?>
+        .hm-swe-resize-message {
+            height: 50%;
+            width: 50%;
+            margin: auto;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            z-index: 999;
+
+            color: white;
+        }
+
+        .hm-swe-modal-background {
+            position: fixed;
+            top: 0; left: 0; 	bottom: 0; right: 0;
+            background: none repeat scroll 0% 0% rgba(0, 0, 0, 0.85);
+            z-index: 998;
+            display: none;
+        }
+        </style>
+        <?php
 	} // wp_head
 
 	function admin_init() {
