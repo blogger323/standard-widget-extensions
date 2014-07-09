@@ -59,7 +59,7 @@
 					sidebar.padding_top    = parseInt(sidebar.o.css('padding-top'), 10);
 					sidebar.padding_bottom = parseInt(sidebar.o.css('padding-bottom'), 10);
 					sidebar.margin_left = parseFloat(sidebar.o.css('margin-left'), 10);  // might be float in responsive themes
-					sidebar.percent_width = parseFloat(percent_width, 10);
+					sidebar.percent_width = parseFloat(percent_width);
 					sidebar.disable_iflt = parseInt(disable_iflt, 10);
 
 					/* fix for negative percent margins in decimal (for TwentyFourteen) */
@@ -303,11 +303,11 @@
 				sidebar.o.css("left", "0");
 
 				if (sidebar.percent_width === 0) {
-					sidebar.width = sidebar.o.css('width'); // using css('width') (not width())
+					sidebar.width = parseFloat(sidebar.o.css('width')); // using css('width') (not width())
 					// Use a fixed width because the parent will change.
 				}
 				else {
-					sidebar.width = sidebar.parent.css('width') * sidebar.percent_width / 100;
+					sidebar.width = parseFloat(sidebar.parent.css('width')) * sidebar.percent_width / 100;
 					sidebar.o.css('width', sidebar.width);
 				}
 

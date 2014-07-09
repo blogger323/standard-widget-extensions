@@ -21,9 +21,7 @@ You can individually turn on and off these features.
 1. Accordion Widgets
 1. Sticky Sidebar
 
-Twenty Twelve/Twenty Eleven users can use this plugin out of the box.
-Twenty Thirteen users have to need [some work to use it](http://en.hetarena.com/archives/207 "some work to use it").
-For Twenty Fourteen users, [check this setting](http://en.hetarena.com/standard-widget-extensions/settings-for-standard-themes#twentyfourteen-set "Setting for Twenty Fourteen").
+You can use this plugin easily with default WordPress themes. [Check setting information](http://en.hetarena.com/standard-widget-extensions/settings-for-standard-themes).
 
 Other theme users can adjust class names and/or IDs to suit the theme.
 You can find options for the plugin by selecting a menu 'Settings' - 'Standard WE'. 

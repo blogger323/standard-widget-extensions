@@ -409,7 +409,7 @@ class HM_SWE_Plugin_Loader {
             margin: auto;
             position: absolute;
             top: 0; left: 0; bottom: 0; right: 0;
-            z-index: 999;
+            z-index: 999; // TODO: need to adjust to Twenty Eleven
 
             color: white;
         }
