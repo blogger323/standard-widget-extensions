@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Standard Widget Extensions 1.5-beta\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/standard-widget-extensions\n"
-"POT-Creation-Date: 2014-07-11 08:00:28+00:00\n"
+"POT-Creation-Date: 2014-07-11 09:18:56+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -193,6 +193,12 @@ msgstr ""
 
 # initially_collapsed
 msgid "Initial State"
+msgstr ""
+
+msgid "Initially Collapsed"
+msgstr ""
+
+msgid "Leave them as styled"
 msgstr ""
 
 # slide_duration

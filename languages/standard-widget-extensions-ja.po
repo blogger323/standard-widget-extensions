@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Standard Widget Extensions 1.0\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/standard-widget-extensions\n"
-"POT-Creation-Date: 2014-07-11 08:00:28+00:00\n"
+"POT-Creation-Date: 2014-07-11 09:18:56+00:00\n"
 "PO-Revision-Date: 2013-03-12 02:53+0900\n"
 "Last-Translator: Hirokazu Matsui <blogger323@gmail.com>\n"
 "Language-Team: Japanese\n"
@@ -54,7 +54,9 @@ msgstr "詳細オプションを隠す"
 msgid ""
 "<p>Check <a href=\"http://en.hetarena.com/standard-widget-extensions\" "
 "target=\"_blank\">the plugin home page</a> for help.</p>"
-msgstr "<p>設定の詳細は<a href=\"http://hetarena.com/standard-widget-extensions\" target=\"_blank\">公式ページ</a>をご覧ください。</p>"
+msgstr ""
+"<p>設定の詳細は<a href=\"http://hetarena.com/standard-widget-extensions\" "
+"target=\"_blank\">公式ページ</a>をご覧ください。</p>"
 
 #: standard-widget-extensions.php:583
 msgid "Plus button URL"
@@ -200,6 +202,13 @@ msgstr "同時に一つのウィジェットだけ伸ばす"
 # initially_collapsed
 msgid "Initial State"
 msgstr "初期状態"
+
+# initially_collapsed
+msgid "Initially Collapsed"
+msgstr "縮めた状態"
+
+msgid "Leave them as styled"
+msgstr "CSS でスタイルされた通り"
 
 # slide_duration
 msgid "Slide Duration (ms)"
