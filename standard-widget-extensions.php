@@ -3,7 +3,7 @@
 Plugin Name: Standard Widget Extensions
 Plugin URI: http://en.hetarena.com/standard-widget-extensions
 Description: Adds Sticky Sidebar and Accordion Widget features to your WordPress sites.
-Version: 1.5-alpha
+Version: 1.5-beta
 Author: Hirokazu Matsui (blogger323)
 Text Domain: standard-widget-extensions
 Domain Path: /languages
@@ -40,6 +40,7 @@ class HM_SWE_Plugin_Loader {
 		'proportional_sidebar'   => 0,
 		'disable_iflt'           => 620,
 		'recalc_after'           => 5,
+        'recalc_count'           => 100,
 		'header_space'           => 0,
 		'ignore_footer'          => 'disabled',
 		'enable_reload_me'       => 'disabled',
@@ -67,17 +68,18 @@ class HM_SWE_Plugin_Loader {
 
 	const I_SCROLL_MODE            = 14;
 	const I_RECALC_AFTER           = 15;
-	const I_HEADER_SPACE           = 16;
-	const I_IGNORE_FOOTER          = 17;
-	const I_ENABLE_RELOAD_ME       = 18;
+    const I_RECALC_COUNT           = 16;
+	const I_HEADER_SPACE           = 17;
+	const I_IGNORE_FOOTER          = 18;
+	const I_ENABLE_RELOAD_ME       = 19;
 
-	const I_PROPORTIONAL_SIDEBAR   = 19;
-	const I_DISABLE_IFLT           = 20;
+	const I_PROPORTIONAL_SIDEBAR   = 20;
+	const I_DISABLE_IFLT           = 21;
 
 	// for 2nd sidebar
-	const I_SIDEBAR_ID2            = 21;
-	const I_PROPORTIONA_SIDEBAR2   = 22;
-	const I_DISABLE_IFLT2          = 23;
+	const I_SIDEBAR_ID2            = 22;
+	const I_PROPORTIONA_SIDEBAR2   = 23;
+	const I_DISABLE_IFLT2          = 24;
 
 
 	// field array
@@ -223,7 +225,14 @@ class HM_SWE_Plugin_Loader {
 					'callback' => 'settings_field_recalc_after',
 					'section'  => 'hm_swe_scroll_stop',
 				),
-				array(
+                array(
+                    'id'       => 'recalc_count',
+                    'title'    => 'Recalc Count',
+                    'expert'   => 1,
+                    'callback' => 'settings_field_recalc_count',
+                    'section'  => 'hm_swe_scroll_stop',
+                ),
+                array(
 					'id'       => 'header_space',
 					'title'    => 'Header Space',
 					'expert'   => 1,
@@ -356,6 +365,7 @@ class HM_SWE_Plugin_Loader {
 			'custom_selectors'       => $custom_selectors,
 			'slide_duration'         => $options['slide_duration'],
 			'recalc_after'           => $options['recalc_after'],
+            'recalc_count'           => $options['recalc_count'],
 			'header_space'           => $options['header_space'],
 			'enable_reload_me'       => $options['enable_reload_me'] == 'enabled',
 
@@ -364,8 +374,9 @@ class HM_SWE_Plugin_Loader {
 			'disable_iflt2'          => $options['disable_iflt2'],
 
 			// messages
-			'msg_reload_me'          => __( 'To keep design integrity, please reload me after resizing!', self::I18N_DOMAIN ),
+			'msg_reload_me'          => __( 'To keep layout integrity, please reload me after resizing!', self::I18N_DOMAIN ),
 			'msg_reload'             => __( 'Reload', self::I18N_DOMAIN ),
+            'msg_continue'           => __( 'Continue', self::I18N_DOMAIN )
 
 		);
 		wp_localize_script( 'standard-widget-extensions', 'swe', $params );
@@ -409,7 +420,7 @@ class HM_SWE_Plugin_Loader {
             margin: auto;
             position: absolute;
             top: 0; left: 0; bottom: 0; right: 0;
-            z-index: 999; // TODO: need to adjust to Twenty Eleven
+            z-index: 99999;
 
             color: white;
         }
@@ -418,7 +429,7 @@ class HM_SWE_Plugin_Loader {
             position: fixed;
             top: 0; left: 0; 	bottom: 0; right: 0;
             background: none repeat scroll 0% 0% rgba(0, 0, 0, 0.85);
-            z-index: 998;
+            z-index: 99998;
             display: none;
         }
         </style>
@@ -619,6 +630,10 @@ class HM_SWE_Plugin_Loader {
 		$this->write_text_option( self::I_RECALC_AFTER );
 	}
 
+    function settings_field_recalc_count() {
+        $this->write_text_option( self::I_RECALC_COUNT );
+    }
+
 	function settings_field_header_space() {
 		$this->write_text_option( self::I_HEADER_SPACE );
 	}
@@ -773,6 +788,14 @@ class HM_SWE_Plugin_Loader {
 		else {
 			$valid['recalc_after'] = $input['recalc_after'];
 		}
+
+        if ( filter_var( $input['recalc_count'], FILTER_VALIDATE_INT ) === FALSE ) {
+            add_settings_error( 'hm_swe_recalc_count', 'hm_swe_recalc_count_error', __( 'The Recalc Count has to be a number.', self::I18N_DOMAIN ) );
+            $valid['recalc_count'] = $prev['recalc_count'];
+        }
+        else {
+            $valid['recalc_count'] = $input['recalc_count'];
+        }
 
 		if ( filter_var( $input['header_space'], FILTER_VALIDATE_INT ) === FALSE ) {
 			add_settings_error( 'hm_swe_header_space', 'hm_swe_header_space', __( 'The Header Space has to be a number.', self::I18N_DOMAIN ) );
