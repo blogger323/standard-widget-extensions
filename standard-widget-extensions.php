@@ -243,7 +243,7 @@ class HM_SWE_Plugin_Loader {
 				),
 				array(
 					'id'       => 'enable_reload_me',
-					'title'    => 'Enable Reload-me Warning',
+					'title'    => 'Reload-me Warning After Resizing',
 					'expert'   => 1,
 					'callback' => 'settings_field_enable_reload_me',
 					'section'  => 'hm_swe_scroll_stop',
@@ -362,6 +362,11 @@ class HM_SWE_Plugin_Loader {
 			'sidebar_id2'            => esc_attr( $options['sidebar_id2'] ),
 			'proportional_sidebar2'  => $options['proportional_sidebar2'],
 			'disable_iflt2'          => $options['disable_iflt2'],
+
+			// messages
+			'msg_reload_me'          => __( 'To keep design integrity, please reload me after resizing!', self::I18N_DOMAIN ),
+			'msg_reload'             => __( 'Reload', self::I18N_DOMAIN ),
+
 		);
 		wp_localize_script( 'standard-widget-extensions', 'swe', $params );
 	}
@@ -390,6 +395,25 @@ class HM_SWE_Plugin_Loader {
 				<?php echo $areastr; ?>
 				{
 					overflow: visible	;
+				}
+
+				.hm-swe-resize-message {
+					height: 50%;
+					width: 50%;
+					margin: auto;
+					position: absolute;
+					top: 0; left: 0; bottom: 0; right: 0;
+					z-index: 999;
+
+					color: white;
+				}
+
+				.hm-swe-modal-background {
+					position: fixed;
+					top: 0; left: 0; 	bottom: 0; right: 0;
+					background: none repeat scroll 0% 0% rgba(0, 0, 0, 0.85);
+					z-index: 998;
+					display: none;
 				}
 			</style>
 		<?php
