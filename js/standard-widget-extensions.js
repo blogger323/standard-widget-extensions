@@ -202,38 +202,47 @@
 				}
 
 				var sidebar_cur_top = sidebar.o.offset().top;
+                sidebar_cur_top -= sidebar.margin_top;
 
 				if ( !swe.ignore_footer &&
 				    (   (sidebar.mode == LONG_SIDEBAR &&
-				         curscrolltop >= CONDITION.content_top - CONDITION.content_margin_top + CONDITION.content_height - CONDITION.window_height) ||
+				         curscrolltop >= CONDITION.content_top /* - CONDITION.content_margin_top */ + CONDITION.content_height - CONDITION.window_height) ||
 				        (sidebar.mode == SHORT_SIDEBAR &&
-				         curscrolltop >= CONDITION.content_top - CONDITION.content_margin_top + CONDITION.content_height - sidebar.height - CONDITION.header_space)
+				         curscrolltop >= CONDITION.content_top /* - CONDITION.content_margin_top */ + CONDITION.content_height - sidebar.height - CONDITION.header_space)
 				    )) {
 					// scroll again with footer
 					sidebar.o.css("position", "absolute");
-					sidebar.o.css("top", CONDITION.content_top - CONDITION.content_margin_top + CONDITION.content_height
-					    - sidebar.height + sidebar.margin_top - sidebar.absolute_adjustment_top);
+					sidebar.o.css("top", CONDITION.content_top /* - CONDITION.content_margin_top */ + CONDITION.content_height
+					    - sidebar.height /* + sidebar.margin_top */ - sidebar.absolute_adjustment_top);
 					sidebar.o.css("left", sidebar.default_offset.left - sidebar.absolute_adjustment_left - sidebar.margin_left);
 					sidebar.o.css("width", sidebar.width);
 					sidebar.fixed = 0;
 				}
-				else if (CONDITION.mode == 2 && sidebar.mode == LONG_SIDEBAR &&  curscrolltop < CONDITION.prevscrolltop &&
-                        curscrolltop < sidebar_cur_top - sidebar.margin_top - CONDITION.header_space) {
+                else if ((CONDITION.mode == 2 || sidebar.mode == SHORT_SIDEBAR) && curscrolltop < sidebar.default_offset.top /* - sidebar.margin_top */ - CONDITION.header_space) {
+                    // For z-index based Themes, do not use css("position", "static")
+                    sidebar.o.css("position", "relative");
+                    sidebar.o.css("top", "0");
+                    sidebar.o.css("left", "0");
+                    sidebar.o.css("width", sidebar.width);
+                    sidebar.fixed = 0;
+                }
+                else if (CONDITION.mode == 2 && sidebar.mode == LONG_SIDEBAR &&  curscrolltop < CONDITION.prevscrolltop &&
+                        curscrolltop < sidebar_cur_top /*- sidebar.margin_top */ - CONDITION.header_space) {
 					// FOR MODE2 BLOCK
 					// at the top of sidebar
 
 					sidebar.o.css("position", "fixed");
-					sidebar.o.css("top", CONDITION.header_space + sidebar.margin_top);
+					sidebar.o.css("top", CONDITION.header_space); // no need of margin-top
 					sidebar.o.css("left", sidebar.default_offset.left - $(window).scrollLeft() - sidebar.margin_left);
 					sidebar.o.css("width", sidebar.width);
 					sidebar.fixed = 1;
 				}
-				else if ((CONDITION.mode == 2 && sidebar.mode == LONG_SIDEBAR && curscrolltop >= sidebar_cur_top - sidebar.margin_top + sidebar.height - CONDITION.window_height &&
+				else if ((CONDITION.mode == 2 && sidebar.mode == LONG_SIDEBAR && curscrolltop >= sidebar_cur_top /*- sidebar.margin_top */ + sidebar.height - CONDITION.window_height &&
 				   curscrolltop > CONDITION.prevscrolltop) ||
-						  (CONDITION.mode != 2 && sidebar.mode == LONG_SIDEBAR && curscrolltop >= sidebar.default_offset.top - sidebar.margin_top + sidebar.height - CONDITION.window_height)) {
+						  (CONDITION.mode != 2 && sidebar.mode == LONG_SIDEBAR && curscrolltop >= sidebar.default_offset.top /*- sidebar.margin_top */ + sidebar.height - CONDITION.window_height)) {
 					// at the bottom of sidebar
 					sidebar.o.css("position", "fixed");
-					sidebar.o.css("top", CONDITION.window_height - sidebar.height + sidebar.margin_top);
+					sidebar.o.css("top", CONDITION.window_height - sidebar.height /* + sidebar.margin_top */);
 					sidebar.o.css("left", sidebar.default_offset.left - $(window).scrollLeft() - sidebar.margin_left);
 					sidebar.o.css("width", sidebar.width);
 					sidebar.fixed = 1;
@@ -244,20 +253,20 @@
                     // mode2 absolute position
 
                     sidebar.o.css("position", "absolute");
-                    sidebar.o.css("top", sidebar_cur_top - sidebar.margin_top - sidebar.absolute_adjustment_top);
+                    sidebar.o.css("top", sidebar_cur_top /* - sidebar.margin_top */ - sidebar.absolute_adjustment_top);
                     sidebar.o.css("left", sidebar.default_offset.left - sidebar.absolute_adjustment_left - sidebar.margin_left);
                     sidebar.o.css("width", sidebar.width);
                     sidebar.fixed = 0;
                 }
-                else if (sidebar.mode == SHORT_SIDEBAR && curscrolltop > sidebar.default_offset.top - sidebar.margin_top - CONDITION.header_space ) {
+                else if (sidebar.mode == SHORT_SIDEBAR) {
                     // shorter sidebar as fixed
                     sidebar.o.css("position", "fixed");
-                    sidebar.o.css("top", CONDITION.header_space - sidebar.margin_top);
+                    sidebar.o.css("top", CONDITION.header_space); // no need of margin-top
                     sidebar.o.css("left", sidebar.default_offset.left - $(window).scrollLeft() - sidebar.margin_left);
                     sidebar.o.css("width", sidebar.width);
                     sidebar.fixed = 1;
                 }
-				else if (CONDITION.mode != 2 || curscrolltop < sidebar.default_offset.top - CONDITION.header_space) {
+				else if (CONDITION.mode != 2) {
 					// For z-index based Themes, do not use css("position", "static")
 					sidebar.o.css("position", "relative");
 					sidebar.o.css("top", "0");
@@ -276,6 +285,8 @@
                 var c = $(contentid);
                 CONDITION.content_top = c.offset().top;
                 CONDITION.content_margin_top = parseInt(c.css('margin-top'), 10);
+                CONDITION.content_top -= CONDITION.content_margin_top;
+
 				CONDITION.content_height = c.outerHeight(true);
 
 				CONDITION.window_height = $(window).height();
@@ -316,13 +327,15 @@
 					return; // something wrong.
 				}
 
+                sidebar.default_offset.top  -= sidebar.margin_top;
+
 				// determine the adjustment value for the absolute position
 				// find a parent which has a position other than static
 				var o = sidebar.o.offsetParent();
-				sidebar.absolute_adjustment_top  = o.offset().top;
+				sidebar.absolute_adjustment_top  = o.offset().top;  // TODO: margin adjustment needed?
 				sidebar.absolute_adjustment_left = o.offset().left;
 
-                if (sidebar.default_offset.top - sidebar.margin_top + sidebar.height > CONDITION.content_top - CONDITION.content_margin_top + CONDITION.content_height ||
+                if (sidebar.default_offset.top /*- sidebar.margin_top */ + sidebar.height > CONDITION.content_top /*- CONDITION.content_margin_top */ + CONDITION.content_height ||
                     $(window).width() < sidebar.disable_iflt) {
                     sidebar.mode = DISABLED_SIDEBAR;
                 }
@@ -342,9 +355,10 @@
 
 			if (swe.enable_reload_me) {
 				// add elements to display warning
-				$('body').append('<div class="hm-swe-modal-background"><div class="hm-swe-resize-message">' +
+				$('body').append('<div class="hm-swe-modal-background"><div class="hm-swe-resize-message"><p>' +
 						swe.msg_reload_me +
-						'<br /><input type="button" id="hm-swe-reload-button" value="' + swe.msg_reload + '" /></div></div>');
+						'</p><input type="button" id="hm-swe-reload-button" value="' + swe.msg_reload + '" style="margin: 0 20px" />' +
+                        '<input type="button" id="hm-swe-continue-button" value="' + swe.msg_continue + '" /></div></div>');
 
 				// set handlers
 				$(window).resize(function() {
