@@ -12,8 +12,8 @@ Adds Sticky Sidebar and Accordion Widget features to your WordPress sites.
 
 == Description ==
 
-Standard Widget Extensions is extension for WordPress standard themes, Twenty Fourteen/Twenty Thirteen/Twenty Twelve/etc.
-It's also effective for themes which use widgets in a standard manner.
+Standard Widget Extensions is extension for WordPress themes.
+It's effective for themes which use widgets in a standard manner.
 
 Current version of the plugin offers following two features.
 You can individually turn on and off these features.
@@ -21,7 +21,7 @@ You can individually turn on and off these features.
 1. Accordion Widgets
 1. Sticky Sidebar
 
-You can use this plugin easily with default WordPress themes. [Check setting information](http://en.hetarena.com/standard-widget-extensions/settings-for-standard-themes).
+You can use this plugin easily with default WordPress themes (Twenty Fourteen/Twenty Thirteen/Twenty Twelve/Twenty Eleven). [Check setting information](http://en.hetarena.com/standard-widget-extensions/settings-for-standard-themes).
 
 Other theme users can adjust class names and/or IDs to suit the theme.
 You can find options for the plugin by selecting a menu 'Settings' - 'Standard WE'. 
@@ -61,15 +61,15 @@ Please tell your audience to upgrade browser.
 == Screenshots ==
 
 1. Widgets in Twenty Twelve/Twenty Eleven with custom icon/Twenty Ten
-2. Settings
+2. Settings with default values
 
 == Changelog ==
 
 = 1.5 - ??? =
 * Initial collapsed behavior changed to reflect initial block/none status.
-* Header Space.
-* Reload Me warning.
-* Better behavior of sticky sidebars.
+* A new option for floating header-space adjustment.
+* Reload Me warning while resizing.
+* Improved behavior of sticky sidebars.
 
 = 1.4 - Jan 6, 2014 =
 * Support for the 2nd sidebar.

@@ -109,7 +109,8 @@
 
                 // restore status, set heading markers
                 $(swe.custom_selectors[i]).each(function () {
-                    if (cook && cook[$(this).attr('id')] == "t" /* TODO: || ! cook && visible */) {
+                    if ((cook && cook[$(this).attr('id')] == "t") ||
+                        (!cook && !swe.initially_collapsed && $(this).children(swe.heading_string).next().css('display') == 'block')) {
                         $(this).children(swe.heading_string).next().show();
                         if (swe.heading_marker) {
                             $(this).children(swe.heading_string).css('background', swe.buttonminusurl + " no-repeat left center");
@@ -310,6 +311,12 @@
                 if (SIDEBAR2.o) { set_sidebarmode(SIDEBAR2); }
 
                 scrollfunc();
+
+                if (swe.recalc_after > 0 && swe.recalc_count > 0) {
+                    swe.recalc_count--;
+                    setTimeout( resizefunc, swe.recalc_after * 1000);
+                }
+
             }
 
             function resize_sidebar(sidebar) {
@@ -387,12 +394,10 @@
                 });
             }
 
+            swe.recalc_after = parseInt(swe.recalc_after, 10);
+            swe.recalc_count = parseInt(swe.recalc_count, 10);
             resizefunc();
 
-            var recalc_after = parseInt(swe.recalc_after, 10);
-            if (recalc_after > 0) {
-                setTimeout( resizefunc, recalc_after * 1000);
-            }
         } // if scroll_stop
     }); // ready function
 })(jQuery, window, document);

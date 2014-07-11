@@ -31,6 +31,7 @@ class HM_SWE_Plugin_Loader {
 		'custom_minus'           => '',
 		'enable_css'             => 'enabled',
 		'single_expansion'       => 'disabled',
+        'initially_collapsed'    => 'enabled',
 		'slide_duration'         => 400,
 		'heading_string'         => 'h3',
 		'accordion_widget_areas' => array( '' ),
@@ -59,27 +60,28 @@ class HM_SWE_Plugin_Loader {
 	const I_ACCORDION_WIDGET       = 5;
 	const I_HEADING_MARKER         = 6;
 	const I_ENABLE_CSS             = 7;
-	const I_SINGLE_EXPANSION       = 8;
-	const I_SLIDE_DURATION         = 9;
-	const I_HEADING_STRING         = 10;
-	const I_ACCORDION_WIDGET_AREAS = 11;
-	const I_CUSTOM_SELECTORS       = 12;
-	const I_SCROLL_STOP            = 13;
+    const I_SINGLE_EXPANSION       = 8;
+    const I_INITIALLY_COLLAPSED    = 9;
+    const I_SLIDE_DURATION         = 10;
+	const I_HEADING_STRING         = 11;
+	const I_ACCORDION_WIDGET_AREAS = 12;
+	const I_CUSTOM_SELECTORS       = 13;
+	const I_SCROLL_STOP            = 14;
 
-	const I_SCROLL_MODE            = 14;
-	const I_RECALC_AFTER           = 15;
-    const I_RECALC_COUNT           = 16;
-	const I_HEADER_SPACE           = 17;
-	const I_IGNORE_FOOTER          = 18;
-	const I_ENABLE_RELOAD_ME       = 19;
+	const I_SCROLL_MODE            = 15;
+	const I_RECALC_AFTER           = 16;  // Now it means the interval.
+    const I_RECALC_COUNT           = 17;
+	const I_HEADER_SPACE           = 18;
+	const I_IGNORE_FOOTER          = 19;
+	const I_ENABLE_RELOAD_ME       = 20;
 
-	const I_PROPORTIONAL_SIDEBAR   = 20;
-	const I_DISABLE_IFLT           = 21;
+	const I_PROPORTIONAL_SIDEBAR   = 21;
+	const I_DISABLE_IFLT           = 22;
 
 	// for 2nd sidebar
-	const I_SIDEBAR_ID2            = 22;
-	const I_PROPORTIONA_SIDEBAR2   = 23;
-	const I_DISABLE_IFLT2          = 24;
+	const I_SIDEBAR_ID2            = 23;
+	const I_PROPORTIONA_SIDEBAR2   = 24;
+	const I_DISABLE_IFLT2          = 25;
 
 
 	// field array
@@ -168,6 +170,17 @@ class HM_SWE_Plugin_Loader {
 						array( 'id' => 'disable', 'title' => 'Disable', 'value' => 'disabled' ),
 					),
 				),
+                array(
+                    'id'       => 'initially_collapsed',
+                    'title'    => 'Initial State',
+                    'expert'   => 1,
+                    'callback' => 'settings_field_initially_collapsed',
+                    'section'  => 'hm_swe_accordion_widget',
+                    'options'  => array(
+                        array( 'id' => 'enable', 'title' => 'Initially Collapsed', 'value' => 'enabled' ),
+                        array( 'id' => 'disable', 'title' => 'Leave them as styled', 'value' => 'disabled' ),
+                    ),
+                ),
 				array(
 					'id'       => 'slide_duration',
 					'title'    => 'Slide Duration (ms)',
@@ -356,6 +369,7 @@ class HM_SWE_Plugin_Loader {
 			'scroll_stop'            => $options['scroll_stop'] == 'enabled',
 			'accordion_widget'       => $options['accordion_widget'] == 'enabled',
 			'single_expansion'       => $options['single_expansion'] == 'enabled',
+            'initially_collapsed'    => $options['initially_collapsed'] == 'enabled',
 			'heading_string'         => esc_attr( $options['heading_string'] ),
 			'proportional_sidebar'   => $options['proportional_sidebar'],
 			'disable_iflt'           => $options['disable_iflt'],
@@ -506,7 +520,7 @@ class HM_SWE_Plugin_Loader {
 	}
 
 	function main_section_text() {
-		echo __( "<p>Use primary/secondary/widget for Twenty Twelve and Twenty Eleven.\nUse container/primary/widget-container for Twenty Ten.</p>", self::I18N_DOMAIN );
+		echo __( '<p>Check <a href="http://en.hetarena.com/standard-widget-extensions" target="_blank">the plugin home page</a> for help.</p>', self::I18N_DOMAIN );
 		echo '<input id="swe-expert-button" class="button button-primary" type="submit" value="' .
 				( $this->get_hm_swe_option( 'expert_options' ) == 'enabled' ? __( 'Hide Expert Options', self::I18N_DOMAIN ) : __( 'Show Expert Options', self::I18N_DOMAIN ) ) . '" />';
 	}
@@ -610,6 +624,10 @@ class HM_SWE_Plugin_Loader {
 		$this->settings_field_simple_radio_option( self::I_SINGLE_EXPANSION );
 	}
 
+    function settings_field_initially_collapsed() {
+        $this->settings_field_simple_radio_option( self::I_INITIALLY_COLLAPSED );
+    }
+
 	function settings_field_heading_string() {
 		$this->write_text_option( self::I_HEADING_STRING );
 	}
@@ -672,6 +690,7 @@ class HM_SWE_Plugin_Loader {
 		$valid['accordion_widget'] = $input['accordion_widget'];
 		$valid['enable_css']       = $input['enable_css'];
 		$valid['single_expansion'] = $input['single_expansion'];
+        $valid['initially_collapsed'] = $input['initially_collapsed'];
 		$valid['readable_js']      = $input['readable_js'];
 		$valid['ignore_footer']    = $input['ignore_footer'];
 		$valid['expert_options']   = $input['expert_options'];
