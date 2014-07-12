@@ -301,14 +301,15 @@
                     resize_sidebar(SIDEBAR2);
                 }
 
-                if (SIDEBAR1.o && SIDEBAR2.o) {
+                if (SIDEBAR1.o && SIDEBAR1.mode != DISABLED_SIDEBAR && SIDEBAR2.o && SIDEBAR2.mode != DISABLED_SIDEBAR) {
                     CONDITION.content_height = Math.max(CONDITION.content_height,
                         SIDEBAR1.height + SIDEBAR1.default_offset.top - CONDITION.content_top,
                         SIDEBAR2.height + SIDEBAR2.default_offset.top - CONDITION.content_top);
                 }
 
-                if (SIDEBAR1.o) { set_sidebarmode(SIDEBAR1); }
-                if (SIDEBAR2.o) { set_sidebarmode(SIDEBAR2); }
+                // After the content height fix, we finalize the sidebar mode.
+                if (SIDEBAR1.o) { finalize_sidebarmode(SIDEBAR1); }
+                if (SIDEBAR2.o) { finalize_sidebarmode(SIDEBAR2); }
 
                 scrollfunc();
 
@@ -351,9 +352,16 @@
                 sidebar.absolute_adjustment_top  = o.offset().top;  // TODO: margin adjustment needed?
                 sidebar.absolute_adjustment_left = o.offset().left;
 
+                if ($(window).width() < sidebar.disable_iflt) {
+                    sidebar.mode = DISABLED_SIDEBAR;
+                }
+                else {
+                    sidebar.mode = LONG_SIDEBAR; // Temporarily. We will finalize it after.
+                }
+
             } // function resize_sidebar
 
-            function set_sidebarmode(sidebar) {
+            function finalize_sidebarmode(sidebar) {
 
                 if (sidebar.default_offset.top + sidebar.height >= CONDITION.content_top + CONDITION.content_height ||
                     $(window).width() < sidebar.disable_iflt) {
@@ -366,7 +374,7 @@
                     sidebar.mode = LONG_SIDEBAR
                 }
 
-            } // set_sidebarmode
+            } // finalize_sidebarmode
 
             swe.resizeHandler = resizefunc;
 
@@ -377,8 +385,8 @@
                 // add elements to display warning
                 $('body').append('<div class="hm-swe-modal-background"><div class="hm-swe-resize-message"><p>' +
                         swe.msg_reload_me +
-                        '</p><input type="button" id="hm-swe-reload-button" value="' + swe.msg_reload + '" style="margin: 0 20px" />' +
-                        '<input type="button" id="hm-swe-continue-button" value="' + swe.msg_continue + '" /></div></div>');
+                        '</p><input type="button" id="hm-swe-reload-button" value="' + swe.msg_reload + '" style="margin: 10px 20px" />' +
+                        '<input type="button" id="hm-swe-continue-button" value="' + swe.msg_continue + '" style="margin: 10px 20px" /></div></div>');
 
                 // set handlers
                 $(window).resize(function() {
@@ -392,6 +400,8 @@
                 $('#hm-swe-reload-button').click(function() {
                     location.reload();
                 });
+
+                // TODO: ESC handler
             }
 
             swe.recalc_after = parseInt(swe.recalc_after, 10);

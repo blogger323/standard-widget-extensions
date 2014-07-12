@@ -3,7 +3,7 @@
 Plugin Name: Standard Widget Extensions
 Plugin URI: http://en.hetarena.com/standard-widget-extensions
 Description: Adds Sticky Sidebar and Accordion Widget features to your WordPress sites.
-Version: 1.5-beta
+Version: 1.5
 Author: Hirokazu Matsui (blogger323)
 Text Domain: standard-widget-extensions
 Domain Path: /languages
@@ -37,11 +37,11 @@ class HM_SWE_Plugin_Loader {
 		'accordion_widget_areas' => array( '' ),
 		'custom_selectors'       => array( '' ),
 		'scroll_stop'            => 'enabled',
-		'scroll_mode'            => 1,
+		'scroll_mode'            => 1, // 1: Normal, 2: Quick Switch Back
 		'proportional_sidebar'   => 0,
 		'disable_iflt'           => 620,
 		'recalc_after'           => 5,
-        'recalc_count'           => 100,
+        'recalc_count'           => 2,
 		'header_space'           => 0,
 		'ignore_footer'          => 'disabled',
 		'enable_reload_me'       => 'disabled',

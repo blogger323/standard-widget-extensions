@@ -3,8 +3,8 @@ Contributors: blogger323
 Donate link: http://en.hetarena.com/donate
 Tags: widget, sidebar
 Requires at least: 3.2
-Tested up to: 3.8
-Stable tag: 1.4
+Tested up to: 3.9
+Stable tag: 1.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -21,13 +21,13 @@ You can individually turn on and off these features.
 1. Accordion Widgets
 1. Sticky Sidebar
 
-You can use this plugin easily with default WordPress themes (Twenty Fourteen/Twenty Thirteen/Twenty Twelve/Twenty Eleven). [Check setting information](http://en.hetarena.com/standard-widget-extensions/settings-for-standard-themes).
+You can use this plugin easily with default WordPress themes (Twenty Fourteen, Twenty Thirteen, ...). [Check setting information](http://en.hetarena.com/standard-widget-extensions/settings-for-standard-themes).
 
 Other theme users can adjust class names and/or IDs to suit the theme.
 You can find options for the plugin by selecting a menu 'Settings' - 'Standard WE'. 
 Detailed description for parameters are in [the plugin homepage](http://en.hetarena.com/standard-widget-extensions#setting "Parameter description").
 
-I would appreciate your feedbacks of settings for your favorite themes.
+I would appreciate your feedback of settings for your favorite themes.
 Or if you don't know how to set IDs/classes for your theme, don't hesitate to ask it in the support forum.
 
 Related Links:
@@ -65,10 +65,11 @@ Please tell your audience to upgrade browser.
 
 == Changelog ==
 
-= 1.5 - ??? =
-* Initial collapsed behavior changed to reflect initial block/none status.
-* A new option for floating header-space adjustment.
-* Reload Me warning while resizing.
+= 1.5 - Jul 12, 2014 =
+* A option for floating header-space adjustment.
+* Reload-me warning while resizing.
+* Initial state of accordions can be reserved by CSS styling.
+* Recalc Count for repeated auto size adjustment.
 * Improved behavior of sticky sidebars.
 
 = 1.4 - Jan 6, 2014 =
