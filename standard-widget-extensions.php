@@ -371,7 +371,7 @@ class HM_SWE_Plugin_Loader {
 			'single_expansion'       => $options['single_expansion'] == 'enabled',
             'initially_collapsed'    => $options['initially_collapsed'] == 'enabled',
 			'heading_string'         => esc_attr( $options['heading_string'] ),
-			'proportional_sidebar'   => $options['proportional_sidebar'],
+			'proportional_sidebar'   => 0, // deprecated. // $options['proportional_sidebar'],
 			'disable_iflt'           => $options['disable_iflt'],
 			'accordion_widget_areas' => array_map( 'esc_attr', $options['accordion_widget_areas'] ),
 			'scroll_mode'            => ( $options['scroll_mode'] == "2" ? 2 : 1 ),
@@ -384,7 +384,7 @@ class HM_SWE_Plugin_Loader {
 			'enable_reload_me'       => $options['enable_reload_me'] == 'enabled',
 
 			'sidebar_id2'            => esc_attr( $options['sidebar_id2'] ),
-			'proportional_sidebar2'  => $options['proportional_sidebar2'],
+			'proportional_sidebar2'  => 0, // deprecated. // $options['proportional_sidebar2'],
 			'disable_iflt2'          => $options['disable_iflt2'],
 
 			// messages
