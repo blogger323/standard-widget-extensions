@@ -65,6 +65,11 @@ Please tell your audience to upgrade browser.
 
 == Changelog ==
 
+= 1.5.1 - Jul =
+* [Fixed] Multiple Recalc timers occurred while resizing.
+* Better responsive web design support. You don't need proportional settings anymore.
+* Now Reload-me warning is not displayed while height resizing to avoid being annoying while in-page searching in Firefox. (But you wouldn't need this feature because of better responsive web design support.)
+
 = 1.5 - Jul 12, 2014 =
 * A option for floating header-space adjustment.
 * Reload-me warning while resizing.
