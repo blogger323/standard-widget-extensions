@@ -370,6 +370,8 @@
             $(window).resize(resizefunc);
 
             if (swe.enable_reload_me) {
+                var previous_width = $(window).width();
+
                 // add elements to display warning
                 $('body').append('<div class="hm-swe-modal-background"><div class="hm-swe-resize-message"><p>' +
                         swe.msg_reload_me +
@@ -378,7 +380,10 @@
 
                 // set handlers
                 $(window).resize(function() {
-                    $('.hm-swe-modal-background').css('display', 'block');
+                    if ($(window).width() != previous_width) {
+                        $('.hm-swe-modal-background').css('display', 'block');
+                        previous_width = $(window).width();
+                    }
                 });
 
                 $('.hm-swe-modal-background').click(function() {
