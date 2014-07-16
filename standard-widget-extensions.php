@@ -3,7 +3,7 @@
 Plugin Name: Standard Widget Extensions
 Plugin URI: http://en.hetarena.com/standard-widget-extensions
 Description: Adds Sticky Sidebar and Accordion Widget features to your WordPress sites.
-Version: 1.5
+Version: 1.5.1
 Author: Hirokazu Matsui (blogger323)
 Text Domain: standard-widget-extensions
 Domain Path: /languages
@@ -13,7 +13,7 @@ License: GPLv2
 
 class HM_SWE_Plugin_Loader {
 
-	const VERSION        = '1.5';
+	const VERSION        = '1.5.1';
 	const OPTION_VERSION = '1.5';
 	const OPTION_KEY     = 'hm_swe_options';
 	const I18N_DOMAIN    = 'standard-widget-extensions';
@@ -75,13 +75,11 @@ class HM_SWE_Plugin_Loader {
 	const I_IGNORE_FOOTER          = 19;
 	const I_ENABLE_RELOAD_ME       = 20;
 
-	const I_PROPORTIONAL_SIDEBAR   = 21;
-	const I_DISABLE_IFLT           = 22;
+	const I_DISABLE_IFLT           = 21;
 
 	// for 2nd sidebar
-	const I_SIDEBAR_ID2            = 23;
-	const I_PROPORTIONA_SIDEBAR2   = 24;
-	const I_DISABLE_IFLT2          = 25;
+	const I_SIDEBAR_ID2            = 22;
+	const I_DISABLE_IFLT2          = 23;
 
 
 	// field array
@@ -276,13 +274,6 @@ class HM_SWE_Plugin_Loader {
 				),
 
 				array(
-					'id'       => 'proportional_sidebar',
-					'title'    => 'Proportional Sidebar (width in percent, 0=fixed)',
-					'expert'   => 1,
-					'callback' => 'settings_field_proportional_sidebar',
-					'section'  => 'hm_swe_scroll_stop',
-				),
-				array(
 					'id'       => 'disable_iflt',
 					'title'    => 'Disable if the window width is less than',
 					'expert'   => 1,
@@ -296,13 +287,6 @@ class HM_SWE_Plugin_Loader {
 					'title'    => '[2nd] ID of the 2nd Sidebar',
 					'expert'   => 1,
 					'callback' => 'settings_field_sidebar_id2',
-					'section'  => 'hm_swe_scroll_stop',
-				),
-				array(
-					'id'       => 'proportional_sidebar2',
-					'title'    => '[2nd] Proportional Sidebar',
-					'expert'   => 1,
-					'callback' => 'settings_field_proportional_sidebar2',
 					'section'  => 'hm_swe_scroll_stop',
 				),
 				array(
@@ -371,7 +355,7 @@ class HM_SWE_Plugin_Loader {
 			'single_expansion'       => $options['single_expansion'] == 'enabled',
             'initially_collapsed'    => $options['initially_collapsed'] == 'enabled',
 			'heading_string'         => esc_attr( $options['heading_string'] ),
-			'proportional_sidebar'   => 0, // deprecated. // $options['proportional_sidebar'],
+			'proportional_sidebar'   => 0, // deprecated.
 			'disable_iflt'           => $options['disable_iflt'],
 			'accordion_widget_areas' => array_map( 'esc_attr', $options['accordion_widget_areas'] ),
 			'scroll_mode'            => ( $options['scroll_mode'] == "2" ? 2 : 1 ),
@@ -384,7 +368,7 @@ class HM_SWE_Plugin_Loader {
 			'enable_reload_me'       => $options['enable_reload_me'] == 'enabled',
 
 			'sidebar_id2'            => esc_attr( $options['sidebar_id2'] ),
-			'proportional_sidebar2'  => 0, // deprecated. // $options['proportional_sidebar2'],
+			'proportional_sidebar2'  => 0, // deprecated.
 			'disable_iflt2'          => $options['disable_iflt2'],
 
 			// messages
@@ -632,10 +616,6 @@ class HM_SWE_Plugin_Loader {
 		$this->write_text_option( self::I_HEADING_STRING );
 	}
 
-	function settings_field_proportional_sidebar() {
-		$this->write_text_option( self::I_PROPORTIONAL_SIDEBAR );
-	}
-
 	function settings_field_disable_iflt() {
 		$this->write_text_option( self::I_DISABLE_IFLT );
 	}
@@ -662,10 +642,6 @@ class HM_SWE_Plugin_Loader {
 
 	function settings_field_sidebar_id2() {
 		$this->write_text_option( self::I_SIDEBAR_ID2 );
-	}
-
-	function settings_field_proportional_sidebar2() {
-		$this->write_text_option( self::I_PROPORTIONA_SIDEBAR2) ;
 	}
 
 	function settings_field_disable_iflt2() {
@@ -695,16 +671,6 @@ class HM_SWE_Plugin_Loader {
 		$valid['ignore_footer']    = $input['ignore_footer'];
 		$valid['expert_options']   = $input['expert_options'];
 		$valid['enable_reload_me'] = $input['enable_reload_me'];
-
-
-		// Proportional Sidebar
-		if ( filter_var( $input['proportional_sidebar'], FILTER_VALIDATE_FLOAT ) === FALSE ) {
-			add_settings_error( 'hm_swe_proportional_sidebar', 'hm_swe_proportional_sidebar_error', __( 'The Proportional Sidebar value has to be a number.', self::I18N_DOMAIN ) );
-			$valid['proportional_sidebar'] = $prev['proportional_sidebar'];
-		}
-		else {
-			$valid['proportional_sidebar'] = $input['proportional_sidebar'];
-		}
 
 		if ( filter_var( $input['disable_iflt'], FILTER_VALIDATE_INT ) === FALSE ) {
 			add_settings_error( 'hm_swe_disable_iflt', 'hm_swe_disable_iflt_error', __( 'The minimum width has to be a number.', self::I18N_DOMAIN ) );
@@ -830,14 +796,6 @@ class HM_SWE_Plugin_Loader {
 		}
 		else {
 			$valid['sidebar_id2'] = $input['sidebar_id2'];
-		}
-
-		if ( filter_var( $input['proportional_sidebar2'], FILTER_VALIDATE_FLOAT ) === FALSE ) {
-			add_settings_error( 'hm_swe_proportional_sidebar2', 'hm_swe_proportional_sidebar2_error', __( 'The 2nd proportional sidebar value has to be a number.', self::I18N_DOMAIN ) );
-			$valid['proportional_sidebar2'] = $prev['proportional_sidebar2'];
-		}
-		else {
-			$valid['proportional_sidebar2'] = $input['proportional_sidebar2'];
 		}
 
 		if ( filter_var( $input['disable_iflt2'], FILTER_VALIDATE_INT ) === FALSE ) {

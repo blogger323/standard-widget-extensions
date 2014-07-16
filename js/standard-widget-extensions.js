@@ -186,13 +186,13 @@
                     sidebar.o.css("position", "relative");
                     sidebar.o.css("top", "0");
                     sidebar.o.css("left", "0");
+                    sidebar.o.css('width', '');
                     return;
                 }
 
                 var sidebar_cur_top = sidebar.o.offset().top;
                 sidebar_cur_top -= sidebar.margin_top;
 
-                // TODO: check the 'left' value carefully.
                 if ( !swe.ignore_footer &&
                     (   (sidebar.mode == LONG_SIDEBAR &&
                          curscrolltop >= CONDITION.content_top + CONDITION.content_height - CONDITION.window_height) ||
@@ -203,7 +203,7 @@
                     sidebar.o.css("position", "absolute");
                     sidebar.o.css("top", CONDITION.content_top + CONDITION.content_height
                         - sidebar.height - sidebar.absolute_adjustment_top);
-                    sidebar.o.css("left", sidebar.default_offset.left - sidebar.absolute_adjustment_left - sidebar.margin_left);
+                    sidebar.o.css("left", sidebar.default_offset.left - sidebar.absolute_adjustment_left);
                     sidebar.o.css("width", sidebar.width);
                     sidebar.fixed = 0;
                 }
@@ -212,7 +212,7 @@
                     sidebar.o.css("position", "relative");
                     sidebar.o.css("top", "0");
                     sidebar.o.css("left", "0");
-                    sidebar.o.css("width", sidebar.width);
+                    sidebar.o.css("width", '');
                     sidebar.fixed = 0;
                 }
                 else if (CONDITION.mode == 2 && sidebar.mode == LONG_SIDEBAR &&  curscrolltop < CONDITION.prevscrolltop &&
@@ -222,7 +222,7 @@
 
                     sidebar.o.css("position", "fixed");
                     sidebar.o.css("top", CONDITION.header_space); // no need of margin-top
-                    sidebar.o.css("left", sidebar.default_offset.left - $(window).scrollLeft() - sidebar.margin_left);
+                    sidebar.o.css("left", sidebar.default_offset.left - $(window).scrollLeft());
                     sidebar.o.css("width", sidebar.width);
                     sidebar.fixed = 1;
                 }
@@ -232,7 +232,7 @@
                     // at the bottom of sidebar
                     sidebar.o.css("position", "fixed");
                     sidebar.o.css("top", CONDITION.window_height - sidebar.height);
-                    sidebar.o.css("left", sidebar.default_offset.left - $(window).scrollLeft() - sidebar.margin_left);
+                    sidebar.o.css("left", sidebar.default_offset.left - $(window).scrollLeft());
                     sidebar.o.css("width", sidebar.width);
                     sidebar.fixed = 1;
                 }
@@ -243,7 +243,7 @@
 
                     sidebar.o.css("position", "absolute");
                     sidebar.o.css("top", sidebar_cur_top - sidebar.absolute_adjustment_top);
-                    sidebar.o.css("left", sidebar.default_offset.left - sidebar.absolute_adjustment_left - sidebar.margin_left);
+                    sidebar.o.css("left", sidebar.default_offset.left - sidebar.absolute_adjustment_left);
                     sidebar.o.css("width", sidebar.width);
                     sidebar.fixed = 0;
                 }
@@ -251,7 +251,7 @@
                     // shorter sidebar as fixed
                     sidebar.o.css("position", "fixed");
                     sidebar.o.css("top", CONDITION.header_space); // no need of margin-top
-                    sidebar.o.css("left", sidebar.default_offset.left - $(window).scrollLeft() - sidebar.margin_left);
+                    sidebar.o.css("left", sidebar.default_offset.left - $(window).scrollLeft());
                     sidebar.o.css("width", sidebar.width);
                     sidebar.fixed = 1;
                 }
@@ -260,7 +260,7 @@
                     sidebar.o.css("position", "relative");
                     sidebar.o.css("top", "0");
                     sidebar.o.css("left", "0");
-                    sidebar.o.css("width", sidebar.width);
+                    sidebar.o.css("width", '');
                     sidebar.fixed = 0;
                 }
                 else {
@@ -331,12 +331,14 @@
                 sidebar.width = parseFloat(sidebar.o.css('width')); // using css('width') (not width())
                 // Use a fixed width because the parent will change.
 
+
                 sidebar.default_offset = sidebar.o.offset();
                 if (!sidebar.default_offset) {
                     return; // something wrong.
                 }
 
                 sidebar.default_offset.top  -= sidebar.margin_top;
+                sidebar.default_offset.left -= sidebar.margin_left;
 
                 // determine the adjustment value for the absolute position
                 // find a parent which has a position other than static
@@ -374,6 +376,8 @@
             $(window).resize(resizefunc);
 
             if (swe.enable_reload_me) {
+                var previous_width = $(window).width();
+
                 // add elements to display warning
                 $('body').append('<div class="hm-swe-modal-background"><div class="hm-swe-resize-message"><p>' +
                         swe.msg_reload_me +
@@ -382,7 +386,10 @@
 
                 // set handlers
                 $(window).resize(function() {
-                    $('.hm-swe-modal-background').css('display', 'block');
+                    if ($(window).width() != previous_width) {
+                        $('.hm-swe-modal-background').css('display', 'block');
+                        previous_width = $(window).width();
+                    }
                 });
 
                 $('.hm-swe-modal-background').click(function() {
