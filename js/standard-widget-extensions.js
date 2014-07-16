@@ -186,13 +186,13 @@
                     sidebar.o.css("position", "relative");
                     sidebar.o.css("top", "0");
                     sidebar.o.css("left", "0");
+                    sidebar.o.css('width', '');
                     return;
                 }
 
                 var sidebar_cur_top = sidebar.o.offset().top;
                 sidebar_cur_top -= sidebar.margin_top;
 
-                // TODO: check the 'left' value carefully.
                 if ( !swe.ignore_footer &&
                     (   (sidebar.mode == LONG_SIDEBAR &&
                          curscrolltop >= CONDITION.content_top + CONDITION.content_height - CONDITION.window_height) ||
@@ -204,6 +204,7 @@
                     sidebar.o.css("top", CONDITION.content_top + CONDITION.content_height
                         - sidebar.height - sidebar.absolute_adjustment_top);
                     sidebar.o.css("left", sidebar.default_offset.left - sidebar.absolute_adjustment_left);
+                    sidebar.o.css("width", sidebar.width);
                     sidebar.fixed = 0;
                 }
                 else if ((CONDITION.mode == 2 || sidebar.mode == SHORT_SIDEBAR) && curscrolltop < sidebar.default_offset.top - CONDITION.header_space) {
@@ -211,6 +212,7 @@
                     sidebar.o.css("position", "relative");
                     sidebar.o.css("top", "0");
                     sidebar.o.css("left", "0");
+                    sidebar.o.css("width", '');
                     sidebar.fixed = 0;
                 }
                 else if (CONDITION.mode == 2 && sidebar.mode == LONG_SIDEBAR &&  curscrolltop < CONDITION.prevscrolltop &&
@@ -221,6 +223,7 @@
                     sidebar.o.css("position", "fixed");
                     sidebar.o.css("top", CONDITION.header_space); // no need of margin-top
                     sidebar.o.css("left", sidebar.default_offset.left - $(window).scrollLeft());
+                    sidebar.o.css("width", sidebar.width);
                     sidebar.fixed = 1;
                 }
                 else if ((CONDITION.mode == 2 && sidebar.mode == LONG_SIDEBAR && curscrolltop >= sidebar_cur_top + sidebar.height - CONDITION.window_height &&
@@ -230,6 +233,7 @@
                     sidebar.o.css("position", "fixed");
                     sidebar.o.css("top", CONDITION.window_height - sidebar.height);
                     sidebar.o.css("left", sidebar.default_offset.left - $(window).scrollLeft());
+                    sidebar.o.css("width", sidebar.width);
                     sidebar.fixed = 1;
                 }
                 else if (CONDITION.mode == 2 && sidebar.mode == LONG_SIDEBAR && (curscrolltop - CONDITION.prevscrolltop) * CONDITION.direction < 0 && sidebar.fixed) {
@@ -240,6 +244,7 @@
                     sidebar.o.css("position", "absolute");
                     sidebar.o.css("top", sidebar_cur_top - sidebar.absolute_adjustment_top);
                     sidebar.o.css("left", sidebar.default_offset.left - sidebar.absolute_adjustment_left);
+                    sidebar.o.css("width", sidebar.width);
                     sidebar.fixed = 0;
                 }
                 else if (sidebar.mode == SHORT_SIDEBAR) {
@@ -247,6 +252,7 @@
                     sidebar.o.css("position", "fixed");
                     sidebar.o.css("top", CONDITION.header_space); // no need of margin-top
                     sidebar.o.css("left", sidebar.default_offset.left - $(window).scrollLeft());
+                    sidebar.o.css("width", sidebar.width);
                     sidebar.fixed = 1;
                 }
                 else if (CONDITION.mode != 2) {
@@ -254,6 +260,7 @@
                     sidebar.o.css("position", "relative");
                     sidebar.o.css("top", "0");
                     sidebar.o.css("left", "0");
+                    sidebar.o.css("width", '');
                     sidebar.fixed = 0;
                 }
                 else {
@@ -323,7 +330,6 @@
                 sidebar.o.css('width', '');
                 sidebar.width = parseFloat(sidebar.o.css('width')); // using css('width') (not width())
                 // Use a fixed width because the parent will change.
-                sidebar.o.css("width", sidebar.width);
 
 
                 sidebar.default_offset = sidebar.o.offset();
