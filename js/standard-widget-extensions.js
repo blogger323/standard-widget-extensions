@@ -37,7 +37,6 @@
             sidebar.fixed = 0;
             sidebar.default_offset = { top: 0, left: 0 };
             sidebar.margin_top = 0;
-            sidebar.margin_bottom = 0;
             sidebar.margin_left = 0;
             sidebar.width = 0;
             sidebar.absolute_adjustment_top = 0;
@@ -55,20 +54,8 @@
                     sidebar.o = $(sidebar.id);
                     sidebar.parent = sidebar.o.parent();
                     sidebar.margin_top = parseInt(sidebar.o.css('margin-top'), 10);
-                    sidebar.margin_bottom = parseInt(sidebar.o.css('margin-bottom'), 10);
-                    sidebar.padding_top    = parseInt(sidebar.o.css('padding-top'), 10);
-                    sidebar.padding_bottom = parseInt(sidebar.o.css('padding-bottom'), 10);
-                    sidebar.margin_left = parseFloat(sidebar.o.css('margin-left'), 10);  // might be float in responsive themes
                     sidebar.percent_width = parseFloat(percent_width);
                     sidebar.disable_iflt = parseInt(disable_iflt, 10);
-
-                    /* fix for negative percent margins in decimal (for TwentyFourteen) */
-                    if (sidebar.margin_left < 0) {
-                        sidebar.margin_left = Math.floor(sidebar.margin_left);
-                    }
-
-                    /* fix for margins in percent */
-                    sidebar.o.css('margin-left', sidebar.margin_left);
 
                 }
             }
@@ -205,6 +192,7 @@
                 var sidebar_cur_top = sidebar.o.offset().top;
                 sidebar_cur_top -= sidebar.margin_top;
 
+                // TODO: check the 'left' value carefully.
                 if ( !swe.ignore_footer &&
                     (   (sidebar.mode == LONG_SIDEBAR &&
                          curscrolltop >= CONDITION.content_top + CONDITION.content_height - CONDITION.window_height) ||
@@ -282,7 +270,7 @@
 
             }
 
-            function resizefunc() {
+            function resizefunc(fromTimer) {
                 var c = $(contentid);
                 CONDITION.content_top = c.offset().top;
                 CONDITION.content_margin_top = parseInt(c.css('margin-top'), 10);
@@ -313,9 +301,9 @@
 
                 scrollfunc();
 
-                if (swe.recalc_after > 0 && swe.recalc_count > 0) {
+                if (fromTimer === true && swe.recalc_after > 0 && swe.recalc_count > 0) {
                     swe.recalc_count--;
-                    setTimeout( resizefunc, swe.recalc_after * 1000);
+                    setTimeout( resizefunc, swe.recalc_after * 1000, true);
                 }
 
             }
@@ -326,18 +314,22 @@
                 sidebar.fixed = 0;
                 sidebar.previoustop = 0;
 
+                sidebar.o.css('margin-left', '');
+                sidebar.margin_left = parseFloat(sidebar.o.css('margin-left'), 10);  // might be float in responsive themes
+                /* fix for negative percent margins in decimal (for TwentyFourteen) */
+                if (sidebar.margin_left < 0) {
+                    sidebar.margin_left = Math.floor(sidebar.margin_left);
+                }
+                /* fix for margins in percent */
+                sidebar.o.css('margin-left', sidebar.margin_left);
+
                 sidebar.o.css("position", "relative");
                 sidebar.o.css("top", "0");
                 sidebar.o.css("left", "0");
 
-                if (sidebar.percent_width === 0) {
-                    sidebar.width = parseFloat(sidebar.o.css('width')); // using css('width') (not width())
-                    // Use a fixed width because the parent will change.
-                }
-                else {
-                    sidebar.width = parseFloat(sidebar.parent.css('width')) * sidebar.percent_width / 100;
-                    sidebar.o.css('width', sidebar.width);
-                }
+                sidebar.o.css('width', '');
+                sidebar.width = parseFloat(sidebar.o.css('width')); // using css('width') (not width())
+                // Use a fixed width because the parent will change.
 
                 sidebar.default_offset = sidebar.o.offset();
                 if (!sidebar.default_offset) {
@@ -406,7 +398,7 @@
 
             swe.recalc_after = parseInt(swe.recalc_after, 10);
             swe.recalc_count = parseInt(swe.recalc_count, 10);
-            resizefunc();
+            resizefunc(true);
 
         } // if scroll_stop
     }); // ready function
