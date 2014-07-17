@@ -4,7 +4,7 @@ Donate link: http://en.hetarena.com/donate
 Tags: widget, sidebar
 Requires at least: 3.2
 Tested up to: 3.9
-Stable tag: 1.5.1
+Stable tag: 1.5.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -65,7 +65,7 @@ Please tell your audience to upgrade browser.
 
 == Changelog ==
 
-= 1.5.1 - Jul 17, 2014 =
+= 1.5.2 - Jul 17, 2014 =
 * [Fixed] Multiple Recalc timers occurred while resizing.
 * Better responsive web design support. You don't need proportional settings anymore.
 * Now Reload-me warning is not displayed while height resizing to avoid being annoying while in-page searching in Firefox. (But you wouldn't need this feature because of better responsive web design support.)

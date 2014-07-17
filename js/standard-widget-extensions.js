@@ -314,6 +314,14 @@
                 sidebar.fixed = 0;
                 sidebar.previoustop = 0;
 
+                sidebar.o.css("position", "relative");
+                sidebar.o.css("top", "0");
+                sidebar.o.css("left", "0");
+
+                sidebar.o.css('width', '');
+                sidebar.width = parseFloat(sidebar.o.css('width')); // using css('width') (not width())
+                // Use a fixed width because the parent will change.
+
                 sidebar.o.css('margin-left', '');
                 sidebar.margin_left = parseFloat(sidebar.o.css('margin-left'), 10);  // might be float in responsive themes
                 /* fix for negative percent margins in decimal (for TwentyFourteen) */
@@ -322,14 +330,6 @@
                 }
                 /* fix for margins in percent */
                 sidebar.o.css('margin-left', sidebar.margin_left);
-
-                sidebar.o.css("position", "relative");
-                sidebar.o.css("top", "0");
-                sidebar.o.css("left", "0");
-
-                sidebar.o.css('width', '');
-                sidebar.width = parseFloat(sidebar.o.css('width')); // using css('width') (not width())
-                // Use a fixed width because the parent will change.
 
 
                 sidebar.default_offset = sidebar.o.offset();
