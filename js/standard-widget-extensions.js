@@ -187,6 +187,7 @@
                     sidebar.o.css("top", "0");
                     sidebar.o.css("left", "0");
                     sidebar.o.css('width', '');
+                    sidebar.o.css('margin-left', '');
                     return;
                 }
 
@@ -205,6 +206,7 @@
                         - sidebar.height - sidebar.absolute_adjustment_top);
                     sidebar.o.css("left", sidebar.default_offset.left - sidebar.absolute_adjustment_left);
                     sidebar.o.css("width", sidebar.width);
+                    sidebar.o.css('margin-left', sidebar.margin_left);
                     sidebar.fixed = 0;
                 }
                 else if ((CONDITION.mode == 2 || sidebar.mode == SHORT_SIDEBAR) && curscrolltop < sidebar.default_offset.top - CONDITION.header_space) {
@@ -213,6 +215,7 @@
                     sidebar.o.css("top", "0");
                     sidebar.o.css("left", "0");
                     sidebar.o.css("width", '');
+                    sidebar.o.css('margin-left', '');
                     sidebar.fixed = 0;
                 }
                 else if (CONDITION.mode == 2 && sidebar.mode == LONG_SIDEBAR &&  curscrolltop < CONDITION.prevscrolltop &&
@@ -224,6 +227,7 @@
                     sidebar.o.css("top", CONDITION.header_space); // no need of margin-top
                     sidebar.o.css("left", sidebar.default_offset.left - $(window).scrollLeft());
                     sidebar.o.css("width", sidebar.width);
+                    sidebar.o.css('margin-left', sidebar.margin_left);
                     sidebar.fixed = 1;
                 }
                 else if ((CONDITION.mode == 2 && sidebar.mode == LONG_SIDEBAR && curscrolltop >= sidebar_cur_top + sidebar.height - CONDITION.window_height &&
@@ -234,6 +238,7 @@
                     sidebar.o.css("top", CONDITION.window_height - sidebar.height);
                     sidebar.o.css("left", sidebar.default_offset.left - $(window).scrollLeft());
                     sidebar.o.css("width", sidebar.width);
+                    sidebar.o.css('margin-left', sidebar.margin_left);
                     sidebar.fixed = 1;
                 }
                 else if (CONDITION.mode == 2 && sidebar.mode == LONG_SIDEBAR && (curscrolltop - CONDITION.prevscrolltop) * CONDITION.direction < 0 && sidebar.fixed) {
@@ -245,6 +250,7 @@
                     sidebar.o.css("top", sidebar_cur_top - sidebar.absolute_adjustment_top);
                     sidebar.o.css("left", sidebar.default_offset.left - sidebar.absolute_adjustment_left);
                     sidebar.o.css("width", sidebar.width);
+                    sidebar.o.css('margin-left', sidebar.margin_left);
                     sidebar.fixed = 0;
                 }
                 else if (sidebar.mode == SHORT_SIDEBAR) {
@@ -253,6 +259,7 @@
                     sidebar.o.css("top", CONDITION.header_space); // no need of margin-top
                     sidebar.o.css("left", sidebar.default_offset.left - $(window).scrollLeft());
                     sidebar.o.css("width", sidebar.width);
+                    sidebar.o.css('margin-left', sidebar.margin_left);
                     sidebar.fixed = 1;
                 }
                 else if (CONDITION.mode != 2) {
@@ -261,6 +268,7 @@
                     sidebar.o.css("top", "0");
                     sidebar.o.css("left", "0");
                     sidebar.o.css("width", '');
+                    sidebar.o.css('margin-left', '');
                     sidebar.fixed = 0;
                 }
                 else {
@@ -324,13 +332,6 @@
 
                 sidebar.o.css('margin-left', '');
                 sidebar.margin_left = parseFloat(sidebar.o.css('margin-left'), 10);  // might be float in responsive themes
-                /* fix for negative percent margins in decimal (for TwentyFourteen) */
-                if (sidebar.margin_left < 0) {
-                    sidebar.margin_left = Math.floor(sidebar.margin_left);
-                }
-                /* fix for margins in percent */
-                sidebar.o.css('margin-left', sidebar.margin_left);
-
 
                 sidebar.default_offset = sidebar.o.offset();
                 if (!sidebar.default_offset) {
