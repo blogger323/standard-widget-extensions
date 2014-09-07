@@ -4,7 +4,7 @@ Donate link: http://en.hetarena.com/donate
 Tags: widget, sidebar
 Requires at least: 3.6
 Tested up to: 4.0
-Stable tag: 1.5.2
+Stable tag: 1.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -66,7 +66,7 @@ Please tell your audience to upgrade browser.
 == Changelog ==
 
 = 1.6 - Sep 7, 2014 =
-* A new option to enable Sticky Sidebar depending on css 'float' attribute. When you enable this option, your sidebar is fixed only when its float attribute is 'left' or 'right'. And you don't need to enter widths to enable/disable sidebars.
+* A new option to enable Sticky Sidebar depending on css 'float' attribute. When you enable this option, your sidebar is fixed only when its float attribute is 'left' or 'right'. And you don't need to enter widths to enable/disable sidebars for responsive web design themes.
 * A handler to re-initialize Accordion Widgets after refreshing by Ajax.
 * WordPress 4.0 compatible. Any versions prior to 3.6 are no more supported.
 
