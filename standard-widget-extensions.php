@@ -3,7 +3,7 @@
 Plugin Name: Standard Widget Extensions
 Plugin URI: http://en.hetarena.com/standard-widget-extensions
 Description: Adds Sticky Sidebar and Accordion Widget features to your WordPress sites.
-Version: 1.5.2
+Version: 1.6
 Author: Hirokazu Matsui (blogger323)
 Text Domain: standard-widget-extensions
 Domain Path: /languages
@@ -13,8 +13,8 @@ License: GPLv2
 
 class HM_SWE_Plugin_Loader {
 
-	const VERSION        = '1.5.2';
-	const OPTION_VERSION = '1.5';
+	const VERSION        = '1.6';
+	const OPTION_VERSION = '1.6';
 	const OPTION_KEY     = 'hm_swe_options';
 	const I18N_DOMAIN    = 'standard-widget-extensions';
 	const PREFIX         = 'hm_swe_';
@@ -45,10 +45,12 @@ class HM_SWE_Plugin_Loader {
 		'header_space'           => 0,
 		'ignore_footer'          => 'disabled',
 		'enable_reload_me'       => 'disabled',
+        'float_attr_check_mode'  => 'disabled',
 
 		'sidebar_id2'            => '',
 		'proportional_sidebar2'  => 0,
 		'disable_iflt2'          => 0,
+        'float_attr_check_mode2' => 'disabled',
 	);
 
 	// index for field array
@@ -76,10 +78,12 @@ class HM_SWE_Plugin_Loader {
 	const I_ENABLE_RELOAD_ME       = 20;
 
 	const I_DISABLE_IFLT           = 21;
+    const I_FLOAT_ATTR_CHECK__MODE = 22;
 
 	// for 2nd sidebar
-	const I_SIDEBAR_ID2            = 22;
-	const I_DISABLE_IFLT2          = 23;
+	const I_SIDEBAR_ID2            = 23;
+	const I_DISABLE_IFLT2          = 24;
+    const I_FLOAT_ATTR_CHECK__MODE2 = 25;
 
 
 	// field array
@@ -281,6 +285,19 @@ class HM_SWE_Plugin_Loader {
 					'section'  => 'hm_swe_scroll_stop',
 				),
 
+                // The 'float' attribute Check Mode
+                array(
+                    'id'       => 'float_attr_check_mode',
+                    'title'    => "The 'float' attribute Check Mode",
+                    'expert'   => 1,
+                    'callback' => 'settings_field_float_attr_check_mode',
+                    'section'  => 'hm_swe_scroll_stop',
+                    'options'  => array(
+                        array( 'id' => 'enable', 'title' => 'Enable', 'value' => 'enabled' ),
+                        array( 'id' => 'disable', 'title' => 'Disable', 'value' => 'disabled' ),
+                    ),
+                ),
+
 				// 2nd sidebar
 				array(
 					'id'       => 'sidebar_id2',
@@ -296,6 +313,17 @@ class HM_SWE_Plugin_Loader {
 					'callback' => 'settings_field_disable_iflt2',
 					'section'  => 'hm_swe_scroll_stop',
 				),
+                array(
+                    'id'       => 'float_attr_check_mode2',
+                    'title'    => "[2nd] The 'float' attribute Check Mode",
+                    'expert'   => 1,
+                    'callback' => 'settings_field_float_attr_check_mode2',
+                    'section'  => 'hm_swe_scroll_stop',
+                    'options'  => array(
+                        array( 'id' => 'enable', 'title' => 'Enable', 'value' => 'enabled' ),
+                        array( 'id' => 'disable', 'title' => 'Disable', 'value' => 'disabled' ),
+                    ),
+                ),
 			);
 
 	function __construct() {
@@ -366,10 +394,12 @@ class HM_SWE_Plugin_Loader {
             'recalc_count'           => $options['recalc_count'],
 			'header_space'           => $options['header_space'],
 			'enable_reload_me'       => $options['enable_reload_me'] == 'enabled',
+            'float_attr_check_mode'  => $options['float_attr_check_mode'] == 'enabled',
 
 			'sidebar_id2'            => esc_attr( $options['sidebar_id2'] ),
 			'proportional_sidebar2'  => 0, // deprecated.
 			'disable_iflt2'          => $options['disable_iflt2'],
+            'float_attr_check_mode2'  => $options['float_attr_check_mode2'] == 'enabled',
 
 			// messages
 			'msg_reload_me'          => __( 'To keep layout integrity, please reload me after resizing!', self::I18N_DOMAIN ),
@@ -644,9 +674,17 @@ class HM_SWE_Plugin_Loader {
 		$this->write_text_option( self::I_SIDEBAR_ID2 );
 	}
 
+    function settings_field_float_attr_check_mode() {
+        $this->settings_field_simple_radio_option( self::I_FLOAT_ATTR_CHECK__MODE );
+    }
+
 	function settings_field_disable_iflt2() {
 		$this->write_text_option( self::I_DISABLE_IFLT2 );
 	}
+
+    function settings_field_float_attr_check_mode2() {
+        $this->settings_field_simple_radio_option( self::I_FLOAT_ATTR_CHECK__MODE2 );
+    }
 
 	function settings_field_expert_options() {
 		$id = self::$settings_field[ self::I_EXPORT_OPTIONS ]['id'];
@@ -671,6 +709,8 @@ class HM_SWE_Plugin_Loader {
 		$valid['ignore_footer']    = $input['ignore_footer'];
 		$valid['expert_options']   = $input['expert_options'];
 		$valid['enable_reload_me'] = $input['enable_reload_me'];
+        $valid['float_attr_check_mode']  = $input['float_attr_check_mode'];
+        $valid['float_attr_check_mode2'] = $input['float_attr_check_mode2'];
 
 		if ( filter_var( $input['disable_iflt'], FILTER_VALIDATE_INT ) === FALSE ) {
 			add_settings_error( 'hm_swe_disable_iflt', 'hm_swe_disable_iflt_error', __( 'The minimum width has to be a number.', self::I18N_DOMAIN ) );

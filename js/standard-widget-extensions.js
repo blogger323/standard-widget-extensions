@@ -31,7 +31,7 @@
             prevscrolltop: -1
         };
 
-        function init_sidebar(sidebar, param_id, percent_width, disable_iflt) {
+        function init_sidebar(sidebar, param_id, percent_width, disable_iflt, float_attr_check_mode) {
             sidebar.o =  null; // jQuery object
             sidebar.height = 0; /* include borders and paddings */
             sidebar.fixed = 0;
@@ -43,6 +43,7 @@
             sidebar.absolute_adjustment_left = 0;
             sidebar.percent_width = 0;
             sidebar.disable_iflt = 0;
+            sidebar.float_attr_check_mode = parseInt(float_attr_check_mode, 10);
 
             sidebar.mode = 0; // 0:disabled, 1:long, 2:short
 
@@ -71,8 +72,8 @@
         swe.sidebar2 = SIDEBAR2;
         swe.condition = CONDITION;
 
-        init_sidebar(SIDEBAR1, swe.sidebar_id, swe.proportional_sidebar, swe.disable_iflt);
-        init_sidebar(SIDEBAR2, swe.sidebar_id2, swe.proportional_sidebar2, swe.disable_iflt2);
+        init_sidebar(SIDEBAR1, swe.sidebar_id, swe.proportional_sidebar, swe.disable_iflt, swe.float_attr_check_mode);
+        init_sidebar(SIDEBAR2, swe.sidebar_id2, swe.proportional_sidebar2, swe.disable_iflt2, swe.float_attr_check_mode2);
 
         if (swe.accordion_widget) {
             function init_accordion() {
@@ -322,6 +323,13 @@
 
             }
 
+            function is_enabled(sidebar) {
+                var f = sidebar.o.css('float');
+                return ( $(window).width() >= sidebar.disable_iflt &&
+                    ( (! sidebar.float_attr_check_mode) || f == 'left' || f == 'right') );
+
+            }
+
             function resize_sidebar(sidebar) {
                 sidebar.height = sidebar.o.outerHeight(true);
 
@@ -353,7 +361,7 @@
                 sidebar.absolute_adjustment_top  = o.offset().top;  // TODO: margin adjustment needed?
                 sidebar.absolute_adjustment_left = o.offset().left;
 
-                if ($(window).width() < sidebar.disable_iflt) {
+                if ( ! is_enabled(sidebar) ) {
                     sidebar.mode = DISABLED_SIDEBAR;
                 }
                 else {
@@ -365,7 +373,7 @@
             function finalize_sidebarmode(sidebar) {
 
                 if (sidebar.default_offset.top + sidebar.height >= CONDITION.content_top + CONDITION.content_height ||
-                    $(window).width() < sidebar.disable_iflt) {
+                    ! is_enabled(sidebar)) {
                     sidebar.mode = DISABLED_SIDEBAR;
                 }
                 else if (sidebar.height + CONDITION.header_space <= CONDITION.window_height) {
@@ -422,8 +430,8 @@
             }
 
             if (swe.scroll_stop && $(contentid).length) {
-                init_sidebar(SIDEBAR1, swe.sidebar_id, swe.proportional_sidebar, swe.disable_iflt);
-                init_sidebar(SIDEBAR2, swe.sidebar_id2, swe.proportional_sidebar2, swe.disable_iflt2);
+                init_sidebar(SIDEBAR1, swe.sidebar_id, swe.proportional_sidebar, swe.disable_iflt, swe.float_attr_check_mode);
+                init_sidebar(SIDEBAR2, swe.sidebar_id2, swe.proportional_sidebar2, swe.disable_iflt2, swe.float_attr_check_mode2);
                 swe.resizeHandler();
             }
         }
