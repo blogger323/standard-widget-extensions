@@ -438,5 +438,8 @@
 
         swe.reloadHandler = reloadfunc;
 
+        // Tabs
+        //$( "#tabs-sidebar-3" ).tabs();
+
     }); // ready function
 })(jQuery, window, document);

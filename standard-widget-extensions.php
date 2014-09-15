@@ -334,6 +334,10 @@ class HM_SWE_Plugin_Loader {
 		add_action( 'admin_init', array( &$this, 'admin_init' ) );
 		add_action( 'admin_head', array( &$this, 'admin_head' ) );
 		add_action( 'admin_menu', array( &$this, 'admin_menu' ) );
+
+        // TODO: >= 3.9 only
+//        add_action( 'dynamic_sidebar_before', array( &$this, 'dynamic_sidebar_before' ), 10, 2 );
+//        add_action( 'dynamic_sidebar_after',  array( &$this, 'dynamic_sidebar_after'  ), 10, 2 );
 	}
 
 	function plugins_loaded() {
@@ -361,9 +365,12 @@ class HM_SWE_Plugin_Loader {
 	function enqueue_scripts() {
 		$options = $this->get_hm_swe_option();
 		wp_enqueue_script( 'jquery' );
+//        wp_enqueue_script( 'jquery-ui-tabs', false, array('jquery') );
 		wp_enqueue_script( 'jquery-cookie', plugins_url( '/js/jquery.cookie.js', __FILE__ ), array( 'jquery' ) );
 		wp_enqueue_script( 'standard-widget-extensions',
-			plugins_url( '/js/standard-widget-extensions' . ($this->get_hm_swe_option('readable_js') == 'enabled' ? '.js' : '.min.js'), __FILE__ ) );
+			plugins_url( '/js/standard-widget-extensions' . ($this->get_hm_swe_option('readable_js') == 'enabled' ? '.js' : '.min.js'), __FILE__ ), array(), false, true );
+
+//        wp_enqueue_style( 'jquery-ui.css', '//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css');
 
 		$custom_selectors = $this->get_widget_selectors();
 
@@ -869,6 +876,43 @@ class HM_SWE_Plugin_Loader {
 		</div>
 	<?php
 	}
+
+    function dynamic_sidebar_before($index, $has_widgets) {
+        global $wp_registered_widgets;
+        if (! $has_widgets) {
+            return;
+        }
+
+        // temporarily
+        if ( $index != "sidebar-3" ) {
+            return;
+        }
+
+        ?>
+        <div id='tabs-<?php echo $index;  ?>'><ul>
+        <?php
+        $sidebars_widgets = wp_get_sidebars_widgets();
+        foreach ( (array) $sidebars_widgets[$index] as $id ) {
+            if ( !isset($wp_registered_widgets[$id]) ) continue;
+
+?>
+            <li><a href="#<?php echo $id; ?>"><?php echo $wp_registered_widgets[$id][name]; ?></a></li>
+<?php
+        }
+        echo "</ul>\n";
+    }
+
+    function dynamic_sidebar_after($index, $has_widgets) {
+        if (! $has_widgets) {
+            return;
+        }
+
+        // temporarily
+        if ( $index != "sidebar-3" ) {
+            return;
+        }
+        echo "</div>\n";
+    }
 
 } // end of class HM_SWE_Plugin_Loader
 
