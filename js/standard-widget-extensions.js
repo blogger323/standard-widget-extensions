@@ -107,13 +107,25 @@
 
                     // restore status, set heading markers
                     $(swe.custom_selectors[i]).each(function () {
+                        var heading = $(this).children(swe.heading_string);
+
+                        /*
+                          Priority:
+                          1. cookie
+                          2. initially collapsed setting
+                          3. CSS display = none
+                          4. class attribute hm-swe-expanded/hm-swe-collapsed (in theme files)
+                         */
                         if ((cook && cook[$(this).attr('id')] == "t") ||
-                            (!cook && !swe.initially_collapsed && $(this).children(swe.heading_string).next().css('display') == 'block')) {
-                            $(this).children(swe.heading_string).addClass('hm-swe-expanded');
+                            (!cook && !swe.initially_collapsed && heading.next().css('display') !== 'none')) {
+                            if ((! heading.hasClass('hm-swe-expanded')) && (! heading.hasClass('hm-swe-collapsed'))) {
+                                heading.addClass('hm-swe-expanded');
+                            }
                         }
                         else {
-                            $(this).children(swe.heading_string).addClass('hm-swe-collapsed');
+                            heading.addClass('hm-swe-collapsed');
                         }
+
                     });
 
                     headings.filter('.hm-swe-expanded').next().show();
