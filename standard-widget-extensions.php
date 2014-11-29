@@ -421,8 +421,8 @@ class HM_SWE_Plugin_Loader {
 		$options = $this->get_hm_swe_option();
         ?>
 
-        <style type="text/css">
-        <?php
+<style type="text/css">
+    <?php
 		if ( $options['accordion_widget'] === 'enabled' && $options['heading_marker'] !== 'none' && $options['enable_css'] === 'enabled'
 				&& implode( ',', $options['custom_selectors'] ) === '' ) {
 			$area_array = array_map( 'esc_attr', $this->get_widget_selectors( true ) );
@@ -437,54 +437,55 @@ class HM_SWE_Plugin_Loader {
 				$areastr .= $area . ( $i + 1 == count( $area_array ) ? "\n" : ",\n" );
 			} // for
 
-			?>
-				<?php echo $headstr; ?>
-				{
-					zoom: 1	; /* for IE7 to display background-image */
-					padding-left: 20px;
-					margin-left: -20px;
-				}
+	?>
 
-                <?php echo $expandstr; ?>
-                {
-                    background: <?php echo $options['heading_marker'] == 'custom' ? "url(" . $options['custom_plus'] . ")" :
+    <?php echo $headstr; ?>
+    {
+        zoom: 1	; /* for IE7 to display background-image */
+        padding-left: 20px;
+        margin-left: -20px;
+	}
+
+    <?php echo $expandstr; ?>
+    {
+        background: <?php echo $options['heading_marker'] == 'custom' ? "url(" . $options['custom_plus'] . ")" :
                 "url(" . plugins_url( '/images/plus.gif', __FILE__ ) . ")"; ?> no-repeat left center;
-                }
+    }
 
-                <?php echo $collapsestr; ?>
-                {
-                    background: <?php echo  $options['heading_marker'] == 'custom' ? "url(" . $options['custom_minus'] . ")" :
+    <?php echo $collapsestr; ?>
+    {
+        background: <?php echo  $options['heading_marker'] == 'custom' ? "url(" . $options['custom_minus'] . ")" :
                 "url(" . plugins_url( '/images/minus.gif', __FILE__ ) . ")"; ?> no-repeat left center;
-                }
+    }
 
-				<?php echo $areastr; ?>
-				{
-					overflow: visible	;
-				}
+    <?php echo $areastr; ?>
+    {
+        overflow: visible	;
+    }
 
-		<?php
+    <?php
 		} // if
-        ?>
-        .hm-swe-resize-message {
-            height: 50%;
-            width: 50%;
-            margin: auto;
-            position: absolute;
-            top: 0; left: 0; bottom: 0; right: 0;
-            z-index: 99999;
+    ?>
+    .hm-swe-resize-message {
+        height: 50%;
+        width: 50%;
+        margin: auto;
+        position: absolute;
+        top: 0; left: 0; bottom: 0; right: 0;
+        z-index: 99999;
 
-            color: white;
-        }
+        color: white;
+    }
 
-        .hm-swe-modal-background {
-            position: fixed;
-            top: 0; left: 0; 	bottom: 0; right: 0;
-            background: none repeat scroll 0% 0% rgba(0, 0, 0, 0.85);
-            z-index: 99998;
-            display: none;
-        }
-        </style>
-        <?php
+    .hm-swe-modal-background {
+        position: fixed;
+        top: 0; left: 0; 	bottom: 0; right: 0;
+        background: none repeat scroll 0% 0% rgba(0, 0, 0, 0.85);
+        z-index: 99998;
+        display: none;
+    }
+</style>
+    <?php
 	} // wp_head
 
 	function admin_init() {
