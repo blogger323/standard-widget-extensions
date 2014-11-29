@@ -428,8 +428,12 @@ class HM_SWE_Plugin_Loader {
 			$area_array = array_map( 'esc_attr', $this->get_widget_selectors( true ) );
 			$headstr      = "";
 			$areastr    = "";
+			$expandstr = "";
+			$collapsestr = "";
 			foreach ( $area_array as $i => $area ) {
 				$headstr .= $area . " ." . $options['widget_class'] . " " . $options['heading_string'] . ( $i + 1 == count( $area_array ) ? "\n" : ",\n" );
+				$expandstr .= $area . " ." . $options['widget_class'] . " .hm-swe-expanded " . ( $i + 1 == count( $area_array ) ? "\n" : ",\n" );
+				$collapsestr .= $area . " ." . $options['widget_class'] . " .hm-swe-collapsed " . ( $i + 1 == count( $area_array ) ? "\n" : ",\n" );
 				$areastr .= $area . ( $i + 1 == count( $area_array ) ? "\n" : ",\n" );
 			} // for
 
@@ -440,6 +444,18 @@ class HM_SWE_Plugin_Loader {
 					padding-left: 20px;
 					margin-left: -20px;
 				}
+
+                <?php echo $expandstr; ?>
+                {
+                    background: <?php echo $options['heading_marker'] == 'custom' ? "url(" . $options['custom_plus'] . ")" :
+                "url(" . plugins_url( '/images/plus.gif', __FILE__ ) . ")"; ?> no-repeat left center;
+                }
+
+                <?php echo $collapsestr; ?>
+                {
+                    background: <?php echo  $options['heading_marker'] == 'custom' ? "url(" . $options['custom_minus'] . ")" :
+                "url(" . plugins_url( '/images/minus.gif', __FILE__ ) . ")"; ?> no-repeat left center;
+                }
 
 				<?php echo $areastr; ?>
 				{
