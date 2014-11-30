@@ -65,6 +65,15 @@ Please tell your audience to upgrade browser.
 
 == Changelog ==
 
+= 1.7 - Dec 2014 =
+* Accordion Widget Improvement
+    * Now you can style headings with .hm-swe-expanded/.hm-swe-collapsed classes.
+* Better Admin Screen
+    * Tab interface
+* Following options are withdrawn in this release.
+    * Include Default CSS for Icons
+    * Reload-me Warning After Resizing
+
 = 1.6 - Sep 7, 2014 =
 * A new option to enable Sticky Sidebar depending on css 'float' attribute. When you enable this option, your sidebar is fixed only when its float attribute is 'left' or 'right'. And you don't need to enter widths to enable/disable sidebars for responsive web design themes.
 * A handler to re-initialize Accordion Widgets after refreshing by Ajax.

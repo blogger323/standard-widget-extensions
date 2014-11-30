@@ -20,7 +20,7 @@ class HM_SWE_Plugin_Loader {
 	const PREFIX         = 'hm_swe_';
 
 	public static $default_hm_swe_option = array(
-		'expert_options'         => 'disabled',
+		'expert_options'         => 'disabled', // deprecated
 		'maincol_id'             => 'primary',
 		'sidebar_id'             => 'secondary',
 		'widget_class'           => 'widget',
@@ -29,7 +29,7 @@ class HM_SWE_Plugin_Loader {
 		'heading_marker'         => 'default',
 		'custom_plus'            => '',
 		'custom_minus'           => '',
-		'enable_css'             => 'enabled',
+		'enable_css'             => 'enabled', // deprecated
 		'single_expansion'       => 'disabled',
         'initially_collapsed'    => 'enabled',
 		'slide_duration'         => 400,
@@ -44,7 +44,7 @@ class HM_SWE_Plugin_Loader {
         'recalc_count'           => 2,
 		'header_space'           => 0,
 		'ignore_footer'          => 'disabled',
-		'enable_reload_me'       => 'disabled',
+        'enable_reload_me'       => 'disabled', // deprecated
         'float_attr_check_mode'  => 'disabled',
 
 		'sidebar_id2'            => '',
@@ -54,48 +54,40 @@ class HM_SWE_Plugin_Loader {
 	);
 
 	// index for field array
-	const I_EXPORT_OPTIONS         = 0;
-	const I_MAINCOL_ID             = 1;
-	const I_SIDEBAR_ID             = 2;
-	const I_WIDGET_CLASS           = 3;
-	const I_READABLE_JS            = 4;
-	const I_ACCORDION_WIDGET       = 5;
-	const I_HEADING_MARKER         = 6;
-	const I_ENABLE_CSS             = 7;
-    const I_SINGLE_EXPANSION       = 8;
-    const I_INITIALLY_COLLAPSED    = 9;
-    const I_SLIDE_DURATION         = 10;
-	const I_HEADING_STRING         = 11;
-	const I_ACCORDION_WIDGET_AREAS = 12;
-	const I_CUSTOM_SELECTORS       = 13;
-	const I_SCROLL_STOP            = 14;
 
-	const I_SCROLL_MODE            = 15;
-	const I_RECALC_AFTER           = 16;  // Now it means the interval.
-    const I_RECALC_COUNT           = 17;
-	const I_HEADER_SPACE           = 18;
-	const I_IGNORE_FOOTER          = 19;
-	const I_ENABLE_RELOAD_ME       = 20;
+    const I_MAINCOL_ID             = 0;
+    const I_SIDEBAR_ID             = 1;
+    const I_WIDGET_CLASS           = 2;
+    const I_ACCORDION_WIDGET       = 3;
+    const I_HEADING_MARKER         = 4;
+    const I_SINGLE_EXPANSION       = 5;
+    const I_INITIALLY_COLLAPSED    = 6;
+    const I_SLIDE_DURATION         = 7;
+    const I_HEADING_STRING         = 8;
+    const I_ACCORDION_WIDGET_AREAS = 9;
+    const I_CUSTOM_SELECTORS       = 10;
+    const I_SCROLL_STOP            = 11;
 
-	const I_DISABLE_IFLT           = 21;
-    const I_FLOAT_ATTR_CHECK__MODE = 22;
+    const I_SCROLL_MODE            = 12;
+    const I_RECALC_AFTER           = 13;  // Now it means the interval.
+    const I_RECALC_COUNT           = 14;
+    const I_HEADER_SPACE           = 15;
+    const I_IGNORE_FOOTER          = 16;
+
+    const I_DISABLE_IFLT           = 17;
+    const I_FLOAT_ATTR_CHECK__MODE = 18;
 
 	// for 2nd sidebar
-	const I_SIDEBAR_ID2            = 23;
-	const I_DISABLE_IFLT2          = 24;
-    const I_FLOAT_ATTR_CHECK__MODE2 = 25;
+    const I_SIDEBAR_ID2            = 19;
+    const I_DISABLE_IFLT2          = 20;
+    const I_FLOAT_ATTR_CHECK__MODE2 = 21;
+
+    const I_READABLE_JS            = 22;
 
 
-	// field array
+    // field array
 	private static $settings_field =
 			array(
-				// Hidden options
-				array(
-					'id'       => 'expert_options',
-					'title'    => '',
-					'callback' => 'settings_field_expert_options',
-					'section'  => 'hm_swe_main',
-				),
 
 				// General options
 				array(
@@ -116,24 +108,13 @@ class HM_SWE_Plugin_Loader {
 					'callback' => 'settings_field_widget_class',
 					'section'  => 'hm_swe_main',
 				),
-				array(
-					'id'       => 'readable_js',
-					'title'    => 'Readable .js File',
-					'expert'   => 1,
-					'callback' => 'settings_field_readable_js',
-					'section'  => 'hm_swe_main',
-					'options'  => array(
-						array( 'id' => 'enable', 'title' => 'Enable', 'value' => 'enabled' ),
-						array( 'id' => 'disable', 'title' => 'Disable (minimized)', 'value' => 'disabled' ),
-					),
-				),
 
 				// Accordion Widgets options
 				array(
 					'id'       => 'accordion_widget',
 					'title'    => 'Accordion Widgets',
 					'callback' => 'settings_field_accordion_widget',
-					'section'  => 'hm_swe_accordion_widget',
+					'section'  => 'hm_swe_main',
 					'options'  => array(
 						array( 'id' => 'enable', 'title' => 'Enable', 'value' => 'enabled' ),
 						array( 'id' => 'disable', 'title' => 'Disable', 'value' => 'disabled' ),
@@ -148,17 +129,6 @@ class HM_SWE_Plugin_Loader {
 						array( 'id' => 'none', 'title' => 'None', 'value' => 'none' ),
 						array( 'id' => 'default', 'title' => 'Default', 'value' => 'default' ),
 						array( 'id' => 'custom', 'title' => 'Custom', 'value' => 'custom' )
-					),
-				),
-				array(
-					'id'       => 'enable_css',
-					'title'    => 'Include Default CSS for Icons',
-					'expert'   => 1,
-					'callback' => 'settings_field_enable_css',
-					'section'  => 'hm_swe_accordion_widget',
-					'options'  => array(
-						array( 'id' => 'enable', 'title' => 'Yes (Recommended)', 'value' => 'enabled' ),
-						array( 'id' => 'disable', 'title' => 'No', 'value' => 'disabled' ),
 					),
 				),
 				array(
@@ -217,7 +187,7 @@ class HM_SWE_Plugin_Loader {
 					'id'       => 'scroll_stop',
 					'title'    => 'Sticky Sidebar',
 					'callback' => 'settings_field_scroll_stop',
-					'section'  => 'hm_swe_scroll_stop',
+					'section'  => 'hm_swe_main',
 					'options'  => array(
 						array( 'id' => 'enable', 'title' => 'Enable', 'value' => 'enabled' ),
 						array( 'id' => 'disable', 'title' => 'Disable', 'value' => 'disabled' ),
@@ -259,17 +229,6 @@ class HM_SWE_Plugin_Loader {
 					'title'    => 'Ignore Footer (for Infinite Scroll Pages)',
 					'expert'   => 1,
 					'callback' => 'settings_field_ignore_footer',
-					'section'  => 'hm_swe_scroll_stop',
-					'options'  => array(
-						array( 'id' => 'enable', 'title' => 'Enable', 'value' => 'enabled' ),
-						array( 'id' => 'disable', 'title' => 'Disable', 'value' => 'disabled' ),
-					),
-				),
-				array(
-					'id'       => 'enable_reload_me',
-					'title'    => 'Reload-me Warning After Resizing',
-					'expert'   => 1,
-					'callback' => 'settings_field_enable_reload_me',
 					'section'  => 'hm_swe_scroll_stop',
 					'options'  => array(
 						array( 'id' => 'enable', 'title' => 'Enable', 'value' => 'enabled' ),
@@ -324,6 +283,19 @@ class HM_SWE_Plugin_Loader {
                         array( 'id' => 'disable', 'title' => 'Disable', 'value' => 'disabled' ),
                     ),
                 ),
+
+                array(
+                    'id'       => 'readable_js',
+                    'title'    => 'Readable .js File',
+                    'expert'   => 1,
+                    'callback' => 'settings_field_readable_js',
+                    'section'  => 'hm_swe_main',
+                    'options'  => array(
+                        array( 'id' => 'enable', 'title' => 'Enable', 'value' => 'enabled' ),
+                        array( 'id' => 'disable', 'title' => 'Disable (minimized)', 'value' => 'disabled' ),
+                    ),
+                ),
+
 			);
 
 	function __construct() {
@@ -424,7 +396,7 @@ class HM_SWE_Plugin_Loader {
 
 <style type="text/css">
     <?php
-		if ( $options['accordion_widget'] === 'enabled' && $options['heading_marker'] !== 'none' && $options['enable_css'] === 'enabled'
+		if ( $options['accordion_widget'] === 'enabled' && $options['heading_marker'] !== 'none'
 				&& implode( ',', $options['custom_selectors'] ) === '' ) {
 			$area_array = array_map( 'esc_attr', $this->get_widget_selectors( true ) );
 			$headstr      = "";
@@ -491,7 +463,7 @@ class HM_SWE_Plugin_Loader {
 
 	function admin_init() {
 		add_settings_section( 'hm_swe_main', _x( 'General', 'title', self::I18N_DOMAIN ),
-			array( &$this, 'main_section_text' ), 'hm_swe_option_page' );
+			array( &$this, 'empty_text' ), 'hm_swe_option_page' );
 		add_settings_section( 'hm_swe_accordion_widget', _x( 'Accordion Widgets', 'title', self::I18N_DOMAIN ),
 			array( &$this, 'empty_text' ), 'hm_swe_option_page' );
 		add_settings_section( 'hm_swe_scroll_stop', _x( 'Sticky Sidebar', 'title', self::I18N_DOMAIN ),
@@ -499,9 +471,11 @@ class HM_SWE_Plugin_Loader {
 
 		foreach ( self::$settings_field as $f ) {
 			$title = __( $f['title'], self::I18N_DOMAIN );
-		  if ( isset( $f['expert'] ) ) {
+            /*
+            if ( isset( $f['expert'] ) ) {
 				$title = "<span class='swe-expert-params'>" . $title . "</span>";
 			}
+            */
 			add_settings_field( self::PREFIX . $f['id'], $title, array( &$this, $f['callback'] ),
 				'hm_swe_option_page', $f['section'] );
 		}
@@ -511,53 +485,60 @@ class HM_SWE_Plugin_Loader {
 
 	function admin_head() {
 ?>
-	<style>
-		span.swe-expert-params {
-			font-style: italic;
-		}
-	</style>
-		<script type="text/javascript">
-			(function($, window, document) {
-				$(document).ready(function(){
-					<?php
-							if ($this->get_hm_swe_option( 'expert_options' ) != 'enabled') {
-					?>
-					$('span.swe-expert-params').each(function() {
-						$(this).parent().parent().hide();
-					});
-					<?php
-							}
-							else {
-					?>
-					$('#swe-expert-button').addClass('swe-show-expert');
-					<?php
-							}
-					?>
-					$('#swe-expert-button').click( function() {
-						if ($(this).hasClass('swe-show-expert')) {
-							$(this).attr('value', '<?php echo __( 'Show Expert Options', self::I18N_DOMAIN ) ?>');
-							$(this).removeClass('swe-show-expert');
-							$('#expert_options').attr('value', 'disabled');
-							$('span.swe-expert-params').each(function() {
-								$(this).parent().parent().hide();
-							});
-						}
-						else {
-							$(this).attr('value', '<?php echo __( 'Hide Expert Options', self::I18N_DOMAIN ) ?>');
-							$(this).addClass('swe-show-expert');
-							$('#expert_options').attr('value', 'enabled');
-							$('span.swe-expert-params').each(function() {
-								$(this).parent().parent().show();
-							});
-						}
-						return false;
-					});
 
-                    $( '#swe-tabs').tabs();
-				}); // ready
-			})(jQuery, window, document);
-		</script>
-	<?php
+<style>
+    span.swe-expert-params {
+        font-style: italic;
+    }
+
+    #swe-tabs ul h3 {
+        margin: 0;
+    }
+</style>
+<script type="text/javascript">
+(function($, window, document) {
+    $(document).ready(function(){
+        $( '#swe-tabs').tabs();
+
+        // show/hide the accordion widget tab
+        if ($('#swe-accordion_widget-disabled').filter(':checked').length) {
+            $('#swe-tab-hm_swe_accordion_widget').hide();
+        }
+        $('#swe-accordion_widget-enabled').click(function() {
+            $('#swe-tab-hm_swe_accordion_widget').show();
+        })
+        $('#swe-accordion_widget-disabled').click(function() {
+            $('#swe-tab-hm_swe_accordion_widget').hide();
+        });
+
+        // show/hide the sticky sidebar tab
+        if ($('#swe-scroll_stop-disabled').filter(':checked').length) {
+            $('#swe-tab-hm_swe_scroll_stop').hide();
+        }
+        $('#swe-scroll_stop-enabled').click(function() {
+            $('#swe-tab-hm_swe_scroll_stop').show();
+        });
+        $('#swe-scroll_stop-disabled').click(function() {
+            $('#swe-tab-hm_swe_scroll_stop').hide();
+        });
+
+        // show/hide the heading marker option
+        /*
+        if ($('#swe-enable_css-disabled').filter(':checked').length) {
+            $('#swe-heading_marker-none').closest('tr').hide();
+        }
+        $('#swe-enable_css-enabled').click(function() {
+            $('#swe-heading_marker-none').closest('tr').show();
+        })
+        $('#swe-enable_css-disabled').click(function() {
+            $('#swe-heading_marker-none').closest('tr').hide();
+        })
+        */
+
+    }); // ready
+})(jQuery, window, document);
+</script>
+<?php
 	}
 
     function admin_enqueue_scripts( $hook ) {
@@ -566,15 +547,6 @@ class HM_SWE_Plugin_Loader {
             wp_enqueue_style( 'jquery-ui.css', '//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css');
         }
     }
-
-	function main_section_text() {
-		echo __( '<p>Check <a href="http://en.hetarena.com/standard-widget-extensions" target="_blank">the plugin home page</a> for help.</p>', self::I18N_DOMAIN );
-
-        /*
-		echo '<input id="swe-expert-button" class="button button-primary" type="submit" value="' .
-				( $this->get_hm_swe_option( 'expert_options' ) == 'enabled' ? __( 'Hide Expert Options', self::I18N_DOMAIN ) : __( 'Show Expert Options', self::I18N_DOMAIN ) ) . '" />';
-        */
-	}
 
 	function empty_text() {
 	}
@@ -597,7 +569,7 @@ class HM_SWE_Plugin_Loader {
 		$id = self::$settings_field[$index]['id'];
 		$v  = $this->get_hm_swe_option( $id );
 		foreach ( self::$settings_field[$index]['options'] as $o ) {
-			echo "<label title='" . $o['id'] . "'><input type='radio' name='" . self::OPTION_KEY . "[$id]' value='" . $o['value'] . "' " .
+			echo "<label title='" . $o['id'] . "'><input id='swe-" . $id . '-' . $o['value'] . "' type='radio' name='" . self::OPTION_KEY . "[$id]' value='" . $o['value'] . "' " .
 					( $v == $o['value'] ? "checked='checked'" : "" ) . "/><span>" . __( $o['title'], self::I18N_DOMAIN ) . "</span></label><br />\n";
 
 		}
@@ -667,10 +639,6 @@ class HM_SWE_Plugin_Loader {
 		$this->settings_field_simple_radio_option( self::I_ACCORDION_WIDGET );
 	}
 
-	function settings_field_enable_css() {
-		$this->settings_field_simple_radio_option( self::I_ENABLE_CSS );
-	}
-
 	function settings_field_single_expansion() {
 		$this->settings_field_simple_radio_option( self::I_SINGLE_EXPANSION );
 	}
@@ -703,10 +671,6 @@ class HM_SWE_Plugin_Loader {
 		$this->write_text_option( self::I_HEADER_SPACE );
 	}
 
-	function settings_field_enable_reload_me() {
-		$this->settings_field_simple_radio_option( self::I_ENABLE_RELOAD_ME );
-	}
-
 	function settings_field_sidebar_id2() {
 		$this->write_text_option( self::I_SIDEBAR_ID2 );
 	}
@@ -722,14 +686,6 @@ class HM_SWE_Plugin_Loader {
     function settings_field_float_attr_check_mode2() {
         $this->settings_field_simple_radio_option( self::I_FLOAT_ATTR_CHECK__MODE2 );
     }
-
-	function settings_field_expert_options() {
-		$id = self::$settings_field[ self::I_EXPORT_OPTIONS ]['id'];
-		$v = $this->get_hm_swe_option( $id );
-
-		echo "<input id='$id' name='" . self::OPTION_KEY . "[$id]' type='hidden' value='" . esc_attr( $v ) . "' />";
-
-	}
 
 	function validate_options( $input ) {
 		$valid = array();
@@ -901,7 +857,7 @@ class HM_SWE_Plugin_Loader {
 
         echo "\n<ul>\n";
         foreach ( (array) $wp_settings_sections[$page] as $section ) {
-            echo "<li><a href='#{$section['id']}'><h3>{$section['title']}</h3></a></li>\n";
+            echo "<li id='swe-tab-{$section['id']}'><a href='#{$section['id']}'><h3>{$section['title']}</h3></a></li>\n";
         }
         echo "</ul>\n";
 
@@ -922,14 +878,16 @@ class HM_SWE_Plugin_Loader {
 	function admin_page() {
 		?>
 		<div class="wrap">
-			<?php screen_icon(); ?>
 			<h2><?php echo __( "Standard Widget Extensions", self::I18N_DOMAIN ); ?></h2>
+            <?php echo __( '<p>Check <a href="http://en.hetarena.com/standard-widget-extensions" target="_blank">the plugin home page</a> for help.</p>', self::I18N_DOMAIN ); ?>
 
 			<form action="options.php" method="post">
                 <div id="swe-tabs">
-				<?php settings_fields( 'hm_swe_option_group' ); ?>
-				<?php $this->do_my_settings_sections( 'hm_swe_option_page' ); ?>
-				<p class="submit"><input class="button-primary" name="Submit" type="submit" value="<?php echo __( 'Save Changes' ); ?>" /></p>
+				<?php
+                settings_fields( 'hm_swe_option_group' );
+                $this->do_my_settings_sections( 'hm_swe_option_page' );
+                submit_button();
+                ?>
                 </div>
 			</form>
 		</div>
