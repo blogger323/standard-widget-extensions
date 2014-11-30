@@ -334,8 +334,9 @@ class HM_SWE_Plugin_Loader {
 		add_action( 'admin_init', array( &$this, 'admin_init' ) );
 		add_action( 'admin_head', array( &$this, 'admin_head' ) );
 		add_action( 'admin_menu', array( &$this, 'admin_menu' ) );
+        add_action( 'admin_enqueue_scripts', array( &$this, 'admin_enqueue_scripts' ) );
 
-        // TODO: >= 3.9 only
+        // TODO: >= 3.9 only (dynamic_sidebar_before is only available since 3.9)
 //        add_action( 'dynamic_sidebar_before', array( &$this, 'dynamic_sidebar_before' ), 10, 2 );
 //        add_action( 'dynamic_sidebar_after',  array( &$this, 'dynamic_sidebar_after'  ), 10, 2 );
 	}
@@ -551,16 +552,28 @@ class HM_SWE_Plugin_Loader {
 						}
 						return false;
 					});
-				});
+
+                    $( '#swe-tabs').tabs();
+				}); // ready
 			})(jQuery, window, document);
 		</script>
 	<?php
 	}
 
+    function admin_enqueue_scripts( $hook ) {
+        if ( 'settings_page_hm_swe_option_page' == $hook ) { // != 'options-general.php'
+            wp_enqueue_script( 'jquery-ui-tabs', false, array( 'jquery' ) );
+            wp_enqueue_style( 'jquery-ui.css', '//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css');
+        }
+    }
+
 	function main_section_text() {
 		echo __( '<p>Check <a href="http://en.hetarena.com/standard-widget-extensions" target="_blank">the plugin home page</a> for help.</p>', self::I18N_DOMAIN );
+
+        /*
 		echo '<input id="swe-expert-button" class="button button-primary" type="submit" value="' .
 				( $this->get_hm_swe_option( 'expert_options' ) == 'enabled' ? __( 'Hide Expert Options', self::I18N_DOMAIN ) : __( 'Show Expert Options', self::I18N_DOMAIN ) ) . '" />';
+        */
 	}
 
 	function empty_text() {
@@ -879,6 +892,33 @@ class HM_SWE_Plugin_Loader {
 			'manage_options', 'hm_swe_option_page', array( &$this, 'admin_page' ) );
 	}
 
+    // Substitution function for do_settings_sections() in template.php
+    function do_my_settings_sections( $page ) {
+        global $wp_settings_sections, $wp_settings_fields;
+
+        if ( ! isset( $wp_settings_sections[$page] ) )
+            return;
+
+        echo "\n<ul>\n";
+        foreach ( (array) $wp_settings_sections[$page] as $section ) {
+            echo "<li><a href='#{$section['id']}'><h3>{$section['title']}</h3></a></li>\n";
+        }
+        echo "</ul>\n";
+
+        foreach ( (array) $wp_settings_sections[$page] as $section ) {
+            echo "<div id='{$section['id']}'>\n";
+            if ( $section['callback'] )
+                call_user_func( $section['callback'], $section );
+
+            if ( ! isset( $wp_settings_fields ) || !isset( $wp_settings_fields[$page] ) || !isset( $wp_settings_fields[$page][$section['id']] ) )
+                continue;
+            echo '<table class="form-table">';
+            do_settings_fields( $page, $section['id'] );
+            echo '</table>';
+            echo "</div>\n";
+        }
+    }
+
 	function admin_page() {
 		?>
 		<div class="wrap">
@@ -886,14 +926,19 @@ class HM_SWE_Plugin_Loader {
 			<h2><?php echo __( "Standard Widget Extensions", self::I18N_DOMAIN ); ?></h2>
 
 			<form action="options.php" method="post">
+                <div id="swe-tabs">
 				<?php settings_fields( 'hm_swe_option_group' ); ?>
-				<?php do_settings_sections( 'hm_swe_option_page' ); ?>
+				<?php $this->do_my_settings_sections( 'hm_swe_option_page' ); ?>
 				<p class="submit"><input class="button-primary" name="Submit" type="submit" value="<?php echo __( 'Save Changes' ); ?>" /></p>
+                </div>
 			</form>
 		</div>
 	<?php
 	}
 
+
+    // experimental function for Tabs
+    // not used in production release
     function dynamic_sidebar_before($index, $has_widgets) {
         global $wp_registered_widgets;
         if (! $has_widgets) {
@@ -919,6 +964,8 @@ class HM_SWE_Plugin_Loader {
         echo "</ul>\n";
     }
 
+    // experimental function for Tabs
+    // not used in production release
     function dynamic_sidebar_after($index, $has_widgets) {
         if (! $has_widgets) {
             return;
