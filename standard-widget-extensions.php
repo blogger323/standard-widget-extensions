@@ -299,13 +299,15 @@ class HM_SWE_Plugin_Loader {
 			);
 
 	function __construct() {
-		register_activation_hook( __FILE__, array( &$this, 'activate' ) );
-		add_action( 'plugins_loaded', array( &$this, 'plugins_loaded' ) );
-		add_action( 'wp_enqueue_scripts', array( &$this, 'enqueue_scripts' ), 20 );
-		add_action( 'wp_head', array( &$this, 'wp_head' ) );
-		add_action( 'admin_init', array( &$this, 'admin_init' ) );
-		add_action( 'admin_head', array( &$this, 'admin_head' ) );
-		add_action( 'admin_menu', array( &$this, 'admin_menu' ) );
+        register_activation_hook( __FILE__, array( &$this, 'activate' ) );
+        add_action( 'plugins_loaded', array( &$this, 'plugins_loaded' ) );
+        add_action( 'wp_enqueue_scripts', array( &$this, 'enqueue_scripts' ), 20 );
+        add_action( 'wp_head', array( &$this, 'wp_head' ) );
+        add_action( 'admin_init', array( &$this, 'admin_init' ) );
+
+        //add_action( 'admin_head', array( &$this, 'admin_head' ) );
+        add_action( 'admin_head-settings_page_hm_swe_option_page', array( &$this, 'admin_head' ) );
+        add_action( 'admin_menu', array( &$this, 'admin_menu' ) );
         add_action( 'admin_enqueue_scripts', array( &$this, 'admin_enqueue_scripts' ) );
 
         // TODO: >= 3.9 only (dynamic_sidebar_before is only available since 3.9)

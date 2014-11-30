@@ -68,6 +68,7 @@ Please tell your audience to upgrade browser.
 = 1.7 - Dec 2014 =
 * Accordion Widget Improvement
     * Now you can style headings with .hm-swe-expanded/.hm-swe-collapsed classes.
+    * Better Ajax support. Working with such as YITH WooCommerce Ajax Navigation.
 * Better Admin Screen
     * Tab interface
 * Following options are withdrawn in this release.
