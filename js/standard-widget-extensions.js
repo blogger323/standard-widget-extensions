@@ -12,6 +12,11 @@
  GNU General Public License for more details.
 
  */
+/*
+  hm-swe-accordion-head: a class for headings
+  hm-swe-collapsed: a class for headings with collapsed area
+  hm-swe-expanded: a class for headings with expanded area
+ */
 (function ($, window, document, undefined) {
 
     $(document).ready(function () {
@@ -87,58 +92,61 @@
                 var i;
                 for (i = 0; i < swe.custom_selectors.length; i++) {
 
-                    $(swe.custom_selectors[i] + ' ' + swe.heading_string).hover(
+                    // cursor setting
+                    $('body').on('mouseenter', swe.custom_selectors[i] + ' ' + swe.heading_string,
                         function () {
                             $(this).css("cursor", "pointer");
-                        },
+                        })
+                        .on('mouseleave', swe.custom_selectors[i] + ' ' + swe.heading_string,
                         function () {
                             $(this).css("cursor", "default");
                         }
                     );
 
-                    $(swe.custom_selectors[i] + ' ' + swe.heading_string).addClass("hm-swe-accordion-head");
+                    var headings = $(swe.custom_selectors[i] + ' ' + swe.heading_string).addClass("hm-swe-accordion-head");
 
                     // restore status, set heading markers
                     $(swe.custom_selectors[i]).each(function () {
+                        var heading = $(this).children(swe.heading_string);
+
+                        /*
+                          Priority:
+                          1. cookie
+                          2. initially collapsed setting
+                          3. CSS display = none
+                          4. class attribute hm-swe-expanded/hm-swe-collapsed (in theme files)
+                         */
                         if ((cook && cook[$(this).attr('id')] == "t") ||
-                            (!cook && !swe.initially_collapsed && $(this).children(swe.heading_string).next().css('display') == 'block')) {
-                            $(this).children(swe.heading_string).next().show();
-                            if (swe.heading_marker) {
-                                $(this).children(swe.heading_string).css('background', swe.buttonminusurl + " no-repeat left center");
+                            (!cook && !swe.initially_collapsed && heading.next().css('display') !== 'none')) {
+                            if ((! heading.hasClass('hm-swe-expanded')) && (! heading.hasClass('hm-swe-collapsed'))) {
+                                heading.addClass('hm-swe-expanded');
                             }
                         }
                         else {
-                            $(this).children(swe.heading_string).next().hide();
-                            if (swe.heading_marker) {
-                                $(this).children(swe.heading_string).css('background', swe.buttonplusurl + " no-repeat left center");
-                            }
+                            heading.addClass('hm-swe-collapsed');
                         }
+
                     });
 
+                    headings.filter('.hm-swe-expanded').next().show();
+                    headings.filter('.hm-swe-collapsed').next().hide();
+
                     // click event handler
-                    $(swe.custom_selectors[i] + ' ' + swe.heading_string).click(function () {
+                    $('body').on('click', swe.custom_selectors[i] + ' ' + swe.heading_string, function () {
                         var c = $(this).next();
                         if (c) {
                             if (c.is(":hidden")) {
                                 if (swe.single_expansion) {
+                                    $(".hm-swe-accordion-head").not(this).removeClass('hm-swe-expanded').addClass('hm-swe-collapsed');
                                     $(".hm-swe-accordion-head").not(this).next().slideUp(slide_duration);
-                                    if (swe.heading_marker) {
-                                        $(".hm-swe-accordion-head").not(this).css('background', swe.buttonplusurl + " no-repeat left center");
-                                    }
                                 }
 
+                                $(this).removeClass('hm-swe-collapsed').addClass('hm-swe-expanded');
                                 c.slideDown(slide_duration, set_widget_status);
-
-                                if (swe.heading_marker) {
-                                    $(this).css('background', swe.buttonminusurl + " no-repeat left center");
-                                }
-
                             }
                             else {
+                                $(this).removeClass('hm-swe-expanded').addClass('hm-swe-collapsed');
                                 c.slideUp(slide_duration, set_widget_status);
-                                if (swe.heading_marker) {
-                                    $(this).css('background', swe.buttonplusurl + " no-repeat left center");
-                                }
                             }
                         }
                     });
@@ -317,7 +325,9 @@
                 scrollfunc();
 
                 if (fromTimer === true && swe.recalc_after > 0 && swe.recalc_count > 0) {
-                    swe.recalc_count--;
+                    if (swe.recalc_count < 10000) {
+                        swe.recalc_count--;
+                    }
                     setTimeout( resizefunc, swe.recalc_after * 1000, true);
                 }
 
@@ -437,6 +447,9 @@
         }
 
         swe.reloadHandler = reloadfunc;
+
+        // Tabs (test)
+        //$( "#tabs-sidebar-3" ).tabs();
 
     }); // ready function
 })(jQuery, window, document);
