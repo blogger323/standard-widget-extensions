@@ -400,33 +400,7 @@
             $(window).scroll(scrollfunc);
             $(window).resize(resizefunc);
 
-            if (swe.enable_reload_me) {
-                var previous_width = $(window).width();
 
-                // add elements to display warning
-                $('body').append('<div class="hm-swe-modal-background"><div class="hm-swe-resize-message"><p>' +
-                        swe.msg_reload_me +
-                        '</p><input type="button" id="hm-swe-reload-button" value="' + swe.msg_reload + '" style="margin: 10px 20px" />' +
-                        '<input type="button" id="hm-swe-continue-button" value="' + swe.msg_continue + '" style="margin: 10px 20px" /></div></div>');
-
-                // set handlers
-                $(window).resize(function() {
-                    if ($(window).width() != previous_width) {
-                        $('.hm-swe-modal-background').css('display', 'block');
-                        previous_width = $(window).width();
-                    }
-                });
-
-                $('.hm-swe-modal-background').click(function() {
-                    $('.hm-swe-modal-background').css('display', 'none');
-                });
-
-                $('#hm-swe-reload-button').click(function() {
-                    location.reload();
-                });
-
-                // TODO: ESC handler
-            }
 
             swe.recalc_after = parseInt(swe.recalc_after, 10);
             swe.recalc_count = parseInt(swe.recalc_count, 10);

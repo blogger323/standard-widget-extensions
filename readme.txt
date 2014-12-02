@@ -4,7 +4,7 @@ Donate link: http://en.hetarena.com/donate
 Tags: widget, sidebar
 Requires at least: 3.6
 Tested up to: 4.0
-Stable tag: 1.7
+Stable tag: 1.7.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -67,7 +67,7 @@ Please tell your audience to upgrade browser.
 
 == Changelog ==
 
-= 1.7 - Dec 2, 2014 =
+= 1.7.1 - Dec 2, 2014 =
 * Accordion Widget Improvement
     * Now you can style headings with .hm-swe-expanded/.hm-swe-collapsed classes.
     * Better Ajax support. Working with such as YITH WooCommerce Ajax Navigation. Check [this entry.](http://en.hetarena.com/archives/350)
