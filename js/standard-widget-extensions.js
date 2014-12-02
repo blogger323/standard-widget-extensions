@@ -325,7 +325,7 @@
                 scrollfunc();
 
                 if (fromTimer === true && swe.recalc_after > 0 && swe.recalc_count > 0) {
-                    if (swe.recalc_count != 9999) {
+                    if (swe.recalc_count < 10000) {
                         swe.recalc_count--;
                     }
                     setTimeout( resizefunc, swe.recalc_after * 1000, true);

@@ -4,7 +4,7 @@ Donate link: http://en.hetarena.com/donate
 Tags: widget, sidebar
 Requires at least: 3.6
 Tested up to: 4.0
-Stable tag: 1.6
+Stable tag: 1.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -61,14 +61,16 @@ Please tell your audience to upgrade browser.
 == Screenshots ==
 
 1. Widgets in Twenty Twelve/Twenty Eleven with custom icon/Twenty Ten
-2. Settings with default values
+2. Global setting
+3. Accordion Widgets setting
+4. Sticky Sidebar setting
 
 == Changelog ==
 
-= 1.7 - Dec 2014 =
+= 1.7 - Dec 2, 2014 =
 * Accordion Widget Improvement
     * Now you can style headings with .hm-swe-expanded/.hm-swe-collapsed classes.
-    * Better Ajax support. Working with such as YITH WooCommerce Ajax Navigation.
+    * Better Ajax support. Working with such as YITH WooCommerce Ajax Navigation. Check [this entry.](http://en.hetarena.com/archives/350)
 * Better Admin Screen
     * Tab interface
 * Following options are withdrawn in this release.

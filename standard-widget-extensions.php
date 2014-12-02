@@ -3,7 +3,7 @@
 Plugin Name: Standard Widget Extensions
 Plugin URI: http://en.hetarena.com/standard-widget-extensions
 Description: Adds Sticky Sidebar and Accordion Widget features to your WordPress sites.
-Version: 1.6
+Version: 1.7
 Author: Hirokazu Matsui (blogger323)
 Text Domain: standard-widget-extensions
 Domain Path: /languages
@@ -13,8 +13,8 @@ License: GPLv2
 
 class HM_SWE_Plugin_Loader {
 
-	const VERSION        = '1.6';
-	const OPTION_VERSION = '1.6';
+	const VERSION        = '1.7';
+	const OPTION_VERSION = '1.7';
 	const OPTION_KEY     = 'hm_swe_options';
 	const I18N_DOMAIN    = 'standard-widget-extensions';
 	const PREFIX         = 'hm_swe_';
@@ -375,7 +375,7 @@ class HM_SWE_Plugin_Loader {
 			'recalc_after'           => $options['recalc_after'],
             'recalc_count'           => $options['recalc_count'],
 			'header_space'           => $options['header_space'],
-			'enable_reload_me'       => $options['enable_reload_me'] == 'enabled',
+			'enable_reload_me'       => 0, // deprecated
             'float_attr_check_mode'  => $options['float_attr_check_mode'] == 'enabled',
 
 			'sidebar_id2'            => esc_attr( $options['sidebar_id2'] ),
@@ -489,9 +489,6 @@ class HM_SWE_Plugin_Loader {
 ?>
 
 <style>
-    span.swe-expert-params {
-        font-style: italic;
-    }
 
     #swe-tabs ul h3 {
         margin: 0;
@@ -546,7 +543,9 @@ class HM_SWE_Plugin_Loader {
     function admin_enqueue_scripts( $hook ) {
         if ( 'settings_page_hm_swe_option_page' == $hook ) { // != 'options-general.php'
             wp_enqueue_script( 'jquery-ui-tabs', false, array( 'jquery' ) );
-            wp_enqueue_style( 'jquery-ui.css', '//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css');
+//            wp_enqueue_style( 'jquery-ui.css', '//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css');
+            wp_enqueue_style( 'jquery-ui.css', plugins_url( '/css/jquery-ui.css', __FILE__ ));
+
         }
     }
 
@@ -697,13 +696,11 @@ class HM_SWE_Plugin_Loader {
 		$valid['scroll_stop']      = $input['scroll_stop'];
 		$valid['scroll_mode']      = $input['scroll_mode'];
 		$valid['accordion_widget'] = $input['accordion_widget'];
-		$valid['enable_css']       = $input['enable_css'];
 		$valid['single_expansion'] = $input['single_expansion'];
         $valid['initially_collapsed'] = $input['initially_collapsed'];
 		$valid['readable_js']      = $input['readable_js'];
 		$valid['ignore_footer']    = $input['ignore_footer'];
 		$valid['expert_options']   = $input['expert_options'];
-		$valid['enable_reload_me'] = $input['enable_reload_me'];
         $valid['float_attr_check_mode']  = $input['float_attr_check_mode'];
         $valid['float_attr_check_mode2'] = $input['float_attr_check_mode2'];
 
