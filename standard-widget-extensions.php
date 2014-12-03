@@ -3,7 +3,7 @@
 Plugin Name: Standard Widget Extensions
 Plugin URI: http://en.hetarena.com/standard-widget-extensions
 Description: Adds Sticky Sidebar and Accordion Widget features to your WordPress sites.
-Version: 1.7.1
+Version: 1.7.2
 Author: Hirokazu Matsui (blogger323)
 Text Domain: standard-widget-extensions
 Domain Path: /languages
@@ -13,7 +13,7 @@ License: GPLv2
 
 class HM_SWE_Plugin_Loader {
 
-	const VERSION        = '1.7.1';
+	const VERSION        = '1.7.2';
 	const OPTION_VERSION = '1.7';
 	const OPTION_KEY     = 'hm_swe_options';
 	const I18N_DOMAIN    = 'standard-widget-extensions';
@@ -423,14 +423,14 @@ class HM_SWE_Plugin_Loader {
 
     <?php echo $expandstr; ?>
     {
-        background: <?php echo $options['heading_marker'] == 'custom' ? "url(" . $options['custom_plus'] . ")" :
-                "url(" . plugins_url( '/images/plus.gif', __FILE__ ) . ")"; ?> no-repeat left center;
+        background: <?php echo  $options['heading_marker'] == 'custom' ? "url(" . $options['custom_minus'] . ")" :
+                "url(" . plugins_url( '/images/minus.gif', __FILE__ ) . ")"; ?> no-repeat left center;
     }
 
     <?php echo $collapsestr; ?>
     {
-        background: <?php echo  $options['heading_marker'] == 'custom' ? "url(" . $options['custom_minus'] . ")" :
-                "url(" . plugins_url( '/images/minus.gif', __FILE__ ) . ")"; ?> no-repeat left center;
+        background: <?php echo $options['heading_marker'] == 'custom' ? "url(" . $options['custom_plus'] . ")" :
+                "url(" . plugins_url( '/images/plus.gif', __FILE__ ) . ")"; ?> no-repeat left center;
     }
 
     <?php echo $areastr; ?>

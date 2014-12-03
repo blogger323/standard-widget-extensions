@@ -4,7 +4,7 @@ Donate link: http://en.hetarena.com/donate
 Tags: widget, sidebar
 Requires at least: 3.6
 Tested up to: 4.0
-Stable tag: 1.7.1
+Stable tag: 1.7.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -66,6 +66,9 @@ Please tell your audience to upgrade browser.
 4. Sticky Sidebar setting
 
 == Changelog ==
+
+= 1.7.2 - Dec 3, 2014 =
+* [Fixed] swapped plus/minus sign for Accordion Widget
 
 = 1.7.1 - Dec 2, 2014 =
 * Accordion Widget Improvement
