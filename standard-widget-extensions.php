@@ -55,6 +55,10 @@ class HM_SWE_Plugin_Loader {
         'tab_widget' => 'disabled',
         'tab_sidebar_id' => array(''),
         'tab_sidebar_php_id' => array(''),
+        'tab_widget_css' => 'enabled',
+        'tab_widget_condition' => 'always',
+
+        'accordion_widget_condition' => 'always',
 	);
 
 	// index for field array
@@ -91,7 +95,10 @@ class HM_SWE_Plugin_Loader {
     const I_TAB_WIDGET             = 23;
     const I_TAB_SIDEBAR_ID         = 24;
     const I_TAB_SIDEBAR_PHP_ID     = 25;
+    const I_TAB_WIDGET_CSS         = 26;
+    const I_TAB_WIDGET_CONDITION   = 27;
 
+    const I_ACCORDION_WIDGET_CONDITION = 28;
 
     // field array
 	private static $settings_field =
@@ -326,6 +333,38 @@ class HM_SWE_Plugin_Loader {
                     'callback' => 'settings_field_tab_sidebar_php_id',
                     'section'  => 'hm_swe_tab_widget',
                 ),
+                array(
+                    'id'       => 'tab_widget_css',
+                    'title'    => 'Default CSS',
+                    'callback' => 'settings_field_tab_widget_css',
+                    'section'  => 'hm_swe_tab_widget',
+                    'options'  => array(
+                        array( 'id' => 'enable', 'title' => 'Enable', 'value' => 'enabled' ),
+                        array( 'id' => 'disable', 'title' => 'Disable', 'value' => 'disabled' ),
+                    ),
+                ),
+                array(
+                    'id'       => 'tab_widget_condition',
+                    'title'    => 'Enable Tab Widgets',
+                    'callback' => 'settings_field_tab_widget_condition',
+                    'section'  => 'hm_swe_tab_widget',
+                    'options'  => array(
+                        array( 'id' => 'always', 'title' => 'Always', 'value' => 'always' ),
+                        array( 'id' => 'floated', 'title' => 'When the float attribute = left/right', 'value' => 'floated' ),
+                        array( 'id' => 'not_floated', 'title' => 'When the float attribute <> left/right', 'value' => 'not_floated' ),
+                    ),
+                ),
+                array(
+                    'id'       => 'accordion_widget_condition',
+                    'title'    => 'Enable Accordion Widgets',
+                    'callback' => 'settings_field_accordion_widget_condition',
+                    'section'  => 'hm_swe_accordion_widget',
+                    'options'  => array(
+                        array( 'id' => 'always', 'title' => 'Always', 'value' => 'always' ),
+                        array( 'id' => 'floated', 'title' => 'When the float attribute = left/right', 'value' => 'floated' ),
+                        array( 'id' => 'not_floated', 'title' => 'When the float attribute <> left/right', 'value' => 'not_floated' ),
+                    ),
+                ), // TODO: accordion & tab validation, implementation
 			);
 
 	function __construct() {
@@ -419,7 +458,9 @@ class HM_SWE_Plugin_Loader {
 		);
 
         if ($options['tab_widget'] === 'enabled') {
-            wp_enqueue_style( 'swe-tab',  plugins_url( '/css/swe-tab.css', __FILE__ ) );
+            if ($options['tab_widget_css'] === 'enabled') {
+                wp_enqueue_style('swe-tab', plugins_url('/css/swe-tab.css', __FILE__));
+            }
             wp_enqueue_script( 'jquery-ui-tabs', false, array('jquery') );
         }
 		wp_localize_script( 'standard-widget-extensions', 'swe', $params );
@@ -503,7 +544,7 @@ class HM_SWE_Plugin_Loader {
 			array( &$this, 'empty_text' ), 'hm_swe_option_page' );
 		add_settings_section( 'hm_swe_scroll_stop', _x( 'Sticky Sidebar', 'title', self::I18N_DOMAIN ),
 			array( &$this, 'empty_text' ), 'hm_swe_option_page' );
-        add_settings_section( 'hm_swe_tab_widget', _x( 'Tab Widget', 'title', self::I18N_DOMAIN),
+        add_settings_section( 'hm_swe_tab_widget', _x( 'Tab Widgets', 'title', self::I18N_DOMAIN),
             array( &$this, 'empty_text' ), 'hm_swe_option_page' );
 
 		foreach ( self::$settings_field as $f ) {
@@ -748,6 +789,18 @@ class HM_SWE_Plugin_Loader {
             implode( ",", (array) $this->get_hm_swe_option( self::$settings_field[self::I_TAB_SIDEBAR_PHP_ID]['id'] ) ));
     }
 
+    function settings_field_tab_widget_css() {
+        $this->settings_field_simple_radio_option( self::I_TAB_WIDGET_CSS );
+    }
+
+    function settings_field_tab_widget_condition() {
+        $this->settings_field_simple_radio_option( self::I_TAB_WIDGET_CONDITION );
+    }
+
+    function settings_field_accordion_widget_condition() {
+        $this->settings_field_simple_radio_option( self::I_ACCORDION_WIDGET_CONDITION );
+    }
+
 	function validate_options( $input ) {
 		$valid = array();
 		$prev  = $this->get_hm_swe_option();
@@ -765,6 +818,10 @@ class HM_SWE_Plugin_Loader {
         $valid['float_attr_check_mode2'] = $input['float_attr_check_mode2'];
 
         $valid['tab_widget'] = $input['tab_widget'];
+        $valid['tab_widget_css'] = $input['tab_widget_css'];
+        $valid['tab_widget_condition'] = $input['tab_widget_condition'];
+
+        $valid['accordion_widget_condition'] = $input['accordion_widget_condition'];
 
 		if ( filter_var( $input['disable_iflt'], FILTER_VALIDATE_INT ) === FALSE ) {
 			add_settings_error( 'hm_swe_disable_iflt', 'hm_swe_disable_iflt_error', __( 'The minimum width has to be a number.', self::I18N_DOMAIN ) );
@@ -1017,8 +1074,13 @@ class HM_SWE_Plugin_Loader {
             foreach ( (array) $sidebars_widgets[$index] as $id ) {
                 if ( !isset($wp_registered_widgets[$id]) ) continue;
 
+                $w = $wp_registered_widgets[$id]['callback'][0]; // Widget class instance
+                $setting = $w->get_settings();
+                $instance = $setting[$w->number]; // options for the instance
+                $title = apply_filters( 'widget_title', empty( $instance['title'] ) ?  __($wp_registered_widgets[$id][name]) : $instance['title'], $instance, $w->id_base );
+
                 ?>
-                <li><a href="#<?php echo $id; ?>"><?php echo $wp_registered_widgets[$id][name]; ?></a></li>
+                <li><a href="#<?php echo $id; ?>"><?php echo $title; ?></a></li>
             <?php
             }
             echo "</ul>\n";

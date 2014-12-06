@@ -422,11 +422,15 @@
 
         swe.reloadHandler = reloadfunc;
 
-        // Tabs (test)
-        //$( "#tabs-sidebar-3" ).tabs();
+        // Tab Widget
         var i;
         for (i = 0; i < swe.tab_sidebar_id.length; i++) {
-            $('#' + swe.tab_sidebar_id[i]).tabs();
+            if (swe.tab_sidebar_id[i]) {
+                var q = $('#' + swe.tab_sidebar_id[i]);
+                if (q.length) {
+                    q.tabs();
+                }
+            }
         }
 
     }); // ready function
