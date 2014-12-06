@@ -51,6 +51,10 @@ class HM_SWE_Plugin_Loader {
 		'proportional_sidebar2'  => 0,
 		'disable_iflt2'          => 0,
         'float_attr_check_mode2' => 'disabled',
+
+        'tab_widget' => 'disabled',
+        'tab_sidebar_id' => array(''),
+        'tab_sidebar_php_id' => array(''),
 	);
 
 	// index for field array
@@ -83,6 +87,10 @@ class HM_SWE_Plugin_Loader {
     const I_FLOAT_ATTR_CHECK__MODE2 = 21;
 
     const I_READABLE_JS            = 22;
+
+    const I_TAB_WIDGET             = 23;
+    const I_TAB_SIDEBAR_ID         = 24;
+    const I_TAB_SIDEBAR_PHP_ID     = 25;
 
 
     // field array
@@ -296,6 +304,28 @@ class HM_SWE_Plugin_Loader {
                     ),
                 ),
 
+                array(
+                    'id'       => 'tab_widget',
+                    'title'    => 'Tab Widgets',
+                    'callback' => 'settings_field_tab_widget',
+                    'section'  => 'hm_swe_main',
+                    'options'  => array(
+                        array( 'id' => 'enable', 'title' => 'Enable', 'value' => 'enabled' ),
+                        array( 'id' => 'disable', 'title' => 'Disable', 'value' => 'disabled' ),
+                    ),
+                ),
+                array(
+                    'id'       => 'tab_sidebar_id',
+                    'title'    => 'ID of Tab Sidebar in HTML',
+                    'callback' => 'settings_field_tab_sidebar_id',
+                    'section'  => 'hm_swe_tab_widget',
+                ),
+                array(
+                    'id'       => 'tab_sidebar_php_id',
+                    'title'    => 'ID of Tab Sidebar in PHP',
+                    'callback' => 'settings_field_tab_sidebar_php_id',
+                    'section'  => 'hm_swe_tab_widget',
+                ),
 			);
 
 	function __construct() {
@@ -310,9 +340,9 @@ class HM_SWE_Plugin_Loader {
         add_action( 'admin_menu', array( &$this, 'admin_menu' ) );
         add_action( 'admin_enqueue_scripts', array( &$this, 'admin_enqueue_scripts' ) );
 
-        // TODO: >= 3.9 only (dynamic_sidebar_before is only available since 3.9)
-//        add_action( 'dynamic_sidebar_before', array( &$this, 'dynamic_sidebar_before' ), 10, 2 );
-//        add_action( 'dynamic_sidebar_after',  array( &$this, 'dynamic_sidebar_after'  ), 10, 2 );
+        // FIXME: >= 3.9 only (dynamic_sidebar_before is only available since 3.9)
+        add_action( 'dynamic_sidebar_before', array( &$this, 'dynamic_sidebar_before' ), 10, 2 );
+        add_action( 'dynamic_sidebar_after',  array( &$this, 'dynamic_sidebar_after'  ), 10, 2 );
 	}
 
 	function plugins_loaded() {
@@ -340,15 +370,11 @@ class HM_SWE_Plugin_Loader {
 	function enqueue_scripts() {
 		$options = $this->get_hm_swe_option();
 		wp_enqueue_script( 'jquery' );
-//        wp_enqueue_script( 'jquery-ui-tabs', false, array('jquery') );
 		wp_enqueue_script( 'jquery-cookie', plugins_url( '/js/jquery.cookie.js', __FILE__ ), array( 'jquery' ) );
 		wp_enqueue_script( 'standard-widget-extensions',
 			plugins_url( '/js/standard-widget-extensions' . ($this->get_hm_swe_option('readable_js') == 'enabled' ? '.js' : '.min.js'), __FILE__ ), array(), false, true );
 
-//        wp_enqueue_style( 'jquery-ui.css', '//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css');
-
 		$custom_selectors = $this->get_widget_selectors();
-
 
 		$params = array(
 			'buttonplusurl'          => $options['heading_marker'] == 'custom' ? "url(" . $options['custom_plus'] . ")" :
@@ -386,9 +412,16 @@ class HM_SWE_Plugin_Loader {
 			// messages
 			'msg_reload_me'          => __( 'To keep layout integrity, please reload me after resizing!', self::I18N_DOMAIN ),
 			'msg_reload'             => __( 'Reload', self::I18N_DOMAIN ),
-            'msg_continue'           => __( 'Continue', self::I18N_DOMAIN )
+            'msg_continue'           => __( 'Continue', self::I18N_DOMAIN ),
+
+            'tab_sidebar_id' => ($options['tab_widget'] === 'enabled' ? array_map("esc_attr", $options['tab_sidebar_id']) : array()),
 
 		);
+
+        if ($options['tab_widget'] === 'enabled') {
+            wp_enqueue_style( 'swe-tab',  plugins_url( '/css/swe-tab.css', __FILE__ ) );
+            wp_enqueue_script( 'jquery-ui-tabs', false, array('jquery') );
+        }
 		wp_localize_script( 'standard-widget-extensions', 'swe', $params );
 	}
 
@@ -470,6 +503,8 @@ class HM_SWE_Plugin_Loader {
 			array( &$this, 'empty_text' ), 'hm_swe_option_page' );
 		add_settings_section( 'hm_swe_scroll_stop', _x( 'Sticky Sidebar', 'title', self::I18N_DOMAIN ),
 			array( &$this, 'empty_text' ), 'hm_swe_option_page' );
+        add_settings_section( 'hm_swe_tab_widget', _x( 'Tab Widget', 'title', self::I18N_DOMAIN),
+            array( &$this, 'empty_text' ), 'hm_swe_option_page' );
 
 		foreach ( self::$settings_field as $f ) {
 			$title = __( $f['title'], self::I18N_DOMAIN );
@@ -519,6 +554,17 @@ class HM_SWE_Plugin_Loader {
         });
         $('#swe-scroll_stop-disabled').click(function() {
             $('#swe-tab-hm_swe_scroll_stop').hide();
+        });
+
+        // show/hide the tab widget tab
+        if ($('#swe-tab_widget-disabled').filter(':checked').length) {
+            $('#swe-tab-hm_swe_tab_widget').hide();
+        }
+        $('#swe-tab_widget-enabled').click(function() {
+            $('#swe-tab-hm_swe_tab_widget').show();
+        });
+        $('#swe-tab_widget-disabled').click(function() {
+            $('#swe-tab-hm_swe_tab_widget').hide();
         });
 
         // show/hide the heading marker option
@@ -688,6 +734,20 @@ class HM_SWE_Plugin_Loader {
         $this->settings_field_simple_radio_option( self::I_FLOAT_ATTR_CHECK__MODE2 );
     }
 
+    function settings_field_tab_widget() {
+        $this->settings_field_simple_radio_option( self::I_TAB_WIDGET );
+    }
+
+    function settings_field_tab_sidebar_id() {
+        $this->write_text_option( self::I_TAB_SIDEBAR_ID,
+            implode( ",", (array) $this->get_hm_swe_option( self::$settings_field[self::I_TAB_SIDEBAR_ID]['id'] ) ));
+    }
+
+    function settings_field_tab_sidebar_php_id() {
+        $this->write_text_option( self::I_TAB_SIDEBAR_PHP_ID,
+            implode( ",", (array) $this->get_hm_swe_option( self::$settings_field[self::I_TAB_SIDEBAR_PHP_ID]['id'] ) ));
+    }
+
 	function validate_options( $input ) {
 		$valid = array();
 		$prev  = $this->get_hm_swe_option();
@@ -703,6 +763,8 @@ class HM_SWE_Plugin_Loader {
 		$valid['expert_options']   = $input['expert_options'];
         $valid['float_attr_check_mode']  = $input['float_attr_check_mode'];
         $valid['float_attr_check_mode2'] = $input['float_attr_check_mode2'];
+
+        $valid['tab_widget'] = $input['tab_widget'];
 
 		if ( filter_var( $input['disable_iflt'], FILTER_VALIDATE_INT ) === FALSE ) {
 			add_settings_error( 'hm_swe_disable_iflt', 'hm_swe_disable_iflt_error', __( 'The minimum width has to be a number.', self::I18N_DOMAIN ) );
@@ -838,6 +900,28 @@ class HM_SWE_Plugin_Loader {
 			$valid['disable_iflt2'] = $input['disable_iflt2'];
 		}
 
+        if ( is_array( $input['tab_sidebar_id'] ) ) { // for when called from add_option.
+            $input['tab_sidebar_id'] = implode( ',', $input['tab_sidebar_id'] );
+        }
+        if ( ! preg_match( '/^[a-zA-Z0-9_\-, ]*$/', $input['tab_sidebar_id'] ) ) {
+            add_settings_error( 'hm_swe_tab_sidebar_id', 'hm_swe_tab_sidebar_id', __( 'Wrong tab sidebar ID (HTML)', self::I18N_DOMAIN ) );
+            $valid['tab_sidebar_id'] = $prev['tab_sidebar_id'];
+        }
+        else {
+            $valid['tab_sidebar_id'] = array_map( 'trim', explode( ',', $input['tab_sidebar_id'] ) );
+        }
+
+        if ( is_array( $input['tab_sidebar_php_id'] ) ) { // for when called from add_option.
+            $input['tab_sidebar_php_id'] = implode( ',', $input['tab_sidebar_php_id'] );
+        }
+        if ( ! preg_match( '/^[a-zA-Z0-9_\-, ]*$/', $input['tab_sidebar_php_id'] ) ) {
+            add_settings_error( 'hm_swe_tab_sidebar_php_id', 'hm_swe_tab_sidebar_php_id', __( 'Wrong tab sidebar ID (PHP)', self::I18N_DOMAIN ) );
+            $valid['tab_sidebar_php_id'] = $prev['tab_sidebar_php_id'];
+        }
+        else {
+            $valid['tab_sidebar_php_id'] = array_map( 'trim', explode( ',', $input['tab_sidebar_php_id'] ) );
+        }
+
 		$valid['option_version'] = self::OPTION_VERSION;
 		return $valid;
 	}
@@ -848,6 +932,7 @@ class HM_SWE_Plugin_Loader {
 	}
 
     // Substitution function for do_settings_sections() in template.php
+    // for jquery_ui_tab in admin screens
     function do_my_settings_sections( $page ) {
         global $wp_settings_sections, $wp_settings_fields;
 
@@ -894,45 +979,53 @@ class HM_SWE_Plugin_Loader {
 	}
 
 
-    // experimental function for Tabs
-    // not used in production release
     function dynamic_sidebar_before($index, $has_widgets) {
-        global $wp_registered_widgets;
-        if (! $has_widgets) {
-            return;
-        }
-
-        // temporarily
-        if ( $index != "sidebar-3" ) {
-            return;
-        }
-
-        ?>
-        <div id='tabs-<?php echo $index;  ?>'><ul>
-        <?php
-        $sidebars_widgets = wp_get_sidebars_widgets();
-        foreach ( (array) $sidebars_widgets[$index] as $id ) {
-            if ( !isset($wp_registered_widgets[$id]) ) continue;
-
-?>
-            <li><a href="#<?php echo $id; ?>"><?php echo $wp_registered_widgets[$id][name]; ?></a></li>
-<?php
-        }
-        echo "</ul>\n";
+        $this->tab_html($index, $has_widgets, true);
     }
 
-    // experimental function for Tabs
-    // not used in production release
     function dynamic_sidebar_after($index, $has_widgets) {
-        if (! $has_widgets) {
+        $this->tab_html($index, $has_widgets, false);
+    }
+
+
+    function tab_html($index, $has_widgets, $before = true) {
+        global $wp_registered_widgets;
+
+        $options = $this->get_hm_swe_option();
+
+        if (! $has_widgets || $options['tab_widget'] !== 'enabled' || is_admin() ) {
             return;
         }
 
-        // temporarily
-        if ( $index != "sidebar-3" ) {
+        $found = false;
+        foreach ( $options['tab_sidebar_php_id'] as $i) {
+            if (trim($i) == $index) {
+                $found = true;
+                break;
+            }
+        }
+
+        if (! $found) {
             return;
         }
-        echo "</div>\n";
+
+        if ($before) {
+            ?>
+        <div id='tabs-<?php echo $index;  ?>'><ul>
+            <?php
+            $sidebars_widgets = wp_get_sidebars_widgets();
+            foreach ( (array) $sidebars_widgets[$index] as $id ) {
+                if ( !isset($wp_registered_widgets[$id]) ) continue;
+
+                ?>
+                <li><a href="#<?php echo $id; ?>"><?php echo $wp_registered_widgets[$id][name]; ?></a></li>
+            <?php
+            }
+            echo "</ul>\n";
+        }
+        else { // after
+            echo "</div>\n";
+        }
     }
 
 } // end of class HM_SWE_Plugin_Loader

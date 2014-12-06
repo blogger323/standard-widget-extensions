@@ -424,6 +424,10 @@
 
         // Tabs (test)
         //$( "#tabs-sidebar-3" ).tabs();
+        var i;
+        for (i = 0; i < swe.tab_sidebar_id.length; i++) {
+            $('#' + swe.tab_sidebar_id[i]).tabs();
+        }
 
     }); // ready function
 })(jQuery, window, document);
