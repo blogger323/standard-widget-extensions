@@ -429,7 +429,7 @@ class HM_SWE_Plugin_Loader {
 
         // dynamic_sidebar_before/after are only available since 3.9
         add_action( 'dynamic_sidebar_before', array( &$this, 'dynamic_sidebar_before' ), 10, 2 );
-        add_action( 'dynamic_sidebar_after',  array( &$this, 'dynamic_sidebar_after'  ), 10, 2 );
+        //add_action( 'dynamic_sidebar_after',  array( &$this, 'dynamic_sidebar_after'  ), 10, 2 );
 	}
 
 	function plugins_loaded() {
@@ -1103,17 +1103,15 @@ class HM_SWE_Plugin_Loader {
 	}
 
 
-    function dynamic_sidebar_before($index, $has_widgets) {
-        $this->tab_html($index, $has_widgets, true);
-    }
-
+    /*
     function dynamic_sidebar_after($index, $has_widgets) {
         $this->tab_html($index, $has_widgets, false);
     }
+    */
 
 
     // TODO: skip hidden(?) widget
-    function tab_html($index, $has_widgets, $before = true) {
+    function dynamic_sidebar_before($index, $has_widgets) {
         global $wp_registered_widgets;
 
         $options = $this->get_hm_swe_option();
@@ -1123,9 +1121,11 @@ class HM_SWE_Plugin_Loader {
         }
 
         $found = false;
-        foreach ( $options['tab_sidebar_php_id'] as $i) {
-            if (trim($i) == $index) {
+        $jsid = '';
+        for ($i = 0; $i < count( $options['tab_sidebar_php_id'] ); $i++) {
+            if (trim( $options['tab_sidebar_php_id'][$i]) == $index) {
                 $found = true;
+                $jsid = $options['tab_sidebar_id'][$i];
                 break;
             }
         }
@@ -1134,28 +1134,24 @@ class HM_SWE_Plugin_Loader {
             return;
         }
 
-        if ($before) {
             ?>
-        <div id='tabs-<?php echo $index;  ?>'><ul>
+        <ul id="<?php echo "hm-swe-tab-ul-" . $jsid; ?>">
             <?php
-            $sidebars_widgets = wp_get_sidebars_widgets();
-            foreach ( (array) $sidebars_widgets[$index] as $id ) {
-                if ( !isset($wp_registered_widgets[$id]) ) continue;
+        $sidebars_widgets = wp_get_sidebars_widgets();
+        foreach ( (array) $sidebars_widgets[$index] as $id ) {
+            if (!isset($wp_registered_widgets[$id])) continue;
 
-                $w = $wp_registered_widgets[$id]['callback'][0]; // Widget class instance
-                $setting = $w->get_settings();
-                $instance = $setting[$w->number]; // options for the instance
-                $title = apply_filters( 'widget_title', empty( $instance['title'] ) ?  __($wp_registered_widgets[$id][name]) : $instance['title'], $instance, $w->id_base );
+            $w = $wp_registered_widgets[$id]['callback'][0]; // Widget class instance
+            $setting = $w->get_settings();
+            $instance = $setting[$w->number]; // options for the instance
+            $title = apply_filters('widget_title', empty($instance['title']) ? __($wp_registered_widgets[$id][name]) : $instance['title'], $instance, $w->id_base);
 
-                ?>
-                <li><a href="#<?php echo $id; ?>"><?php echo $title; ?></a></li>
-            <?php
-            }
-            echo "</ul>\n";
+            ?>
+            <li><a href="#<?php echo $id; ?>"><?php echo $title; ?></a></li>
+        <?php
         }
-        else { // after
-            echo "</div>\n";
-        }
+        echo "</ul>\n";
+
     }
 
 } // end of class HM_SWE_Plugin_Loader

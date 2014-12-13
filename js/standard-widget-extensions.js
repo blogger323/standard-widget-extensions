@@ -159,6 +159,20 @@
                             }
                         });
                     } // end of if
+                    else {
+                        // fixme: disable accordions
+                        $(swe.custom_selectors[i]).each(function () {
+                            $(this).children(swe.heading_string).removeClass('hm-swe-expanded').removeClass('hm-swe-collapsed');
+                        });
+                        $('body').off('mouseenter', swe.custom_selectors[i] + ' ' + swe.heading_string)
+                            .off('mouseleave', swe.custom_selectors[i] + ' ' + swe.heading_string);
+                        $('body').off('click', swe.custom_selectors[i] + ' ' + swe.heading_string);
+
+                        $(swe.custom_selectors[i] + ' ' + swe.heading_string).each(function() {
+                            $(this).next().show();
+                        });
+
+                    } // end of else
                 } // end of for
             }  // end of function init_accordion
 
@@ -302,63 +316,6 @@
 
             }
 
-            function resizefunc(fromTimer) {
-
-                if (has_changed()) {
-
-                    if (swe.accordion_widget) {
-                        init_accordion();
-                    }
-
-                    if (swe_tab_widget_condition !== 'never') {
-                        init_tab();
-                    }
-                }
-
-                if (swe.scroll_stop) {
-                    var c = $(contentid);
-                    CONDITION.content_top = c.offset().top;
-                    CONDITION.content_margin_top = parseInt(c.css('margin-top'), 10);
-                    CONDITION.content_top -= CONDITION.content_margin_top;
-
-                    CONDITION.content_height = c.outerHeight(true);
-
-                    CONDITION.window_height = $(window).height();
-                    CONDITION.prevscrolltop = -1;
-                    CONDITION.direction = 0;
-
-                    if (SIDEBAR1.o) {
-                        resize_sidebar(SIDEBAR1);
-                    }
-                    if (SIDEBAR2.o) {
-                        resize_sidebar(SIDEBAR2);
-                    }
-
-                    if (SIDEBAR1.o && SIDEBAR1.mode != DISABLED_SIDEBAR && SIDEBAR2.o && SIDEBAR2.mode != DISABLED_SIDEBAR) {
-                        CONDITION.content_height = Math.max(CONDITION.content_height,
-                            SIDEBAR1.height + SIDEBAR1.default_offset.top - CONDITION.content_top,
-                            SIDEBAR2.height + SIDEBAR2.default_offset.top - CONDITION.content_top);
-                    }
-
-                    // After the content height fix, we finalize the sidebar mode.
-                    if (SIDEBAR1.o) {
-                        finalize_sidebarmode(SIDEBAR1);
-                    }
-                    if (SIDEBAR2.o) {
-                        finalize_sidebarmode(SIDEBAR2);
-                    }
-
-                    scrollfunc();
-
-                    if (fromTimer === true && swe.recalc_after > 0 && swe.recalc_count > 0) {
-                        if (swe.recalc_count < 10000) {
-                            swe.recalc_count--;
-                        }
-                        setTimeout(resizefunc, swe.recalc_after * 1000, true);
-                    }
-                }
-            }
-
             function is_enabled(sidebar) {
                 var f = sidebar.o.css('float');
                 return ( $(window).width() >= sidebar.disable_iflt &&
@@ -421,18 +378,71 @@
 
             } // finalize_sidebarmode
 
-            swe.resizeHandler = resizefunc;
 
             $(window).scroll(scrollfunc);
-            $(window).resize(resizefunc);
-
-
 
             swe.recalc_after = parseInt(swe.recalc_after, 10);
             swe.recalc_count = parseInt(swe.recalc_count, 10);
             resizefunc(true);
 
         } // if scroll_stop
+
+        function resizefunc(fromTimer) {
+
+            if (has_changed()) {
+
+                if (swe.accordion_widget) {
+                    init_accordion();
+                }
+
+                if (swe.tab_widget_condition !== 'never') {
+                    init_tab();
+                }
+            }
+
+            if (swe.scroll_stop) {
+                var c = $(contentid);
+                CONDITION.content_top = c.offset().top;
+                CONDITION.content_margin_top = parseInt(c.css('margin-top'), 10);
+                CONDITION.content_top -= CONDITION.content_margin_top;
+
+                CONDITION.content_height = c.outerHeight(true);
+
+                CONDITION.window_height = $(window).height();
+                CONDITION.prevscrolltop = -1;
+                CONDITION.direction = 0;
+
+                if (SIDEBAR1.o) {
+                    resize_sidebar(SIDEBAR1);
+                }
+                if (SIDEBAR2.o) {
+                    resize_sidebar(SIDEBAR2);
+                }
+
+                if (SIDEBAR1.o && SIDEBAR1.mode != DISABLED_SIDEBAR && SIDEBAR2.o && SIDEBAR2.mode != DISABLED_SIDEBAR) {
+                    CONDITION.content_height = Math.max(CONDITION.content_height,
+                        SIDEBAR1.height + SIDEBAR1.default_offset.top - CONDITION.content_top,
+                        SIDEBAR2.height + SIDEBAR2.default_offset.top - CONDITION.content_top);
+                }
+
+                // After the content height fix, we finalize the sidebar mode.
+                if (SIDEBAR1.o) {
+                    finalize_sidebarmode(SIDEBAR1);
+                }
+                if (SIDEBAR2.o) {
+                    finalize_sidebarmode(SIDEBAR2);
+                }
+
+                scrollfunc();
+
+                if (fromTimer === true && swe.recalc_after > 0 && swe.recalc_count > 0) {
+                    if (swe.recalc_count < 10000) {
+                        swe.recalc_count--;
+                    }
+                    setTimeout(resizefunc, swe.recalc_after * 1000, true);
+                }
+            }
+        }
 
         function reloadfunc() {
             if (swe.accordion_widget) {
@@ -449,6 +459,8 @@
         }
 
         swe.reloadHandler = reloadfunc;
+        swe.resizeHandler = resizefunc;
+        $(window).resize(resizefunc);
 
         init_tab();
 
@@ -470,10 +482,13 @@
                             (swe.tab_widget_condition === 'floated' && floated) ||
                             (swe.tab_widget_condition === 'not_floated' && !floated)) {
                             $('#' + swe.tab_sidebar_id[i]).tabs();
+                            $('#hm-swe-tab-ul-' + swe.tab_sidebar_id[i]).show();
                         }
                         else {
-                            $('#' + swe.tab_sidebar_id[i]).tabs('destroy');
-                            $('').hide(); // fixme
+                            if ($('#' + swe.tab_sidebar_id[i]).hasClass('ui-tabs')) {
+                                $('#' + swe.tab_sidebar_id[i]).tabs('destroy');
+                            }
+                            $('#hm-swe-tab-ul-' + swe.tab_sidebar_id[i]).hide();
                         }
                     }
                 }
@@ -481,13 +496,14 @@
 
         }
 
+        // check if there are any changes related to tabs and accordions
         function has_changed() {
             if (swe.tab_widget_condition !== 'never') {
                 if (!last_tab_float) {
                     return true;
                 }
                 for (var i = 0; i < swe.tab_sidebar_id.length; i++) {
-                    if (swe_tab_sidebar_id[i]) {
+                    if (swe.tab_sidebar_id[i]) {
                         var floated = is_floated('#' + swe.tab_sidebar_id[i]);
                         if (floated !== last_tab_float[i]) {
                             return true;
@@ -500,7 +516,7 @@
                 if (!last_accordion_float) {
                     return true;
                 }
-                for (i = 0; i < swe.custom_selectors.length; i++) {
+                for (i = 0; i < swe.custom_selectors_area_id.length; i++) {
                     var floated = is_floated(swe.custom_selectors_area_id[i]);
                     if (floated !== last_accordion_float[i]) {
                         return true;
