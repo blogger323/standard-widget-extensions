@@ -159,8 +159,8 @@
                             }
                         });
                     } // end of if
-                    else {
-                        // fixme: disable accordions
+                    else { // disabled for NOW
+                        // fixme: init cookies for later use
                         $(swe.custom_selectors[i]).each(function () {
                             $(this).children(swe.heading_string).removeClass('hm-swe-expanded').removeClass('hm-swe-collapsed');
                         });
