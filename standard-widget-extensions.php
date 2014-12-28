@@ -14,12 +14,15 @@ License: GPLv2
 class HM_SWE_Plugin_Loader {
 
 	const VERSION        = '1.7.2';
-	const OPTION_VERSION = '1.7';
+	const OPTION_VERSION = '2.0';
 	const OPTION_KEY     = 'hm_swe_options';
 	const I18N_DOMAIN    = 'standard-widget-extensions';
 	const PREFIX         = 'hm_swe_';
 
+    static $instance = false;
+
 	public static $default_hm_swe_option = array(
+        'version'                => self::OPTION_VERSION,
 		'expert_options'         => 'disabled', // deprecated
 		'maincol_id'             => 'primary',
 		'sidebar_id'             => 'secondary',
@@ -416,6 +419,16 @@ class HM_SWE_Plugin_Loader {
                 ),
 			);
 
+    public static function get_id_str($id) {
+        return self::$settings_field[$id]['id'];
+    }
+
+    public static function getInstance() {
+        if ( !self::$instance )
+            self::$instance = new self;
+        return self::$instance;
+    }
+
 	function __construct() {
         register_activation_hook( __FILE__, array( &$this, 'activate' ) );
         add_action( 'plugins_loaded', array( &$this, 'plugins_loaded' ) );
@@ -755,8 +768,40 @@ class HM_SWE_Plugin_Loader {
     }
 
 	function get_hm_swe_option( $key = NULL ) {
-		// The get_option doesn't seem to merge retrieved values and default values.
-		$options = array_merge( self::$default_hm_swe_option, (array) get_option( self::OPTION_KEY, array() ) );
+
+        // The get_option doesn't seem to merge retrieved values and default values.
+        $options =  get_option( self::OPTION_KEY, array() );
+
+        if ( !isset($options['version']) ) {
+            // prior to 2.0
+            if ($options['scroll_stop']) {
+                $options['sidebar1_condition'] = ($options['scroll_stop'] === 'enabled' ? 'always' : 'never');
+                $options['sidebar2_condition'] = ($options['scroll_stop'] === 'enabled' && (!empty($options['sidebar_id2'])) ? 'always' : 'never');
+
+                if (isset($options['float_attr_check_mode']) && $options['float_attr_check_mode'] === 'enabled'
+                    && $options['sidebar1_condition'] === 'always') {
+                    $options['sidebar1_condition'] = 'floated';
+                }
+
+                if (isset($options['float_attr_check_mode2']) && $options['float_attr_check_mode2'] === 'enabled'
+                    && $options['sidebar2_condition'] === 'always') {
+                    $options['sidebar2_condition'] = 'floated';
+                }
+            }
+
+            if ($options['accordion_widget']) {
+                $options['accordion_widget_condition'] = ($options['accordion_widget'] === 'enabled' ? 'always' : 'never');
+
+                if (!isset($options['accordion_widget_areas']) || !is_array($options['accordion_widget_areas'])
+                    || empty($options['accordion_widget_areas'][0])) {
+                    $options['accordion_widget_areas'] = array( $options['sidebar_id'] );
+                }
+            }
+
+        }
+
+		$options = array_merge( self::$default_hm_swe_option, $options );
+
 		return $key ? $options[$key] : $options;
 	}
 
@@ -1156,5 +1201,8 @@ class HM_SWE_Plugin_Loader {
 
 } // end of class HM_SWE_Plugin_Loader
 
-$hm_swe_plugin_loader = new HM_SWE_Plugin_Loader();
+// for unit tests
+global $hm_swe_plugin_loader;
+
+$hm_swe_plugin_loader = HM_SWE_Plugin_Loader::getInstance();
 
