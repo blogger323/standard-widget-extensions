@@ -653,10 +653,12 @@ class HM_SWE_Plugin_Loader {
         $( '#swe-tabs').tabs();
 
         // show/hide the accordion widget tab
+        // set initial state
         if ($('#swe-accordion_widget_condition-never').filter(':checked').length) {
             $('#swe-tab-hm_swe_accordion_widget').hide();
         }
 
+        // 'click' handler
         $('#swe-accordion_widget_condition-never').click(function() {
             $('#swe-tab-hm_swe_accordion_widget').hide();
         });
@@ -671,11 +673,13 @@ class HM_SWE_Plugin_Loader {
         })
 
         // show/hide the sticky sidebar tab
+        // set initial state
         if ($('#swe-sidebar1_condition-never').filter(':checked').length &&
             $('#swe-sidebar2_condition-never').filter(':checked').length) {
             $('#swe-tab-hm_swe_scroll_stop').hide();
         }
 
+        // 'click' handler
         $('#swe-sidebar1_condition-never').click(function() {
             if ($('#swe-sidebar2_condition-never').filter(':checked').length) {
                 $('#swe-tab-hm_swe_scroll_stop').hide();
@@ -716,9 +720,12 @@ class HM_SWE_Plugin_Loader {
         */
 
         // show/hide the tab widget tab
+        // set initial state
         if ($('#swe-tab_widget_condition-never').filter(':checked').length) {
             $('#swe-tab-hm_swe_tab_widget').hide();
         }
+
+        // 'click' handler
         $('#swe-tab_widget_condition-never').click(function() {
             $('#swe-tab-hm_swe_tab_widget').hide();
         });
@@ -744,6 +751,38 @@ class HM_SWE_Plugin_Loader {
             $('#swe-heading_marker-none').closest('tr').hide();
         })
         */
+
+        // accordion mode
+        // support functions
+        function swe_widget_select_mode_default() {
+            $('#accordion_widget_areas').closest('tr').show();
+            $('#widget_class').closest('tr').show();
+            $('#custom_selectors').closest('tr').hide();
+            $('#swe-heading_marker-default').closest('tr').show();
+        }
+
+        function swe_widget_select_mode_custom() {
+            $('#accordion_widget_areas').closest('tr').hide();
+            $('#widget_class').closest('tr').hide();
+            $('#custom_selectors').closest('tr').show();
+            $('#swe-heading_marker-default').closest('tr').hide();
+        }
+
+        // set initial state
+        if ($('#swe-widget_select_mode-default').filter(':checked').length) {
+            swe_widget_select_mode_default();
+        }
+        else {
+            swe_widget_select_mode_custom();
+        }
+
+        // 'click handler
+        $('#swe-widget_select_mode-default').click(function() {
+            swe_widget_select_mode_default();
+        });
+        $('#swe-widget_select_mode-custom').click(function() {
+            swe_widget_select_mode_custom();
+        });
 
     }); // ready
 })(jQuery, window, document);
