@@ -101,6 +101,8 @@
                         (swe.accordion_widget_condition === 'floated' && floated) ||
                         (swe.accordion_widget_condition === 'not_floated' && !floated)) {
                         // cursor setting
+                        $('body').off('mouseenter', swe.custom_selectors[i] + ' ' + swe.heading_string)
+                            .off('mouseleave', swe.custom_selectors[i] + ' ' + swe.heading_string);  // first remove them
                         $('body').on('mouseenter', swe.custom_selectors[i] + ' ' + swe.heading_string,
                             function () {
                                 $(this).css("cursor", "pointer");
@@ -140,6 +142,7 @@
                         headings.filter('.hm-swe-collapsed').next().hide();
 
                         // click event handler
+                        $('body').off('click', swe.custom_selectors[i] + ' ' + swe.heading_string); // first remove current
                         $('body').on('click', swe.custom_selectors[i] + ' ' + swe.heading_string, function () {
                             var c = $(this).next();
                             if (c) {
