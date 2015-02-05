@@ -535,6 +535,8 @@ class HM_SWE_Plugin_Loader {
             'tab_widget_condition' => $options['tab_widget_condition'],
             'accordion_widget_condition' => $options['accordion_widget_condition'],
 
+            'smart_sidebar' => 'always',
+
 		);
 
         if ($options['tab_widget_condition'] !== 'never') {
@@ -813,7 +815,7 @@ class HM_SWE_Plugin_Loader {
 
         if ( !isset($options['version']) ) {
             // prior to 2.0
-            if ($options['scroll_stop']) {
+            if ($options['scroll_stop']) { // assume always true! this is one of options from the initial version.
                 $options['sidebar1_condition'] = ($options['scroll_stop'] === 'enabled' ? 'always' : 'never');
                 $options['sidebar2_condition'] = ($options['scroll_stop'] === 'enabled' && (!empty($options['sidebar_id2'])) ? 'always' : 'never');
 
@@ -828,7 +830,7 @@ class HM_SWE_Plugin_Loader {
                 }
             }
 
-            if ($options['accordion_widget']) {
+            if ($options['accordion_widget']) { // assume always true! this is one of options from the initial version.
                 $options['accordion_widget_condition'] = ($options['accordion_widget'] === 'enabled' ? 'always' : 'never');
 
                 if (!isset($options['accordion_widget_areas']) || !is_array($options['accordion_widget_areas'])
