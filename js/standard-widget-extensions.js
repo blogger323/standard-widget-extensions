@@ -31,7 +31,7 @@
             content_margin_top: 0,
             window_height: 0,
             mode: parseInt(swe.scroll_mode, 10), /* 2: switch back */
-            header_space: parseInt(swe.header_space, 10),
+            header_space: 0, /* will be set in resizefunc() */
             direction: 0,
             prevscrolltop: -1
         };
@@ -304,6 +304,12 @@
                 CONDITION.window_height = $(window).height();
                 CONDITION.prevscrolltop = -1;
                 CONDITION.direction = 0;
+
+                CONDITION.header_space = parseInt(swe.header_space, 10);
+                var adminbar = $('#wpadminbar');
+                if (adminbar.length > 0) {
+                    CONDITION.header_space += adminbar.height();
+                }
 
                 if (SIDEBAR1.o) {
                     resize_sidebar(SIDEBAR1);

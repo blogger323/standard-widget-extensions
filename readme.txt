@@ -3,8 +3,8 @@ Contributors: blogger323
 Donate link: http://en.hetarena.com/donate
 Tags: widget, sidebar
 Requires at least: 3.6
-Tested up to: 4.0
-Stable tag: 1.7.2
+Tested up to: 4.1
+Stable tag: 1.7.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -66,6 +66,10 @@ Please tell your audience to upgrade browser.
 4. Sticky Sidebar setting
 
 == Changelog ==
+
+= 1.7.3 - Feb 5, 2015 =
+* Toolbar adjustment for logged in users.
+* Measure version up is coming soon. Stay tuned!
 
 = 1.7.2 - Dec 3, 2014 =
 * [Fixed] swapped plus/minus sign for Accordion Widget
@@ -143,7 +147,5 @@ Please tell your audience to upgrade browser.
 
 == Upgrade Notice ==
 
-= 1.6 =
-A new option to enable Sticky Sidebar depending on css 'float' attribute.
-A handler to re-initialize Accordion Widgets after refreshing by Ajax.
-WordPress 4.0 compatible.
+= 1.7.3 =
+Toolbar adjustment for logged in users.
