@@ -530,7 +530,7 @@
                 if (! $('#hm-swe-smart-sidebar-display-button').length) {
                     smart_sidebar.prepend('<div><div id="hm-swe-smart-sidebar-display-button" class="dashicons dashicons-no-alt" style="height: 64px; width: 64px; font-size: 64px; float: right;"></div></div>');
 
-                    $('#hm-swe-smart-sidebar-header').click(function(){
+                    $('#hm-swe-smart-sidebar-display-button').click(function(){
                         $('#' + swe.smart_sidebar_id).hide(400);
                     })
                         .hover(
@@ -553,7 +553,7 @@
 
                     $('body').append('<div><span id="hm-swe-smart-sidebar-cancel-button" class="dashicons dashicons-admin-generic" style="height: 64px; width: 64px; font-size: 64px"></span></div>');
 
-                    $('#hm-swe-smart-sidebar-button').click(function() {
+                    $('#hm-swe-smart-sidebar-cancel-button').click(function() {
                         $('#' + swe.smart_sidebar_id).show(400);
                     })
                         .css({
