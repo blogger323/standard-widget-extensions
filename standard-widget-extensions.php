@@ -11,6 +11,11 @@ Author URI: http://en.hetarena.com/
 License: GPLv2
 */
 
+/*
+ * Smart Sidebar と Sticky Sidebar が仲良くない。
+ * - Recalc timer がらみ含め relative に戻ってるっぽい。Scroll 時とか
+ * - X ボタン
+ */
 class HM_SWE_Plugin_Loader {
 
 	const VERSION        = '1.7.3';
@@ -71,6 +76,12 @@ class HM_SWE_Plugin_Loader {
         'sidebar1_condition' => 'never',
         'sidebar2_condition' => 'never',
 
+        'smart_sidebar_condition' => 'never',
+        'smart_sidebar_id' => '',
+        'smart_sidebar_icon' => '',
+        'smart_sidebar_top' => 0,
+        'smart_sidebar_left' => 0,
+
 	);
 
 	// index for field array
@@ -114,6 +125,12 @@ class HM_SWE_Plugin_Loader {
     const I_TAB_SIDEBAR_ID         = 24;
     const I_TAB_SIDEBAR_PHP_ID     = 25;
     const I_TAB_WIDGET_CSS         = 26;
+
+    const I_SMART_SIDEBAR_CONDITION = 27;
+    const I_SMART_SIDEBAR_ID        = 28;
+    const I_SMART_SIDEBAR_ICON      = 29;
+    const I_SMART_SIDEBAR_TOP       = 30;
+    const I_SMART_SIDEBAR_LEFT      = 31;
 
 
     // field array
@@ -417,6 +434,40 @@ class HM_SWE_Plugin_Loader {
                         array( 'id' => 'disable', 'title' => 'Disable', 'value' => 'disabled' ),
                     ),
                 ),
+                array(
+                    'id'       => 'smart_sidebar_id',
+                    'title'    => 'Sidebar ID',
+                    'callback' => 'settings_field_generic',
+                    'section'  => 'hm_swe_smart_sidebar',
+                ),
+                array(
+                    'id'       => 'smart_sidebar_condition',
+                    'title'    => 'Enable Smart Sidebar',
+                    'callback' => 'settings_field_generic',
+                    'section'  => 'hm_swe_main',
+                    'options'  => array(
+                        array( 'id' => 'never', 'title' => 'Never', 'value' => 'never' ),
+                        array( 'id' => 'not_floated', 'title' => 'When the float attribute <> left/right', 'value' => 'not_floated' ),
+                    ),
+                ),
+                array(
+                    'id'       => 'smart_sidebar_icon',
+                    'title'    => 'Icon',
+                    'callback' => 'settings_field_generic',
+                    'section'  => 'hm_swe_smart_sidebar',
+                ),
+                array(
+                    'id'       => 'smart_sidebar_top',
+                    'title'    => 'Top',
+                    'callback' => 'settings_field_generic',
+                    'section'  => 'hm_swe_smart_sidebar',
+                ),
+                array(
+                    'id'       => 'smart_sidebar_left',
+                    'title'    => 'Left',
+                    'callback' => 'settings_field_generic',
+                    'section'  => 'hm_swe_smart_sidebar',
+                ),
 			);
 
     public static function get_id_str($id) {
@@ -490,6 +541,10 @@ class HM_SWE_Plugin_Loader {
 		wp_enqueue_script( 'standard-widget-extensions',
 			plugins_url( '/js/standard-widget-extensions' . ($this->get_hm_swe_option('readable_js') == 'enabled' ? '.js' : '.min.js'), __FILE__ ), array(), false, true );
 
+        if ($options['smart_sidebar_condition'] !== 'never') {
+            wp_enqueue_style( 'dashicons' );
+        }
+
         $params = array(
 			'buttonplusurl'          => $options['heading_marker'] == 'custom' ? "url(" . $options['custom_plus'] . ")" :
 					"url(" . plugins_url( '/images/plus.gif', __FILE__ ) . ")",
@@ -535,7 +590,11 @@ class HM_SWE_Plugin_Loader {
             'tab_widget_condition' => $options['tab_widget_condition'],
             'accordion_widget_condition' => $options['accordion_widget_condition'],
 
-            'smart_sidebar' => 'always',
+            'smart_sidebar_condition' => $options['smart_sidebar_condition'],
+            'smart_sidebar_id' => $options['smart_sidebar_id'],
+            'smart_sidebar_icon' => $options['smart_sidebar_icon'],
+            'smart_sidebar_top' => $options['smart_sidebar_top'],
+            'smart_sidebar_left' => $options['smart_sidebar_left'],
 
 		);
 
@@ -629,6 +688,8 @@ class HM_SWE_Plugin_Loader {
 			array( &$this, 'empty_text' ), 'hm_swe_option_page' );
         add_settings_section( 'hm_swe_tab_widget', _x( 'Tabbed Widgets', 'title', self::I18N_DOMAIN),
             array( &$this, 'tab_widget_text' ), 'hm_swe_option_page' );
+        add_settings_section( 'hm_swe_smart_sidebar', _x( 'Smart Sidebar', 'title', self::I18N_DOMAIN),
+            array( &$this, 'empty_text' ), 'hm_swe_option_page' );
 
 		foreach ( self::$settings_field as $key => $f ) {
 			$title = __( $f['title'], self::I18N_DOMAIN );
@@ -740,6 +801,20 @@ class HM_SWE_Plugin_Loader {
         $('#swe-tab_widget_condition-not_floated').click(function() {
             $('#swe-tab-hm_swe_tab_widget').show();
         });
+
+        // show/hide the accordion widget tab
+        // set initial state
+        if ($('#swe-smart_sidebar_condition-never').filter(':checked').length) {
+            $('#swe-tab-hm_swe_smart_sidebar').hide();
+        }
+
+        // 'click' handler
+        $('#swe-smart_sidebar_condition-never').click(function() {
+            $('#swe-tab-hm_swe_smart_sidebar').hide();
+        });
+        $('#swe-smart_sidebar_condition-not_floated').click(function() {
+            $('#swe-tab-hm_swe_smart_sidebar').show();
+        })
 
         // show/hide the heading marker option
         /*
@@ -950,12 +1025,12 @@ class HM_SWE_Plugin_Loader {
 
         $valid['tab_widget'] = $input['tab_widget'];
         $valid['tab_widget_css'] = $input['tab_widget_css'];
-        $valid['tab_widget_condition'] = $input['tab_widget_condition'];
 
         $valid['accordion_widget_condition'] = self::check_condition(['accordion_widget_condition']);
         $valid['sidebar1_condition'] = self::check_condition($input['sidebar1_condition']);
         $valid['sidebar2_condition'] = self::check_condition($input['sidebar2_condition']);
         $valid['tab_widget_condition'] = self::check_condition($input['tab_widget_condition']);
+        $valid['smart_sidebar_condition'] = self::check_condition($input['smart_sidebar_condition']);
 
         $valid['accordion_widget_condition'] = $input['accordion_widget_condition'];
         $valid['widget_select_mode'] = self::check_widget_select_mode( $input['widget_select_mode'] );
@@ -1132,7 +1207,16 @@ class HM_SWE_Plugin_Loader {
             $valid['tab_sidebar_php_id'] = array_map( 'trim', explode( ',', $input['tab_sidebar_php_id'] ) );
         }
 
-		$valid['option_version'] = self::OPTION_VERSION;
+        // Smart Sidebar related options
+        // fixme: validation
+        $valid['smart_sidebar_id'] = $input['smart_sidebar_id'];
+        $valid['smart_sidebar_icon'] = $input['smart_sidebar_icon'];
+        $valid['smart_sidebar_top'] = $input['smart_sidebar_top'];
+        $valid['smart_sidebar_left'] = $input['smart_sidebar_left'];
+
+
+
+        $valid['option_version'] = self::OPTION_VERSION;
 		return $valid;
 	}
 

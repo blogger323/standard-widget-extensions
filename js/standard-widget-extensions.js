@@ -390,6 +390,11 @@
 
         } // if scroll_stop
 
+        function adjustment_for_adminbar() {
+            var adminbar = $('#wpadminbar');
+            return adminbar.length > 0 ?  adminbar.height(): 0;
+        }
+
         function resizefunc(fromTimer) {
 
             if (has_changed()) {
@@ -401,6 +406,8 @@
                 if (swe.tab_widget_condition !== 'never') {
                     init_tab();
                 }
+
+                init_smart_sidebar();
             }
 
             if (swe.scroll_stop) {
@@ -416,10 +423,8 @@
                 CONDITION.direction = 0;
 
                 CONDITION.header_space = parseInt(swe.header_space, 10);
-                var adminbar = $('#wpadminbar');
-                if (adminbar.length > 0) {
-                    CONDITION.header_space += adminbar.height();
-                }
+                CONDITION.header_space += adjustment_for_adminbar();
+
                 
                 if (SIDEBAR1.o) {
                     resize_sidebar(SIDEBAR1);
@@ -459,6 +464,7 @@
             }
 
             init_tab();
+            init_smart_sidebar();
 
             if (swe.scroll_stop && $(contentid).length) {
                 init_sidebar(SIDEBAR1, swe.sidebar_id, swe.proportional_sidebar, swe.disable_iflt, swe.sidebar1_condition);
@@ -472,6 +478,7 @@
         $(window).resize(resizefunc);
 
         init_tab();
+        init_smart_sidebar();
 
         function is_floated(selector) {
             var q = $(selector);
@@ -505,7 +512,76 @@
 
         }
 
-        // check if there are any changes related to tabs and accordions
+        function init_smart_sidebar() {
+            if (swe.smart_sidebar_condition === 'not_floated' && swe.smart_sidebar_id && !is_floated('#' + swe.smart_sidebar_id)) {
+                var smart_sidebar = $('#' + swe.smart_sidebar_id);
+                smart_sidebar.css({
+                    width: "90vw",
+                    height: "95vh",
+                    position: "fixed",
+                    left: "5vw",
+                    top: "2.5vh",
+                    "background-color": 'white',
+                    "z-index": 100000, // greater than adminbar z-index
+                    "overflow-y": "scroll",
+                    display: "none"
+                });
+
+                if (! $('#hm-swe-smart-sidebar-display-button').length) {
+                    smart_sidebar.prepend('<div><div id="hm-swe-smart-sidebar-display-button" class="dashicons dashicons-no-alt" style="height: 64px; width: 64px; font-size: 64px; float: right;"></div></div>');
+
+                    $('#hm-swe-smart-sidebar-header').click(function(){
+                        $('#' + swe.smart_sidebar_id).hide(400);
+                    })
+                        .hover(
+                            function() {
+                                $(this).css("cursor", "pointer");
+                            },
+                            function() {
+                                $(this).css("cursor", "pointer");
+                            }
+                    );
+                }
+
+                if (! $('#hm-swe-smart-sidebar-cancel-button').length) {
+                    var top  = parseInt(swe.smart_sidebar_top) + adjustment_for_adminbar();
+                    var left = parseInt(swe.smart_sidebar_left);
+
+                    if (left < 0) {
+                        left = $(window).width() + left;
+                    }
+
+                    $('body').append('<div><span id="hm-swe-smart-sidebar-cancel-button" class="dashicons dashicons-admin-generic" style="height: 64px; width: 64px; font-size: 64px"></span></div>');
+
+                    $('#hm-swe-smart-sidebar-button').click(function() {
+                        $('#' + swe.smart_sidebar_id).show(400);
+                    })
+                        .css({
+                            top: top,
+                            left: left,
+                            "z-index": 10000,
+                            position: "fixed"
+
+                        }
+                    )
+                        .hover(
+                        function() {
+                            $(this).css("cursor", "pointer");
+                        },
+                        function() {
+                            $(this).css("cursor", "pointer");
+                        }
+                    );
+
+                }
+
+
+
+            }
+        }
+
+        // check if there are any changes related to tabs and accordions.
+        // initial states are set in each initial function.
         function has_changed() {
             if (swe.tab_widget_condition !== 'never') {
                 if (!last_tab_float) {
