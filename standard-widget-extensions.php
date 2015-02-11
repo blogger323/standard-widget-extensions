@@ -542,6 +542,7 @@ class HM_SWE_Plugin_Loader {
 			plugins_url( '/js/standard-widget-extensions' . ($this->get_hm_swe_option('readable_js') == 'enabled' ? '.js' : '.min.js'), __FILE__ ), array(), false, true );
 
         if ($options['smart_sidebar_condition'] !== 'never') {
+            // Dashicons was introduced in WP 3.8
             wp_enqueue_style( 'dashicons' );
         }
 
