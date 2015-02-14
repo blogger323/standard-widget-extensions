@@ -32,11 +32,58 @@
         var accordion_widgets = {};
 
         accordion_widgets.init_cookie = function() {
+            // should be called just after page loaded.
 
             // initialize cookie
             if (typeof JSON !== "undefined" && !cook) { // if JSON is available
                 $.cookie.json = true;
-                cook = $.cookie('hm_swe');
+                cook = $.cookie('hm_swe'); // might be 'undefined'
+
+                /*
+                for (var name in cook) {
+                    if ($('#' + name).length) {
+                        if (cook[name] === 't') {
+
+                        }
+                        else {
+
+                        }
+                    }
+                }
+                */
+
+                for (var i = 0; i < swe.custom_selectors.length; i++) {
+                    // restore status, set classes for heading markers
+                    $(swe.custom_selectors[i]).each(function () {
+                        var heading = $(this).children(swe.heading_string);
+
+                        /*
+                         Priority:
+                         1. cookie
+                         2. initially collapsed setting
+                         3. CSS display = none
+                         4. class attribute hm-swe-expanded/hm-swe-collapsed (in theme files)
+                         */
+                        if (cook && cook[$(this).attr('id')]) {
+                            if (cook[$(this).attr('id')] === "t") {
+                                heading.removeClass('hm-swe-collapsed').addClass('hm-swe-expanded');
+                            }
+                            else { // cook[$(this).attr('id')] === "f"
+                                heading.removeClass('hm-swe-expanded').addClass('hm-swe-collapsed');
+                            }
+                        }
+                        else if (swe.initially_collapsed || heading.next().css('display') === 'none') {
+                            heading.removeClass('hm-swe-expanded').addClass('hm-swe-collapsed');
+                        }
+                        else {
+                            if ((!heading.hasClass('hm-swe-expanded')) && (!heading.hasClass('hm-swe-collapsed'))) {
+                                heading.addClass('hm-swe-expanded');
+                            }
+                        }
+
+                    });
+
+                }
             }
         };
 
@@ -65,17 +112,11 @@
 
                     var headings = $(swe.custom_selectors[i] + ' ' + swe.heading_string).addClass("hm-swe-accordion-head");
 
+/*
                     // restore status, set classes for heading markers
                     $(swe.custom_selectors[i]).each(function () {
                         var heading = $(this).children(swe.heading_string);
 
-                        /*
-                         Priority:
-                         1. cookie
-                         2. initially collapsed setting
-                         3. CSS display = none
-                         4. class attribute hm-swe-expanded/hm-swe-collapsed (in theme files)
-                         */
                         if ((cook && cook[$(this).attr('id')] == "t") ||
                             (!cook && !swe.initially_collapsed && heading.next().css('display') !== 'none')) {
                             if ((!heading.hasClass('hm-swe-expanded')) && (!heading.hasClass('hm-swe-collapsed'))) {
@@ -89,9 +130,24 @@
                         }
 
                     });
+                    */
 
                     headings.filter('.hm-swe-expanded').next().show();
                     headings.filter('.hm-swe-collapsed').next().hide();
+
+                    // set classes if no class is attached
+                    $(swe.custom_selectors[i]).each(function () {
+                        var heading = $(this).children(swe.heading_string);
+                        if ((!heading.hasClass('hm-swe-expanded')) && (!heading.hasClass('hm-swe-collapsed'))) {
+
+                            if (heading.next().css('display') === 'none') {
+                                heading.addClass('hm-swe-collapsed');
+                            }
+                            else {
+                                heading.addClass('hm-swe-expanded');
+                            }
+                        }
+                    });
 
                     // click event handler
                     $('body').off('click', swe.custom_selectors[i] + ' ' + swe.heading_string); // first remove current
@@ -274,6 +330,58 @@
             }
         };
 
+        //---- Sticky Sidebar
+        var sticky_sidebar = {};
+
+        sticky_sidebar.setup = function(fromTimer) {
+            if (swe.scroll_stop) {
+                var c = $(contentid);
+                CONDITION.content_top = c.offset().top;
+                CONDITION.content_margin_top = parseInt(c.css('margin-top'), 10);
+                CONDITION.content_top -= CONDITION.content_margin_top;
+
+                CONDITION.content_height = c.outerHeight(true);
+
+                CONDITION.window_height = $(window).height();
+                CONDITION.prevscrolltop = -1;
+                CONDITION.direction = 0;
+
+                CONDITION.header_space = parseInt(swe.header_space, 10);
+                CONDITION.header_space += adjustment_for_adminbar();
+
+
+                if (SIDEBAR1.o) {
+                    resize_sidebar(SIDEBAR1);
+                }
+                if (SIDEBAR2.o) {
+                    resize_sidebar(SIDEBAR2);
+                }
+
+                if (SIDEBAR1.o && SIDEBAR1.mode != DISABLED_SIDEBAR && SIDEBAR2.o && SIDEBAR2.mode != DISABLED_SIDEBAR) {
+                    CONDITION.content_height = Math.max(CONDITION.content_height,
+                        SIDEBAR1.height + SIDEBAR1.default_offset.top - CONDITION.content_top,
+                        SIDEBAR2.height + SIDEBAR2.default_offset.top - CONDITION.content_top);
+                }
+
+                // After the content height fix, we finalize the sidebar mode.
+                if (SIDEBAR1.o) {
+                    finalize_sidebarmode(SIDEBAR1);
+                }
+                if (SIDEBAR2.o) {
+                    finalize_sidebarmode(SIDEBAR2);
+                }
+
+                scrollfunc();
+
+                if (fromTimer === true && swe.recalc_after > 0 && swe.recalc_count > 0) {
+                    if (swe.recalc_count < 10000) {
+                        swe.recalc_count--;
+                    }
+                    setTimeout(resizefunc, swe.recalc_after * 1000, true);
+                }
+            }
+        }
+
         var CONDITION = {
             content_height: 0, /* including margins, borders and paddings */
             content_top: 0,
@@ -341,200 +449,200 @@
                         if ($(this).next().is(':visible')) {
                             c2[$(this).parent().attr('id')] = "t";
                         }
+                        else {
+                            c2[$(this).parent().attr('id')] = "f";
+                        }
                     });
                     $.cookie('hm_swe', c2, { path: '/' });
                 } /* for */
             }
-            if (typeof resizefunc === 'function') {
-                resizefunc();
-                /* because the height of the sidebar has changed. */
-            }
+
+            sticky_sidebar.setup();
         }
 
+        function scrollfunc() {
+            var curscrolltop = $(window).scrollTop();
 
-        if (swe.scroll_stop && $(contentid).length > 0) {
-
-            function scrollfunc() {
-                var curscrolltop = $(window).scrollTop();
-
-                if (SIDEBAR1.o) {
-                    manage_sidebar(SIDEBAR1, curscrolltop);
-                }
-                if (SIDEBAR2.o) {
-                    manage_sidebar(SIDEBAR2, curscrolltop);
-                }
-
-                CONDITION.direction = curscrolltop - CONDITION.prevscrolltop;
-                CONDITION.prevscrolltop = curscrolltop;
+            if (SIDEBAR1.o) {
+                manage_sidebar(SIDEBAR1, curscrolltop);
+            }
+            if (SIDEBAR2.o) {
+                manage_sidebar(SIDEBAR2, curscrolltop);
             }
 
-            function manage_sidebar(sidebar, curscrolltop) {
+            CONDITION.direction = curscrolltop - CONDITION.prevscrolltop;
+            CONDITION.prevscrolltop = curscrolltop;
+        }
 
-                if (sidebar.mode === DISABLED_SIDEBAR) {
-                    // For z-index based Themes, do not use css("position", "static")
-                    sidebar.o.css("position", "relative");
-                    sidebar.o.css("top", "0");
-                    sidebar.o.css("left", "0");
-                    sidebar.o.css('width', '');
-                    sidebar.o.css('margin-left', '');
-                    return;
-                }
+        function manage_sidebar(sidebar, curscrolltop) {
 
-                var sidebar_cur_top = sidebar.o.offset().top;
-                sidebar_cur_top -= sidebar.margin_top;
-
-                if ( !swe.ignore_footer &&
-                    (   (sidebar.mode == LONG_SIDEBAR &&
-                         curscrolltop >= CONDITION.content_top + CONDITION.content_height - CONDITION.window_height) ||
-                        (sidebar.mode == SHORT_SIDEBAR &&
-                         curscrolltop >= CONDITION.content_top + CONDITION.content_height - sidebar.height - CONDITION.header_space)
-                    )) {
-                    // scroll again with footer
-                    sidebar.o.css("position", "absolute");
-                    sidebar.o.css("top", CONDITION.content_top + CONDITION.content_height
-                        - sidebar.height - sidebar.absolute_adjustment_top);
-                    sidebar.o.css("left", sidebar.default_offset.left - sidebar.absolute_adjustment_left);
-                    sidebar.o.css("width", sidebar.width);
-                    sidebar.o.css('margin-left', sidebar.margin_left);
-                    sidebar.fixed = 0;
-                }
-                else if ((CONDITION.mode == 2 || sidebar.mode == SHORT_SIDEBAR) && curscrolltop < sidebar.default_offset.top - CONDITION.header_space) {
-                    // For z-index based Themes, do not use css("position", "static")
-                    sidebar.o.css("position", "relative");
-                    sidebar.o.css("top", "0");
-                    sidebar.o.css("left", "0");
-                    sidebar.o.css("width", '');
-                    sidebar.o.css('margin-left', '');
-                    sidebar.fixed = 0;
-                }
-                else if (CONDITION.mode == 2 && sidebar.mode == LONG_SIDEBAR &&  curscrolltop < CONDITION.prevscrolltop &&
-                        curscrolltop < sidebar_cur_top - CONDITION.header_space) {
-                    // FOR MODE2 BLOCK
-                    // at the top of sidebar
-
-                    sidebar.o.css("position", "fixed");
-                    sidebar.o.css("top", CONDITION.header_space); // no need of margin-top
-                    sidebar.o.css("left", sidebar.default_offset.left - $(window).scrollLeft());
-                    sidebar.o.css("width", sidebar.width);
-                    sidebar.o.css('margin-left', sidebar.margin_left);
-                    sidebar.fixed = 1;
-                }
-                else if ((CONDITION.mode == 2 && sidebar.mode == LONG_SIDEBAR && curscrolltop >= sidebar_cur_top + sidebar.height - CONDITION.window_height &&
-                   curscrolltop > CONDITION.prevscrolltop) ||
-                          (CONDITION.mode != 2 && sidebar.mode == LONG_SIDEBAR && curscrolltop >= sidebar.default_offset.top + sidebar.height - CONDITION.window_height)) {
-                    // at the bottom of sidebar
-                    sidebar.o.css("position", "fixed");
-                    sidebar.o.css("top", CONDITION.window_height - sidebar.height);
-                    sidebar.o.css("left", sidebar.default_offset.left - $(window).scrollLeft());
-                    sidebar.o.css("width", sidebar.width);
-                    sidebar.o.css('margin-left', sidebar.margin_left);
-                    sidebar.fixed = 1;
-                }
-                else if (CONDITION.mode == 2 && sidebar.mode == LONG_SIDEBAR && (curscrolltop - CONDITION.prevscrolltop) * CONDITION.direction < 0 && sidebar.fixed) {
-                    // FOR MODE2 BLOCK
-                    // the direction has changed
-                    // mode2 absolute position
-
-                    sidebar.o.css("position", "absolute");
-                    sidebar.o.css("top", sidebar_cur_top - sidebar.absolute_adjustment_top);
-                    sidebar.o.css("left", sidebar.default_offset.left - sidebar.absolute_adjustment_left);
-                    sidebar.o.css("width", sidebar.width);
-                    sidebar.o.css('margin-left', sidebar.margin_left);
-                    sidebar.fixed = 0;
-                }
-                else if (sidebar.mode == SHORT_SIDEBAR) {
-                    // shorter sidebar as fixed
-                    sidebar.o.css("position", "fixed");
-                    sidebar.o.css("top", CONDITION.header_space); // no need of margin-top
-                    sidebar.o.css("left", sidebar.default_offset.left - $(window).scrollLeft());
-                    sidebar.o.css("width", sidebar.width);
-                    sidebar.o.css('margin-left', sidebar.margin_left);
-                    sidebar.fixed = 1;
-                }
-                else if (CONDITION.mode != 2) {
-                    // For z-index based Themes, do not use css("position", "static")
-                    sidebar.o.css("position", "relative");
-                    sidebar.o.css("top", "0");
-                    sidebar.o.css("left", "0");
-                    sidebar.o.css("width", '');
-                    sidebar.o.css('margin-left', '');
-                    sidebar.fixed = 0;
-                }
-                else {
-                    // continue absolute
-                }
-                sidebar.previoustop = sidebar_cur_top;
-
-            }
-
-            function is_enabled(sidebar) {
-                var f = sidebar.o.css('float');
-                return ( $(window).width() >= sidebar.disable_iflt &&
-                    ( (! sidebar.float_attr_check_mode) || f == 'left' || f == 'right') );
-
-            }
-
-            function resize_sidebar(sidebar) {
-                sidebar.height = sidebar.o.outerHeight(true);
-
-                sidebar.fixed = 0;
-                sidebar.previoustop = 0;
-
+            if (sidebar.mode === DISABLED_SIDEBAR) {
+                // For z-index based Themes, do not use css("position", "static")
                 sidebar.o.css("position", "relative");
                 sidebar.o.css("top", "0");
                 sidebar.o.css("left", "0");
-
                 sidebar.o.css('width', '');
-                sidebar.width = parseFloat(sidebar.o.css('width')); // using css('width') (not width())
-                // Use a fixed width because the parent will change.
-
                 sidebar.o.css('margin-left', '');
-                sidebar.margin_left = parseFloat(sidebar.o.css('margin-left'), 10);  // might be float in responsive themes
+                return;
+            }
 
-                sidebar.default_offset = sidebar.o.offset();
-                if (!sidebar.default_offset) {
-                    return; // something wrong.
-                }
+            var sidebar_cur_top = sidebar.o.offset().top;
+            sidebar_cur_top -= sidebar.margin_top;
 
-                sidebar.default_offset.top  -= sidebar.margin_top;
-                sidebar.default_offset.left -= sidebar.margin_left;
+            if ( !swe.ignore_footer &&
+                (   (sidebar.mode == LONG_SIDEBAR &&
+                curscrolltop >= CONDITION.content_top + CONDITION.content_height - CONDITION.window_height) ||
+                (sidebar.mode == SHORT_SIDEBAR &&
+                curscrolltop >= CONDITION.content_top + CONDITION.content_height - sidebar.height - CONDITION.header_space)
+                )) {
+                // scroll again with footer
+                sidebar.o.css("position", "absolute");
+                sidebar.o.css("top", CONDITION.content_top + CONDITION.content_height
+                - sidebar.height - sidebar.absolute_adjustment_top);
+                sidebar.o.css("left", sidebar.default_offset.left - sidebar.absolute_adjustment_left);
+                sidebar.o.css("width", sidebar.width);
+                sidebar.o.css('margin-left', sidebar.margin_left);
+                sidebar.fixed = 0;
+            }
+            else if ((CONDITION.mode == 2 || sidebar.mode == SHORT_SIDEBAR) && curscrolltop < sidebar.default_offset.top - CONDITION.header_space) {
+                // For z-index based Themes, do not use css("position", "static")
+                sidebar.o.css("position", "relative");
+                sidebar.o.css("top", "0");
+                sidebar.o.css("left", "0");
+                sidebar.o.css("width", '');
+                sidebar.o.css('margin-left', '');
+                sidebar.fixed = 0;
+            }
+            else if (CONDITION.mode == 2 && sidebar.mode == LONG_SIDEBAR &&  curscrolltop < CONDITION.prevscrolltop &&
+                curscrolltop < sidebar_cur_top - CONDITION.header_space) {
+                // FOR MODE2 BLOCK
+                // at the top of sidebar
 
-                // determine the adjustment value for the absolute position
-                // find a parent which has a position other than static
-                var o = sidebar.o.offsetParent();
-                sidebar.absolute_adjustment_top  = o.offset().top;  // TODO: margin adjustment needed?
-                sidebar.absolute_adjustment_left = o.offset().left;
+                sidebar.o.css("position", "fixed");
+                sidebar.o.css("top", CONDITION.header_space); // no need of margin-top
+                sidebar.o.css("left", sidebar.default_offset.left - $(window).scrollLeft());
+                sidebar.o.css("width", sidebar.width);
+                sidebar.o.css('margin-left', sidebar.margin_left);
+                sidebar.fixed = 1;
+            }
+            else if ((CONDITION.mode == 2 && sidebar.mode == LONG_SIDEBAR && curscrolltop >= sidebar_cur_top + sidebar.height - CONDITION.window_height &&
+                curscrolltop > CONDITION.prevscrolltop) ||
+                (CONDITION.mode != 2 && sidebar.mode == LONG_SIDEBAR && curscrolltop >= sidebar.default_offset.top + sidebar.height - CONDITION.window_height)) {
+                // at the bottom of sidebar
+                sidebar.o.css("position", "fixed");
+                sidebar.o.css("top", CONDITION.window_height - sidebar.height);
+                sidebar.o.css("left", sidebar.default_offset.left - $(window).scrollLeft());
+                sidebar.o.css("width", sidebar.width);
+                sidebar.o.css('margin-left', sidebar.margin_left);
+                sidebar.fixed = 1;
+            }
+            else if (CONDITION.mode == 2 && sidebar.mode == LONG_SIDEBAR && (curscrolltop - CONDITION.prevscrolltop) * CONDITION.direction < 0 && sidebar.fixed) {
+                // FOR MODE2 BLOCK
+                // the direction has changed
+                // mode2 absolute position
 
-                if ( ! is_enabled(sidebar) ) {
-                    sidebar.mode = DISABLED_SIDEBAR;
-                }
-                else {
-                    sidebar.mode = LONG_SIDEBAR; // Temporarily. We will finalize it after.
-                }
+                sidebar.o.css("position", "absolute");
+                sidebar.o.css("top", sidebar_cur_top - sidebar.absolute_adjustment_top);
+                sidebar.o.css("left", sidebar.default_offset.left - sidebar.absolute_adjustment_left);
+                sidebar.o.css("width", sidebar.width);
+                sidebar.o.css('margin-left', sidebar.margin_left);
+                sidebar.fixed = 0;
+            }
+            else if (sidebar.mode == SHORT_SIDEBAR) {
+                // shorter sidebar as fixed
+                sidebar.o.css("position", "fixed");
+                sidebar.o.css("top", CONDITION.header_space); // no need of margin-top
+                sidebar.o.css("left", sidebar.default_offset.left - $(window).scrollLeft());
+                sidebar.o.css("width", sidebar.width);
+                sidebar.o.css('margin-left', sidebar.margin_left);
+                sidebar.fixed = 1;
+            }
+            else if (CONDITION.mode != 2) {
+                // For z-index based Themes, do not use css("position", "static")
+                sidebar.o.css("position", "relative");
+                sidebar.o.css("top", "0");
+                sidebar.o.css("left", "0");
+                sidebar.o.css("width", '');
+                sidebar.o.css('margin-left', '');
+                sidebar.fixed = 0;
+            }
+            else {
+                // continue absolute
+            }
+            sidebar.previoustop = sidebar_cur_top;
 
-            } // function resize_sidebar
+        }
 
-            function finalize_sidebarmode(sidebar) {
+        function is_enabled(sidebar) {
+            var f = sidebar.o.css('float');
+            return ( $(window).width() >= sidebar.disable_iflt &&
+            ( (! sidebar.float_attr_check_mode) || f == 'left' || f == 'right') );
 
-                if (sidebar.default_offset.top + sidebar.height >= CONDITION.content_top + CONDITION.content_height ||
-                    ! is_enabled(sidebar)) {
-                    sidebar.mode = DISABLED_SIDEBAR;
-                }
-                else if (sidebar.height + CONDITION.header_space <= CONDITION.window_height) {
-                    sidebar.mode = SHORT_SIDEBAR;
-                }
-                else {
-                    sidebar.mode = LONG_SIDEBAR
-                }
+        }
 
-            } // finalize_sidebarmode
+        function resize_sidebar(sidebar) {
+            sidebar.height = sidebar.o.outerHeight(true);
 
+            sidebar.fixed = 0;
+            sidebar.previoustop = 0;
+
+            sidebar.o.css("position", "relative");
+            sidebar.o.css("top", "0");
+            sidebar.o.css("left", "0");
+
+            sidebar.o.css('width', '');
+            sidebar.width = parseFloat(sidebar.o.css('width')); // using css('width') (not width())
+            // Use a fixed width because the parent will change.
+
+            sidebar.o.css('margin-left', '');
+            sidebar.margin_left = parseFloat(sidebar.o.css('margin-left'), 10);  // might be float in responsive themes
+
+            sidebar.default_offset = sidebar.o.offset();
+            if (!sidebar.default_offset) {
+                return; // something wrong.
+            }
+
+            sidebar.default_offset.top  -= sidebar.margin_top;
+            sidebar.default_offset.left -= sidebar.margin_left;
+
+            // determine the adjustment value for the absolute position
+            // find a parent which has a position other than static
+            var o = sidebar.o.offsetParent();
+            sidebar.absolute_adjustment_top  = o.offset().top;  // TODO: margin adjustment needed?
+            sidebar.absolute_adjustment_left = o.offset().left;
+
+            if ( ! is_enabled(sidebar) ) {
+                sidebar.mode = DISABLED_SIDEBAR;
+            }
+            else {
+                sidebar.mode = LONG_SIDEBAR; // Temporarily. We will finalize it after.
+            }
+
+        } // function resize_sidebar
+
+        function finalize_sidebarmode(sidebar) {
+
+            if (sidebar.default_offset.top + sidebar.height >= CONDITION.content_top + CONDITION.content_height ||
+                ! is_enabled(sidebar)) {
+                sidebar.mode = DISABLED_SIDEBAR;
+            }
+            else if (sidebar.height + CONDITION.header_space <= CONDITION.window_height) {
+                sidebar.mode = SHORT_SIDEBAR;
+            }
+            else {
+                sidebar.mode = LONG_SIDEBAR
+            }
+
+        } // finalize_sidebarmode
+
+
+        if (swe.scroll_stop && $(contentid).length > 0) {
 
             $(window).scroll(scrollfunc);
 
             swe.recalc_after = parseInt(swe.recalc_after, 10);
             swe.recalc_count = parseInt(swe.recalc_count, 10);
-            resizefunc(true);
+            sticky_sidebar.setup(true);
 
         } // if scroll_stop
 
@@ -544,61 +652,12 @@
         }
 
         function resizefunc(fromTimer) {
-
-//            if (has_changed()) {
-
-                accordion_widgets.setup();
-                tabbed_widgets.setup();
-                smart_sidebar.setup();
-//            }
-
-            if (swe.scroll_stop) {
-                var c = $(contentid);
-                CONDITION.content_top = c.offset().top;
-                CONDITION.content_margin_top = parseInt(c.css('margin-top'), 10);
-                CONDITION.content_top -= CONDITION.content_margin_top;
-
-                CONDITION.content_height = c.outerHeight(true);
-
-                CONDITION.window_height = $(window).height();
-                CONDITION.prevscrolltop = -1;
-                CONDITION.direction = 0;
-
-                CONDITION.header_space = parseInt(swe.header_space, 10);
-                CONDITION.header_space += adjustment_for_adminbar();
-
-                
-                if (SIDEBAR1.o) {
-                    resize_sidebar(SIDEBAR1);
-                }
-                if (SIDEBAR2.o) {
-                    resize_sidebar(SIDEBAR2);
-                }
-
-                if (SIDEBAR1.o && SIDEBAR1.mode != DISABLED_SIDEBAR && SIDEBAR2.o && SIDEBAR2.mode != DISABLED_SIDEBAR) {
-                    CONDITION.content_height = Math.max(CONDITION.content_height,
-                        SIDEBAR1.height + SIDEBAR1.default_offset.top - CONDITION.content_top,
-                        SIDEBAR2.height + SIDEBAR2.default_offset.top - CONDITION.content_top);
-                }
-
-                // After the content height fix, we finalize the sidebar mode.
-                if (SIDEBAR1.o) {
-                    finalize_sidebarmode(SIDEBAR1);
-                }
-                if (SIDEBAR2.o) {
-                    finalize_sidebarmode(SIDEBAR2);
-                }
-
-                scrollfunc();
-
-                if (fromTimer === true && swe.recalc_after > 0 && swe.recalc_count > 0) {
-                    if (swe.recalc_count < 10000) {
-                        swe.recalc_count--;
-                    }
-                    setTimeout(resizefunc, swe.recalc_after * 1000, true);
-                }
-            }
+            accordion_widgets.setup();
+            tabbed_widgets.setup();
+            smart_sidebar.setup();
+            sticky_sidebar.setup();
         }
+
 
         function reloadfunc() {
 
@@ -610,12 +669,12 @@
             if (swe.scroll_stop && $(contentid).length) {
                 init_sidebar(SIDEBAR1, swe.sidebar_id, swe.proportional_sidebar, swe.disable_iflt, swe.sidebar1_condition);
                 init_sidebar(SIDEBAR2, swe.sidebar_id2, swe.proportional_sidebar2, swe.disable_iflt2, swe.sidebar2_condition);
-                swe.resizeHandler();
+                sticky_sidebar.setup();
             }
         }
 
         swe.reloadHandler = reloadfunc;
-        swe.resizeHandler = resizefunc;
+        swe.resizeHandler = sticky_sidebar.setup;
         $(window).resize(resizefunc);
 
         accordion_widgets.init_cookie();
