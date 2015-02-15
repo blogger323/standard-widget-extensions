@@ -333,8 +333,12 @@
         //---- Sticky Sidebar
         var sticky_sidebar = {};
 
+        sticky_sidebar.enabled = function() {
+            return swe.sidebar1_condition !== 'never' || swe.sidebar2_condition !== 'never';
+        };
+
         sticky_sidebar.setup = function(fromTimer) {
-            if (swe.scroll_stop) {
+            if (this.enabled()) {
                 var c = $(contentid);
                 CONDITION.content_top = c.offset().top;
                 CONDITION.content_margin_top = parseInt(c.css('margin-top'), 10);
@@ -405,7 +409,7 @@
             sidebar.absolute_adjustment_left = 0;
             sidebar.percent_width = 0;
             sidebar.disable_iflt = 0;
-            sidebar.float_attr_check_mode = sidebar_condition  === 'floated';
+            sidebar.float_attr_check_mode = (sidebar_condition  === 'floated');
 
             sidebar.mode = 0; // 0:disabled, 1:long, 2:short
 
@@ -636,7 +640,7 @@
         } // finalize_sidebarmode
 
 
-        if (swe.scroll_stop && $(contentid).length > 0) {
+        if (sticky_sidebar.enabled() && $(contentid).length > 0) {
 
             $(window).scroll(scrollfunc);
 
@@ -644,7 +648,7 @@
             swe.recalc_count = parseInt(swe.recalc_count, 10);
             sticky_sidebar.setup(true);
 
-        } // if scroll_stop
+        } // if
 
         function adjustment_for_adminbar() {
             var adminbar = $('#wpadminbar');
@@ -662,11 +666,10 @@
         function reloadfunc() {
 
             accordion_widgets.setup();
-
             tabbed_widgets.setup();
             smart_sidebar.setup();
 
-            if (swe.scroll_stop && $(contentid).length) {
+            if (sticky_sidebar.enabled() && $(contentid).length) {
                 init_sidebar(SIDEBAR1, swe.sidebar_id, swe.proportional_sidebar, swe.disable_iflt, swe.sidebar1_condition);
                 init_sidebar(SIDEBAR2, swe.sidebar_id2, swe.proportional_sidebar2, swe.disable_iflt2, swe.sidebar2_condition);
                 sticky_sidebar.setup();

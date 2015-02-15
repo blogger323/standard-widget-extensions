@@ -556,7 +556,7 @@ class HM_SWE_Plugin_Loader {
 			'widget_class'           => esc_attr( $options['widget_class'] ),
 			'readable_js'            => $options['readable_js'] == 'enabled',
 			'heading_marker'         => $options['heading_marker'] != 'none',
-			'scroll_stop'            => ($options['sidebar1_condition'] !== 'never' || $options['sidebar2_condition'] !== 'never'),
+//			'scroll_stop'            => ($options['sidebar1_condition'] !== 'never' || $options['sidebar2_condition'] !== 'never'),
 			'accordion_widget'       => $options['accordion_widget_condition'] !== 'never',
 			'single_expansion'       => $options['single_expansion'] == 'enabled',
             'initially_collapsed'    => $options['initially_collapsed'] == 'enabled',
