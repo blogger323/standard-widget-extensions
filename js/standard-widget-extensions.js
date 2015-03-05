@@ -92,6 +92,9 @@
                 var i;
                 for (i = 0; i < swe.custom_selectors.length; i++) {
 
+                    $('body').off('mouseenter', swe.custom_selectors[i] + ' ' + swe.heading_string)
+                        .off('mouseleave', swe.custom_selectors[i] + ' ' + swe.heading_string);  // first remove them
+
                     // cursor setting
                     $('body').on('mouseenter', swe.custom_selectors[i] + ' ' + swe.heading_string,
                         function () {
@@ -130,6 +133,8 @@
 
                     headings.filter('.hm-swe-expanded').next().show();
                     headings.filter('.hm-swe-collapsed').next().hide();
+
+                    $('body').off('click', swe.custom_selectors[i] + ' ' + swe.heading_string); // first remove current
 
                     // click event handler
                     $('body').on('click', swe.custom_selectors[i] + ' ' + swe.heading_string, function () {

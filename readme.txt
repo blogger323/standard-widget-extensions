@@ -4,7 +4,7 @@ Donate link: http://en.hetarena.com/donate
 Tags: widget, sidebar
 Requires at least: 3.6
 Tested up to: 4.1
-Stable tag: 1.7.3
+Stable tag: 1.7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -67,9 +67,13 @@ Please tell your audience to upgrade browser.
 
 == Changelog ==
 
+= 1.7.4 - Mar 5, 2015 =
+* Possibly duplicate handlers in Ajax theme.
+* Major version up is coming, hopefully soon :-) Stay tuned!
+
 = 1.7.3 - Feb 5, 2015 =
 * Toolbar adjustment for logged in users.
-* Measure version up is coming soon. Stay tuned!
+* Major version up is coming soon. Stay tuned!
 
 = 1.7.2 - Dec 3, 2014 =
 * [Fixed] swapped plus/minus sign for Accordion Widget
@@ -147,5 +151,5 @@ Please tell your audience to upgrade browser.
 
 == Upgrade Notice ==
 
-= 1.7.3 =
-Toolbar adjustment for logged in users.
+= 1.7.4 =
+Possibly duplicate handlers in Ajax theme.
