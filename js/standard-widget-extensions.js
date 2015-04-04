@@ -1,6 +1,6 @@
 /*
  standard-widget-extensions.js
- Copyright 2013, 2014 Hirokazu Matsui (blogger323)
+ Copyright 2013, 2014, 2015 Hirokazu Matsui (blogger323)
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License, version 2, as
@@ -789,7 +789,7 @@
 
         function resizefunc(fromTimer) {
 
-            if (!fromTimer) {
+            if (fromTimer !== true) {
                 swe.set_init_floats();
                 accordion_widgets.setup();
                 tabbed_widgets.setup();

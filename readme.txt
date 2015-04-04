@@ -67,6 +67,13 @@ Please tell your audience to upgrade browser.
 
 == Changelog ==
 
+= 2.0 - Apr, 2015 =
+* New features! Smart Sidebar and Tabbed Widgets.
+* I've also have changed existing menus. I hope existing configurations will be converted properly. But I'd also like you to check it works as it used to be by yourself after the upgrade.
+* 'Disable if the window width is less than' option is now obsoleted, because enabling/disabling by float attribute is much better. If you still need the option, Please explain why you need it in [the forum.](https://wordpress.org/support/plugin/standard-widget-extensions) Or the option will be deleted in future releases.
+* Because it has dramatically changed, it might have some faults or thoughtless things. Please let me know in [the forum,](https://wordpress.org/support/plugin/standard-widget-extensions) if so.
+* Of course, I welcome positive feedback, too. It will energize me a lot, definitely!
+
 = 1.7.4 - Mar 5, 2015 =
 * Possibly duplicate handlers in Ajax theme.
 * Major version up is coming, hopefully soon :-) Stay tuned!
