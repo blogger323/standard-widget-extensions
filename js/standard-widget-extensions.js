@@ -358,8 +358,9 @@
         };
 
         sticky_sidebar.setup = function(fromTimer) {
-            if (this.enabled()) {
-                var c = $(contentid);
+
+            var c = $(contentid);
+            if (sticky_sidebar.enabled() && c.length > 0) {
                 CONDITION.content_top = c.offset().top;
                 CONDITION.content_margin_top = parseInt(c.css('margin-top'), 10);
                 CONDITION.content_top -= CONDITION.content_margin_top;
@@ -401,7 +402,7 @@
                     if (swe.recalc_count < 10000) {
                         swe.recalc_count--;
                     }
-                    setTimeout(resizefunc, swe.recalc_after * 1000, true);
+                    setTimeout(sticky_sidebar.setup, swe.recalc_after * 1000, true);
                 }
             }
         }
@@ -458,9 +459,7 @@
         swe.sidebar2 = SIDEBAR2;
         swe.condition = CONDITION;
 
-        init_sidebar(SIDEBAR1, swe.sidebar_id, swe.proportional_sidebar, swe.disable_iflt, swe.sidebar1_condition);
-        init_sidebar(SIDEBAR2, swe.sidebar_id2, swe.proportional_sidebar2, swe.disable_iflt2, swe.sidebar2_condition);
-
+        // store sidebar 'float' status
         swe.set_init_floats = function() {
             swe.init_floats = {};
 
@@ -787,16 +786,13 @@
             return adminbar.length > 0 ?  adminbar.height(): 0;
         }
 
-        function resizefunc(fromTimer) {
+        function resizefunc() {
 
-            if (fromTimer !== true) {
-                swe.set_init_floats();
-                accordion_widgets.setup();
-                tabbed_widgets.setup();
-                smart_sidebar.setup();
-            }
-
-            sticky_sidebar.setup(fromTimer);
+            swe.set_init_floats();
+            accordion_widgets.setup();
+            tabbed_widgets.setup();
+            smart_sidebar.setup();
+            sticky_sidebar.setup();
         }
 
 
@@ -812,6 +808,9 @@
                 sticky_sidebar.setup();
             }
         }
+
+        init_sidebar(SIDEBAR1, swe.sidebar_id, swe.proportional_sidebar, swe.disable_iflt, swe.sidebar1_condition);
+        init_sidebar(SIDEBAR2, swe.sidebar_id2, swe.proportional_sidebar2, swe.disable_iflt2, swe.sidebar2_condition);
 
         swe.reloadHandler = reloadfunc;
         swe.resizeHandler = sticky_sidebar.setup;
