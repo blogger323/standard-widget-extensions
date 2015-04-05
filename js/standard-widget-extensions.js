@@ -182,6 +182,7 @@
                     'position': 'fixed',
                     'top' : '2.5vh',
                     'left' : '5vw',
+                    'margin-left': 0,
                     'width' : '90vw',
                     'height' : '95vh'
                 },
@@ -259,6 +260,7 @@
                 height: "",
                 position: "",
                 left: "",
+                "margin-left": "",
                 top: "",
                 "background-color": '',
                 "z-index": '',
