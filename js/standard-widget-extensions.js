@@ -41,19 +41,6 @@
                 $.cookie.json = true;
                 cook = $.cookie('hm_swe'); // might be 'undefined'
 
-                /*
-                for (var name in cook) {
-                    if ($('#' + name).length) {
-                        if (cook[name] === 't') {
-
-                        }
-                        else {
-
-                        }
-                    }
-                }
-                */
-
                 for (var i = 0; i < swe.custom_selectors.length; i++) {
                     // restore status, set classes for heading markers
                     $(swe.custom_selectors[i]).each(function () {
@@ -113,26 +100,6 @@
                     );
 
                     var headings = $(swe.custom_selectors[i] + ' ' + swe.heading_string).addClass("hm-swe-accordion-head");
-
-/*
-                    // restore status, set classes for heading markers
-                    $(swe.custom_selectors[i]).each(function () {
-                        var heading = $(this).children(swe.heading_string);
-
-                        if ((cook && cook[$(this).attr('id')] == "t") ||
-                            (!cook && !swe.initially_collapsed && heading.next().css('display') !== 'none')) {
-                            if ((!heading.hasClass('hm-swe-expanded')) && (!heading.hasClass('hm-swe-collapsed'))) {
-                                heading.addClass('hm-swe-expanded');
-                            }
-                        }
-                        else {
-                            if ((!heading.hasClass('hm-swe-expanded')) && (!heading.hasClass('hm-swe-collapsed'))) {
-                                heading.addClass('hm-swe-collapsed');
-                            }
-                        }
-
-                    });
-                    */
 
                     headings.filter('.hm-swe-expanded').next().show();
                     headings.filter('.hm-swe-collapsed').next().hide();
@@ -203,11 +170,6 @@
         smart_sidebar.enable = function() {
             var sidebar = $('#' + swe.smart_sidebar_id);
             sidebar.css({
-//                width: "90vw",
-//                height: "95vh",
-//                position: "fixed",
-//                left: "5vw",
-//                top: "2.5vh",
                 "background-color": 'white',
                 "z-index": 100000, // greater than adminbar z-index (= 99999)
                 "overflow-y": "scroll",
@@ -470,27 +432,6 @@
             // {"" : undefined} appears
         };
 
-        /*
-        swe.set_position = function(id, position, top, left, obj) {
-            if (swe.init_floats[id]) {
-                if (swe.init_floats[id] === "none" && obj.name === "smart_sidebar") {
-                    $("#" + id).css({
-                        "position" : position,
-                        "top" : top,
-                        "left" : left
-                    });
-                }
-                else if (swe.init_floats[id] !== "none" && obj.name === "sticky_sidebar") {
-                    $("#" + id).css({
-                        "position" : position,
-                        "top" : top,
-                        "left" : left
-                    });
-                }
-            }
-        };
-        */
-
         swe.set_sidebar_attributes = function(id, attributes, obj) {
             if (swe.init_floats[id]) {
                 if (swe.init_floats[id] === "none" && obj.name === "smart_sidebar") {
@@ -551,11 +492,6 @@
                         'margin-left' : ''                            
                     },
                     sticky_sidebar);
-//                sidebar.o.css("position", "relative");
-//                sidebar.o.css("top", "0");
-//                sidebar.o.css("left", "0");
-//                sidebar.o.css('width', '');
-//                sidebar.o.css('margin-left', '');
                 return;
             }
 
@@ -578,12 +514,6 @@
                         'margin-left': sidebar.margin_left
                     },
                     sticky_sidebar);
-//                sidebar.o.css("position", "absolute");
-//                sidebar.o.css("top", CONDITION.content_top + CONDITION.content_height
-//                - sidebar.height - sidebar.absolute_adjustment_top);
-//                sidebar.o.css("left", sidebar.default_offset.left - sidebar.absolute_adjustment_left);
-//                sidebar.o.css("width", sidebar.width);
-//                sidebar.o.css('margin-left', sidebar.margin_left);
                 sidebar.fixed = 0;
             }
             else if ((CONDITION.mode == 2 || sidebar.mode == SHORT_SIDEBAR) && curscrolltop < sidebar.default_offset.top - CONDITION.header_space) {
@@ -597,11 +527,6 @@
                         'margin-left' : ''
                     },
                 sticky_sidebar);
-//                sidebar.o.css("position", "relative");
-//                sidebar.o.css("top", "0");
-//                sidebar.o.css("left", "0");
-//                sidebar.o.css("width", '');
-//                sidebar.o.css('margin-left', '');
                 sidebar.fixed = 0;
             }
             else if (CONDITION.mode == 2 && sidebar.mode == LONG_SIDEBAR &&  curscrolltop < CONDITION.prevscrolltop &&
@@ -618,11 +543,6 @@
                         'margin-left': sidebar.margin_left
                     },
                 sticky_sidebar);
-//                sidebar.o.css("position", "fixed");
-//                sidebar.o.css("top", CONDITION.header_space); // no need of margin-top
-//                sidebar.o.css("left", sidebar.default_offset.left - $(window).scrollLeft());
-//                sidebar.o.css("width", sidebar.width);
-//                sidebar.o.css('margin-left', sidebar.margin_left);
                 sidebar.fixed = 1;
             }
             else if ((CONDITION.mode == 2 && sidebar.mode == LONG_SIDEBAR && curscrolltop >= sidebar_cur_top + sidebar.height - CONDITION.window_height &&
@@ -638,11 +558,6 @@
                         'margin-left' : sidebar.margin_left
                     },
                 sticky_sidebar);
-//                sidebar.o.css("position", "fixed");
-//                sidebar.o.css("top", CONDITION.window_height - sidebar.height);
-//                sidebar.o.css("left", sidebar.default_offset.left - $(window).scrollLeft());
-//                sidebar.o.css("width", sidebar.width);
-//                sidebar.o.css('margin-left', sidebar.margin_left);
                 sidebar.fixed = 1;
             }
             else if (CONDITION.mode == 2 && sidebar.mode == LONG_SIDEBAR && (curscrolltop - CONDITION.prevscrolltop) * CONDITION.direction < 0 && sidebar.fixed) {
@@ -659,11 +574,6 @@
                         'margin-left' : sidebar.margin_left
                     },
                     sticky_sidebar);
-//                sidebar.o.css("position", "absolute");
-//                sidebar.o.css("top", sidebar_cur_top - sidebar.absolute_adjustment_top);
-//                sidebar.o.css("left", sidebar.default_offset.left - sidebar.absolute_adjustment_left);
-//                sidebar.o.css("width", sidebar.width);
-//                sidebar.o.css('margin-left', sidebar.margin_left);
                 sidebar.fixed = 0;
             }
             else if (sidebar.mode == SHORT_SIDEBAR) {
@@ -677,11 +587,6 @@
                         'margin-left' : sidebar.margin_left
                     },
                 sticky_sidebar);
-//                sidebar.o.css("position", "fixed");
-//                sidebar.o.css("top", CONDITION.header_space); // no need of margin-top
-//                sidebar.o.css("left", sidebar.default_offset.left - $(window).scrollLeft());
-//                sidebar.o.css("width", sidebar.width);
-//                sidebar.o.css('margin-left', sidebar.margin_left);
                 sidebar.fixed = 1;
             }
             else if (CONDITION.mode != 2) {
@@ -695,11 +600,6 @@
                         'margin-left': ''
                     },
                 sticky_sidebar);
-//                sidebar.o.css("position", "relative");
-//                sidebar.o.css("top", "0");
-//                sidebar.o.css("left", "0");
-//                sidebar.o.css("width", '');
-//                sidebar.o.css('margin-left', '');
                 sidebar.fixed = 0;
             }
             else {
@@ -731,15 +631,10 @@
                     'margin-left' : ''
                 },
                 sticky_sidebar);
-//            sidebar.o.css("position", "relative");
-//            sidebar.o.css("top", "0");
-//            sidebar.o.css("left", "0");
 
-//            sidebar.o.css('width', '');
             sidebar.width = parseFloat(sidebar.o.css('width')); // using css('width') (not width())
             // preserve this value to use for a fixed position because the parent will change.
 
-//            sidebar.o.css('margin-left', '');
             sidebar.margin_left = parseFloat(sidebar.o.css('margin-left'), 10);  // might be float in responsive themes
 
             sidebar.default_offset = sidebar.o.offset();
