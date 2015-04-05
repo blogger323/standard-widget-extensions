@@ -427,9 +427,9 @@
         swe.set_init_floats = function() {
             swe.init_floats = {};
 
-            swe.init_floats[swe.sidebar_id] = $("#" + swe.sidebar_id).css("float", "").css("float");
-            swe.init_floats[swe.sidebar_id2] = $("#" + swe.sidebar_id2).css("float", "").css("float");
-            swe.init_floats[swe.smart_sidebar_id] = $("#" + swe.smart_sidebar_id).css("float", "").css("float");
+            swe.init_floats[swe.sidebar_id] = $("#" + swe.sidebar_id).css({"float": "", "position": ""}).css("float");
+            swe.init_floats[swe.sidebar_id2] = $("#" + swe.sidebar_id2).css({"float": "", "position": ""}).css("float");
+            swe.init_floats[swe.smart_sidebar_id] = $("#" + swe.smart_sidebar_id).css({"float": "", "position": ""}).css("float");
 
             // {"" : undefined} appears
         };
